@@ -1,0 +1,29 @@
+The authors and contributors to the utilities in this system include (in alphabetical order):
+* Andreas Fuchs
+* Arthur Lemmens
+* Attila Lendvai
+* Denis Budyak
+* Garry W. King
+* Ingvar Mattsson
+* Joerg Hoehle
+* Jonathan Amsterdam
+* Kaz Kylheku
+* Kevin Rosenberg
+* Luis Oliveira
+* Marco Baringer
+* Nikodemus Siivola
+* Pascal J. Bourguignon
+* Paul Graham
+* Robert Strandh
+* Tobias C. Rittweiler
+* Vsevolod Dyomkin
+
+Though it seems impossible to determine precisely the original author of every function or macro, at least some of the most important utilities' authors can be listed:
+* Arthur Lemmens: SPLIT-SEQUENCE
+* Ingvar Mattsson: GENHASH
+* Jonathan Amsterdam, Andreas Fuchs, Joerg Hoehle, Denis Budyak: ITERATE
+* Kaz Kylheku: PKG
+* Marco Baringer: DO-/MAPTREE, PARSE-FLOAT
+* Vsevolod Dyomkin: BIND, SEQ, DISTRO
+
+Besides, all of the utilities were at least minorly modified by Vsevolod Dyomkin to ensure consistency of documentation, use the same set of basic utilities and sometimes in other ways as well.

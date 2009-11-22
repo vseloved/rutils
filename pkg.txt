@@ -1,0 +1,257 @@
+PKG -- read time manipulation of package visibility
+---------------------------------------------------
+
+Kaz Kylheku <kkylheku@gmail.com>
+December 2008
+
+Concept: 
+
+Common Lisp gives us a very coarse-grained instrument for
+controlling how symbols are interned. When the reader is entered
+to scan a form, there is some package in effect, stored in the
+dynamic variable *PACKAGE*. This package controls how unqualified
+symbol names are interpreted. Names are looked up through the package,
+and either resolve to symbols that are present in the package,
+visible through the package via use inheritance, or are not found.
+Names which are not found are interned as new symbols in the package.
+During the scanning of an entire form, the same *PACKAGE* is in
+effect, (unless some read-time manipulation via the sharpsign-dot
+read macro is performed).
+
+What if we want more fine-grained control over how names are interpreted
+inside a form? Suppose that deeply inside some nested compound form,
+we would like some sub-form to have its symbols treated through
+a specific package. Or what if we would like to suppress the behavior of
+being automatically interned into the surrounding package?
+
+It's possible to achieve this by giving semantics to an extensible
+read-time notation. I have chosen to implement this as a #@ read
+macro (sharpsign-at). The #@ read macro reads the following form as
+a directive or list of directives. Then it reads another form, which
+is returned as a result of the scan. The directives establish an 
+anonymous package and customize the contents of that package.
+The form is then read under that package. After the form is read,
+the anonymous package is reconciled against the surrounding package;
+which may involve pushing symbols into the surrounding package.
+
+Syntax:
+
+  sharpsign-at := #@ directive form
+
+  directive := (use package-specifier-list)
+            |  (from package-specifier import symbol-specifier-list)
+            |  (inherit symbol-specifier-list)
+            |  (keep symbol-specifier-list)
+            |  (keep-all)
+            |  (unique symbol-specifier-list)
+            |  (top)
+            |  (in package-specifier) 
+            |  (directive-list)
+            |  ()
+            |  nil
+
+  directive-list  := ({directive}*)
+             
+  package-specifier-list := {package-specifier}*
+
+  symbol-specifier-list := {symbol-specifier}*
+
+  package-specifier := symbol-specifier
+
+  symbol-specifier := string-literal | symbol
+
+Note: symbol specifiers are treated using name equivalence.
+The specifier FOO, #:FOO and "FOO" are the same specifier,
+(assuming the usual treatment of letter case in symbol names).
+FOO is interned in a private package internal to the #@ reader
+implementation, and does not pollute any existing package.
+This simple use is encouraged.
+
+Semantics
+
+General notes
+
+When multiple directives appear, they are processed left
+to right. The effects of later directives may override
+those of earlier directives.  
+
+Over the processing of the directives and the form, the *package*
+variable is dynamically rebound, so that its prior value is
+saved and restored.
+
+Before the first directive is processed, an initial anonymous package is
+created and stored in *package*. This package is a clone of 
+the surrounding package, meaning that all symbols that are present in the
+surrounding package are made present in this anonymous package, all
+packages which are used by the surrounding package are also used by the
+anonymous package, and the anonymous package has an identical shadow symbol
+list as the surrounding package.
+
+The actions of the directives are:
+
+(use package-specifier-list)
+
+   This directive means to make visible all of the exported
+   symbols in the specified packages. If any of the packages
+   do not exist, an error is signaled.
+
+   The packages are processed in left-to-right order,
+   and made visible in the anonymous package. Whenever
+   such a visibility would create a conflict, the
+   conflict is resolved in favor of the package via a shadowing
+   import.
+
+(from package-specifier import symbol-specifier-list)
+
+   Symbols from the specified package (which must exist, or
+   else an error is signaled) are made present in the
+   anonymous package by importing. Conflicts are automatically resolved 
+   in favor of these symbols via shadowing imports.
+
+(inherit symbol-specifier-list)
+
+   The anonymous package is erased, and replaced with a new
+   empty anonymous package. Nothing is inherited or imported
+   into this anonymous package execpt for the symbols specified
+   by the list. If there are no symbols, the package is completely
+   empty, with no symbols present or visible in it.
+
+   Symbols specified in the list must all be visible in the surrounding
+   package, or else an error is signaled.
+
+   Remark: This form is most useful when it appears first, since it
+   clobbers the effects of earlier directives by replacing
+   the anonymous package.
+
+(keep symbol-specifier-list)
+
+   Constraint: at most one KEEP directive should be specified, and should
+   be regarded as mutually exclusive with KEEP-ALL.
+
+   First, the specified symbols, if any, are are looked up in the
+   surrounding package. If any of them are visible there, they are
+   imported into the anonymous package.
+
+   Second, the list of symbol specifiers is remembered.
+   When, at the end of processing, the anonymous package is
+   reconciled against the surrounding package, this list specifies
+   which symbols present in the anonymous package
+   are to be considered for propagation into the surrounding package.
+
+   The default behavior, neither the KEEP nor KEEP-ALL directives
+   are used is that none of the symbols interned in the anonymous
+   package are propagated, which is equivalent to (KEEP).
+
+   The KEEP directive's remembered list stays in effect regardless
+   of the directives that follow. Directives which scrap the
+   anonymous package for a new one do not affect the keep list.
+
+(keep-all)
+
+   Constraint: at most one KEEP-ALL directive should be specified,
+   and should be regarded as mutually exclusive with KEEP.
+
+   First, KEEP-ALL ensures that all symbols present in the
+   surrounding package are made present in the anonymous package,
+   and any remaining that are visible in that package are
+   made visibel in the anonymous package also.
+
+   Second, it is rememberd that KEEP-ALL was specified, so
+   that when at the end of processing when the anonymous
+   package is reconciled with the surrounding package,
+   all new symbols present in the anonymous package are
+   to be considered for propagation.
+
+(unique symbol-specifier-list)
+
+   The specified symbols are newly created, and installed in the
+   anonymous package. If symbols of the same name
+   are already present, those symbols are uninterned first.
+   If symbols of the same name are visible in the package
+   by use inheritance, then they are added to the shadow list.
+   to resolve the conflict.
+
+   The symbols are added to a suppress list, which is empty
+   at the start of processing, and is considered during
+   reconciliation.
+
+   Symbols on the suppress list will not be propagated
+   to the surrounding package even if they are on the keep list.
+
+   Directives which scrap the anonymous package in favor
+   of a new one also clear the suppress list, since
+   the symbols on that list are no longer pertinent.
+
+(top)
+
+   This directive discards the anonymous package constructed
+   so far and replaces it with a new one. The new package is
+   a clone of the toplevel package instead of the surrounding
+   package. Moreover, when reconciliation is later preformed, it
+   it will be against the toplevel package.
+
+   The toplevel package is defined as the the *PACKAGE* that is
+   in effect when the reader is entered nonrecursively to scan a
+   toplevel form. This may be diferent from what a #@ construct
+   considers to be surrounding package, because #@ constructs may
+   occur within forms that are already controlled by other #@
+   syntax. The surrounding package for these nested instances is
+   the anonymous package set up by the inner-most enclosing #@
+   syntax.
+
+   Remark: the TOP directive is a way of gaining two-way access 
+   to the outermost package.
+   Remark: by bypassing the nesting of packages, TOP may cause 
+   conflicts. That is to say, an inner #@ using TOP may import
+   new symbols into the toplevel package during its reconciliation,
+   and then an enclosing #@ may try to import symbosl having
+   the same names.
+
+(in package-specifier)
+
+   This directive behaves exactly like top, except 
+   with respect to the specified package instead of the
+   toplevel package. The package must exist, or else error
+   is signaled. The current anonymous package is discarded,
+   and a new one is constructed which is a clone of the
+   specified one. The specified package is now considered
+   the surrounding package, and reconciliation will be
+   done against it.
+
+nil
+()
+
+   These are "noop" directives, which do nothing.
+
+   The syntax   #@() FORM  is equivalent to   FORM   except
+   that if evaluation is invoked during the processing of FORM
+   (e.g. via the sharpsign-dot reader) it will be able to
+   observe that a temporary package is in effect, and that
+   lexically earlier symbols have not yet been interned into 
+   the surrounding package.
+
+
+Reconciliation
+
+After the directives are processed, the FORM is read. Then, before
+the form is returned, package reconciliation takes place. 
+This is done as if by the following steps:
+
+1. All symbols which are present in the anonymous package, and whose
+   home package is that package (i.e. all symbols that were newly interned
+   in that anonymous package when FORM was read) are gathered into
+   a list. 
+
+2. If a KEEP-ALL directive was specified then all of these
+   symbols are eligible or propagation into the surrounding package.
+   If a specific keep list was established by a (KEEP) directive,
+   then symbols which are not in that list are removed from further
+   consideration.
+
+3. If a suppress list was established by one or more UNIQUE
+   directives, then all of the symbols being considered which
+   are on that list are removed from further consideration.
+
+2. The symbols remaining the list are propagated into the surrounding 
+   package by a an import (a non-shadowing import, which may cause
+   conflicts to be signaled).

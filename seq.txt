@@ -1,0 +1,87 @@
+SEQ -- Clojure style iteration protocol
+---------------------------------------
+
+Author: Vsevolod Dyomkin <vseloved@gmail.com>, 2008
+
+
+The implementation of a SEQ protocol, similar to Clojure's one
+The SEQ class is defined as a thin wrapper around collection classes.
+It holds a reference to the concrete collection, to the position in
+it and an iterator in collection. Basically, it's all just syntactic
+sugar over iterators.
+
+To use the concrete collection as a seq, just call SEQ with it.
+Afterwards 4 operations are possible:
+* HEAD, NEXT and ELM return 2 values: the value of an item in the
+  collection and the corresponding key (for SEQUENCE type collections
+  the key is just an item's index). To test for the end of collection
+  check the for nullity of key (no errors will be signaled for
+  out-of-bounds conditions)
+* TAIL returns the rest of the sequence (lazily)
+
+
+No CONS operation (in Clojure meaning)
+
+The main purpose of SEQ is to give the ability to iterate over various
+collections uniformly. But, in my opinion, there's no problem of
+uniform accumulation. Accumulation is solved: just use lists (it's the
+most simple and efficient way). It's possible to define the analog
+of Clojure's CONS operation, but we'll need to pay the price of generic
+dispatch (moreover, twice) on each operation. It's much more efficient
+to pay it only once for the whole accumulation loop. So if you want
+to get the concrete sequence of the same type, as the argument,
+just convert the result to it (with INTO). This pattern is codified
+with the macro WITH-ACC, supported by DOSEQ
+
+
+Examples
+
+1. Convenient handling of range:
+
+   (defclass range ()
+     ((start :initarg :start :reader range-start :initform 0)
+      (end   :initarg :end   :reader range-end)
+      (step  :initarg :step  :reader range-step  :initform 1)))
+
+   (defun range (start &key end step)
+     (make-instance 'range :start start :end end :step step))
+
+   (defmethod seq ((coll range) &optional (start-pos 0))
+     (make-instance 'seq :ref coll :pos start-pos
+                         :itr (lambda (elt)
+                                (with-slots (step end) coll
+                                  (let ((rez (+ start-pos (* elt step))))
+                                    (and (or (not end) (<= rez end))
+                                         (values rez
+                                                 elt)))))))
+
+   CL-USER> (with-acc (v rez (range 0 :step 2 :end 10) 'vector)
+              (push v rez))
+   #(0 2 4 6 8 10)
+
+2. Implementing generic FILTER.
+   Here I faced the problem with iteration over two different kinds of collections: with meaningful keys, that should be preserved (hash-tables), and with, let's say, implicit keys (ordinary sequences, for which we can say, that key is a number). There are 2 ways to tackle this situation: either to indicate explicitly, what type of sequence it is, in the SEQ class, or to track the list of keys separately and use it in situations, wheh it's needed: like creating a hash-table from list, which is performed in INTO. After some though I decided, that the explicit indication (with KV? slot) is a much simpler and better way, because keys are needed only in small fraction of situations. The usage of the indicator can be seen in FILTER implementation (I believe, it's quite natural):
+
+   (defun filter (fn coll)
+     "Sequentially apply FN to all elements of COLL and 
+return the collection, consisting of only non-nil results"
+     (let ((seq (seq coll)))
+       (with-slots (ref kv?) seq
+         (with-acc ((v k) acc seq)
+           (when-it (funcall fn v)
+             (when kv?
+               (push k acc))
+             (push it acc))))))
+
+   Warning: althought, the right choice for filter is to define it generic, the difference in performance between a concrete LIST FILTER (like the following:
+
+   (defun filter (fn lst)
+     "Sequentially apply FN to all elements of LST and 
+return the list, consisting of only non-nil results"
+     (let ((acc nil))
+       (dolist (x lst)
+         (let ((val (funcall fn x)))
+           (if val (push val acc))))
+       (nreverse acc)))
+
+and the generic one can be upto 10-100 times (for small computations, like (filter 'oddp '(1 2 3))). So in simple situations it's better to use the concrete variant.
