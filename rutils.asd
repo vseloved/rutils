@@ -9,7 +9,6 @@
   :version (0 1 0)
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
-  :short-description "General purpose Common Lisp utilities collection"
   :description "A reasonable collection of basic utilities for syntactic ~
 extension and basic data-structures hadling, developed over the years of ~
 CL history by efforts of different individuals, and gathered under ~
