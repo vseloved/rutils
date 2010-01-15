@@ -1,0 +1,6 @@
+2010/01/15 - v. 0.2.0
+* Corrected typo in SPLIT-SEQUENCE (thanks to waba)
+* Added ALISTP and ASSOC1
+* Enhanced #` by making the parameter optional, so that the generated
+  function can be used in no-argument context
+* Renamed PLIST-P to PLISTP

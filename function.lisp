@@ -13,7 +13,7 @@
     (declare (ignore char arg))
     (let ((sexp (read stream t nil t))
           (x (gensym "X")))
-      `(lambda (,x)
+      `(lambda (&optional ,x)
          ,@(subst x '_ (if (listp (car sexp)) sexp (list sexp))))))
 
   (defmethod enable-literal-syntax ((which (eql :sharp-backq)))

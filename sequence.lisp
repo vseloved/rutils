@@ -35,7 +35,7 @@ sequence indicating where processing stopped"
     (unless end (setq end len))
     (if from-end
         (loop :for right := end :then left
-              :for :left := (max (or (apply #'position delimiter seq 
+              :for left  := (max (or (apply #'position delimiter seq 
                                             :end right
                                             :from-end t
                                             other-keys)

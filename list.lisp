@@ -117,7 +117,7 @@ by this formula: INDEX of ELEMENT = I * STEP for I from 0"
 
 ;; plist
 
-(defun plist-p (lst)
+(defun plistp (lst)
   "Test wheather <_:arg lst /> is a properly formed plist"
   (when (listp lst)
     (loop :for rest :on lst :by #'cddr
@@ -159,6 +159,24 @@ modify the provided <_:arg plist />"
            (rplacd (nthcdr (1- pos) plist) (nthcdr (+ pos 2) plist))
            (decf pos 2))
      :finally (return plist)))
+
+
+;; alist
+
+(defun alistp (lst)
+  "Test wheather <_:arg lst /> is a properly formed alist"
+  (and (listp lst) (every #'consp lst)))
+
+(defun assoc1 (item alist &key default key (test nil testp) (test-not nil notp))
+  "Return a value in <_:arg alist />, whose key is eql to <_:arg item />.
+Also as 2nd value return, whether <_:arg item /> was found.
+If there is no such entry, returns <_:arg default />.
+The usual <_:arg key />, <_:arg test /> and <_:arg test-not /> arguments apply"
+  (if-it (apply #'assoc item alist :key key
+                (append (when testp (list :test     test))
+                        (when notp  (list :test-not test-not))))
+         (values (cdr it) t)
+         (values default nil)))
 
 
 ;;; end

@@ -98,7 +98,9 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
   (:use :common-lisp
         "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
   (:documentation "<_:class List /> utilities")
-  (:export #:alist-to-plist
+  (:export #:alistp
+           #:alist-to-plist
+           #:assoc1
            #:butlast2
            #:delete-from-plist
            #:dyadic
@@ -110,7 +112,7 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
            #:last1
            #:mapfil
            #:mklist
-           #:plist-p
+           #:plistp
            #:plist-to-alist
            #:rearrange-pairs
            #:remove-from-plist

@@ -28,12 +28,15 @@
   (set-macro-character #\} nil))
 
 (defmethod to-string ((obj hash-table) &optional stream)
-  (format stream "#{~@[~a ;~]~a}~%"
+  (format stream "#{~@[~a ~]~a}~%"
           (unless (eq (hash-table-test obj) 'eql)
             (hash-table-test obj))
           (with-output-to-string (out)
             (maphash (lambda (k v)
-                       (format out "~%~a ~a" k v))
+                       (terpri out)
+                       (prin1 k out)
+                       (princ " " out)
+                       (prin1 v out))
                      obj))))
 
 ;; copy
