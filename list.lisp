@@ -172,11 +172,13 @@ modify the provided <_:arg plist />"
 Also as 2nd value return, whether <_:arg item /> was found.
 If there is no such entry, returns <_:arg default />.
 The usual <_:arg key />, <_:arg test /> and <_:arg test-not /> arguments apply"
-  (if-it (apply #'assoc item alist :key key
-                (append (when testp (list :test     test))
-                        (when notp  (list :test-not test-not))))
-         (values (cdr it) t)
-         (values default nil)))
+  (let ((pair (apply #'assoc item alist :key key
+                     (append (when testp (list :test     test))
+                             (when notp  (list :test-not test-not))))))
+    (if pair (values (cdr pair)
+                     t)
+        (values default
+                nil))))
 
 
 ;;; end

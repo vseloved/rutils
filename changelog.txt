@@ -1,3 +1,7 @@
+2010/01/18 - v. 0.2.1
+* Corrected interdependency problem
+
+
 2010/01/15 - v. 0.2.0
 * Corrected typo in SPLIT-SEQUENCE (thanks to waba)
 * Added ALISTP and ASSOC1
