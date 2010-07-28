@@ -1,6 +1,6 @@
 ;; For license see LICENSE
 
-(in-package "REASONABLE-UTILITIES.STRING")
+(in-package #:reasonable-utilities.string)
 
 
 (defgeneric to-string (obj &optional stream)
@@ -10,14 +10,15 @@ to <_:arg stream />. Alternative to <_:fun print-readably />"))
 (proclaim
  '(inline strcat strcat_ blankp))
 
-(defun strcat (&rest string-designators)
-  "<_:arg Concatenate /> all the strings in <_:arg string-designators />"
-  (let ((*print-pretty* nil)
-        (*print-circle* nil))
-    (with-output-to-string (stream)
-      (dolist (str string-designators)
-        (when str
-          (princ str stream))))))
+(eval-always
+  (defun strcat (&rest string-designators)
+    "<_:arg Concatenate /> all the strings in <_:arg string-designators />"
+    (let ((*print-pretty* nil)
+          (*print-circle* nil))
+      (with-output-to-string (stream)
+        (dolist (str string-designators)
+          (when str
+            (princ str stream)))))))
 
 (defun strcat_ (&rest string-designators)
   "<_:arg Concatenate /> all the strings in <_:arg string-designators />
@@ -30,6 +31,13 @@ with whitespace between them"
           (princ str stream)
           (princ " " stream)))
       (princ (last1 string-designators)))))
+
+(defmacro s+ (&rest strings)
+  "A macro for concatenating STINGS at compile time.  Could be used for
+pretty strings formatiing, like in Python's built-in string concatenating
+behavior.
+!!! Caution: variables won't be evaluated !!!"
+  (apply #'strcat strings))
 
 (defun blankp (string)
   "Test, whether a <_:arg string /> is blank (empty)"
@@ -46,7 +54,27 @@ if NIL no newlines will be printed at line breaks"
     (with-output-to-string (out)
       (loop :for line := (read-line in nil) :while line :do
          (princ line out)
-         (when newline 
-           (format out "~a" newline))))))
+         (when newline (terpri out))))))
+
+(defun split-string (string)
+  (split-sequence-if #`(member _ '(#\Space #\Tab)) string
+                     :remove-empty-subseqs t))
+
+;; (defun strsubst (new old string         
+;;                  &rest args &key from-end (test #'char=) (test-not nil)
+;;                  (start 0) (count nil) (end nil) (key nil))
+;;   "Returns a new string in which all the occurences of <_:arg old /> 
+;; are replaced with <_:arg new />."
+;;     (with-output-to-string (out)
+;;       (loop with part-length = (length part)
+;;             for old-pos = 0 then (+ pos part-length)
+;;             for pos = (search part string
+;;                               :start2 old-pos
+;;                               :test test)
+;;             do (write-string string out
+;;                              :start old-pos
+;;                              :end (or pos (length string)))
+;;             when pos do (write-string replacement out)
+;;             while pos))) 
 
 ;;; end

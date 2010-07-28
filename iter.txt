@@ -1,25 +1,33 @@
 ITER -- ITERATE with KEYWORDS
 -----------------------------
 
-Idea: provide the possibility to use the powerful ITERATE macro without the need to import (and effectively lock) around 40 quite common names, some of which conflict with the CL-USER package. Besides, simplify, regularize and document the code base, so that it could be easily supported and further extended (at least one bug was found during this process).
+Idea: provide the possibility to use the powerful ITERATE macro
+without the need to import (and effectively lock) around 40 quite
+common names, some of which conflict with the CL-USER
+package. Besides, simplify, regularize and document the code base, so
+that it could be easily supported and further extended (at least one
+bug was found during this process).
 
 
 Improvements and changes to original ITERATE:
 
-* used and improved Denis Budyak's support for keywords from the KEYWORD (and not ITERATE) package
+* used and improved Denis Budyak's support for keywords from the
+  KEYWORD (and not ITERATE) package
 
-* added additional keywords, which can't be duplicated as symbols from ITERATE package due to CL-USER lock
-  * :search
-  * :reduce
-  * :adjoin, :append, :nconc, :union, :nunion
+* added additional keywords, which can't be duplicated as symbols from
+  ITERATE package due to CL-USER lock :search :reduce :adjoin,
+  :append, :nconc, :union, :nunion
 
-* removed ITERATE entry-point (and left only ITER) to distinguish (to some extent) from original ITERATE without keyword support
+* removed ITERATE entry-point (and left only ITER) to distinguish (to
+  some extent) from original ITERATE without keyword support
 
 * documented
 
-* simplified bindings and conditional evaluation: used bind, when/unless, cond where appropriate, removed #L
+* simplified bindings and conditional evaluation: used bind,
+  when/unless, cond where appropriate, removed #L
 
 * in WALK added symbol-macros' processing
 
 * bug fixes:
-  - removed ' before ,RESULT-TYPE in RETURN-COLLECTION-CODE, so that non-constant RESULT-TYPEs could be passed to :INTO clause
+  - removed ' before ,RESULT-TYPE in RETURN-COLLECTION-CODE, so that
+    non-constant RESULT-TYPEs could be passed to :INTO clause

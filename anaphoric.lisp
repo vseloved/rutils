@@ -2,7 +2,7 @@
 ;;; see LICENSE file for permissions
 
 
-(in-package "REASONABLE-UTILITIES.ANAPHORIC/IT")
+(in-package #:reasonable-utilities.anaphoric/it)
 
 (locally-enable-literal-syntax :sharp-backq)
 
@@ -40,7 +40,7 @@ the previous <_:fun and /> form"
                  body))))
 
 
-(in-package "REASONABLE-UTILITIES.ANAPHORIC/A")
+(in-package #:reasonable-utilities.anaphoric/a)
 
 (abbrev aand rutils.anaphoric/it:and-it)
 (abbrev acond rutils.anaphoric/it:cond-it)
@@ -49,7 +49,7 @@ the previous <_:fun and /> form"
 (abbrev awhen rutils.anaphoric/it:when-it)
 
 
-(in-package "REASONABLE-UTILITIES.ANAPHORIC/LET")
+(in-package #:reasonable-utilities.anaphoric/let)
 
 (defmacro if-let (var test then &optional else)
   "Like <_:fun if />. <_:arg Var /> will be bound to <_:arg test />"
@@ -85,7 +85,7 @@ the passed <_:fun cond /> test"
                  body))))
 
 
-(in-package "REASONABLE-UTILITIES.ANAPHORIC/BIND")
+(in-package #:reasonable-utilities.anaphoric/bind)
 
 (abbrev and-bind rutils.anaphoric/let:and-let)
 (abbrev cond-bind rutils.anaphoric/let:cond-let)

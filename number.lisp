@@ -1,7 +1,7 @@
 ;;; RUTILS number handling (incl. CDR 5)
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.NUMBER")
+(in-package #:reasonable-utilities.number)
 
 (locally-enable-literal-syntax :sharp-backq)
 
@@ -34,7 +34,7 @@ from <_:arg min /> to <_:arg max /> by <_:arg step />"
   (:documentation ""))
 
 (defun range (start &key end step)
-  ""
+  "TODO:"
   (make-instance 'range :start start :end end :step step))
 
 #+:seq

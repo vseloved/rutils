@@ -1,7 +1,7 @@
 ;;; RUTILS GENHASH implementation (see CDR 2)
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.GENHASH")
+(in-package #:reasonable-utilities.genhash)
 
 
 (defvar *hash-test-designator-map* (make-hash-table)

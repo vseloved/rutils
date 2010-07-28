@@ -1,7 +1,7 @@
 ;;; RUTILS short names definition
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.SHORT")
+(in-package #:reasonable-utilities.short)
 
 (abbrev mksym ensure-symbol)
 (abbrev mkeyw ensure-keyword)
@@ -25,9 +25,15 @@
 (abbrev w/outstr with-output-to-string)
 
 (defmacro 2nd (form)
-  "(<_:fun nth-value /> 1 <_:arg form />)"
+  "(<_:fun Nth-value /> 1 <_:arg form />)"
   `(nth-value 1 ,form))
 
 (abbrev defpar defparameter)
+
+(abbrev @ slot-value)
+
+(proclaim '(inline fmt))
+(defun fmt (format-string &rest args)
+  (apply #'format nil format-string args))
 
 ;;; end

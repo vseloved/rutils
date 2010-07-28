@@ -1,7 +1,7 @@
 ;;; RUTILS object handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.OBJECT")
+(in-package #:reasonable-utilities.object)
 
 
 ;; OBJ-EQUAL

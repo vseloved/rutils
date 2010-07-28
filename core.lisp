@@ -1,6 +1,6 @@
 ;; For license see LICENSE
 
-(in-package "REASONABLE-UTILITIES.CORE")
+(in-package #:reasonable-utilities.core)
 
 (proclaim '(optimize speed))
 
@@ -48,7 +48,6 @@ at compile/load time"
 at compile/load time"
   `(eval-always
      (disable-literal-syntax ,which)))
-
 
 ;; symbols
 
@@ -125,6 +124,22 @@ be also exported from <_:arg to-package />."
   (use-package from-package to-package)
   (do-external-symbols (sym (find-package from-package))
     (export sym (find-package to-package))))
+
+(defmacro defpackage+ (name (&rest parent-packages) &rest defpackage-options)
+  "Define package <_:arg name />, exporting all external symbols
+from <_:arg parent-packages /> and adding them to :use'd packages.
+<_:arg Defpackage-options /> are regular options for <_:fun defpackage /> form."
+  (let ((parent-symbols (mapcan #'package-external-symbols parent-packages)))
+    (mapcar (lambda (option data)
+              (if (assoc option defpackage-options)
+                  (rplacd (assoc option defpackage-options)
+                          (remove-duplicates
+                           (append (cdr (assoc option defpackage-options))
+                                   data)))
+                  (push (cons option data) defpackage-options)))
+            (list :export :use)
+            (list parent-symbols parent-packages))
+    `(defpackage ,name ,@defpackage-options)))
 
 (defmacro defconst (name value &optional doc)
   "<_:fun Defconstant /> only, whent it's not already defined"

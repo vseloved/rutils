@@ -1,11 +1,11 @@
 ;;; RUTILS -everything- umbrella package
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.*")
+(in-package #:rutils)
 
-(eval-always
-  (dolist (pkg '("RUTILS.USER" "RUTILS.SHORT" "RUTILS.ANA/A"
-                 "RUTILS.ANA/LET" "RUTILS.EXPERIMENTAL"))
-    (export-exported-symbols pkg "RUTILS.*")))
+(rutils.core:eval-always
+  (dolist (pkg '(#:rutils.user #:rutils.short #:rutils.ana/a
+                 #:rutils.ana/let #:rutils.experimental))
+    (rutils.core:export-exported-symbols pkg '#:rutils)))
 
 ;;; end

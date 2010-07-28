@@ -1,7 +1,7 @@
 ;;; RUTILS experimental stuff
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.EXPERIMENTAL")
+(in-package #:reasonable-utilities.experimental)
 
 
 ;; defmulti
@@ -34,5 +34,11 @@ NIL
   `(defgeneric ,fun-name ,lambda-list
      (:method-combination multi ,dispatch-fn)))
 
+(defun macrocall (name &rest args)
+  "Call macro as if by funcall."
+  (assert (symbolp name))
+  (if-it (macro-function name)
+         (eval (apply it (list args nil)))
+         (error "The ~A is not a macro." name)))
 
 ;;; end

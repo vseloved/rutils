@@ -3,7 +3,7 @@
 
 ;;; see split-sequence.txt for examples of it's usage
 
-(in-package "REASONABLE-UTILITIES.SEQUENCE")
+(in-package #:reasonable-utilities.sequence)
 
 (locally-enable-literal-syntax :sharp-backq)
 
@@ -298,6 +298,18 @@ Accepts <_:arg test /> and <_:arg key />"
           (iter:finally (return (if (eql result-type 'list) rez
                                     (coerce rez result-type))))))
 |#
+
+(defun find-all (item sequence &rest args
+                 &key from-end (start 0) end key test test-not)
+  (declare (ignore args))
+  (loop :with cur-start := start
+     :for pos := (position item sequence
+                           :from-end from-end :start cur-start :end end
+                           :key key :test test :test-not test-not)
+     :while pos
+     :collect (elt sequence pos)
+     :do (setf cur-start (1+ pos))))
+
 
 (eval-always
   (pushnew :split-sequence *features*))

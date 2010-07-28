@@ -1,7 +1,7 @@
 ;;; RUTILS tree handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.TREE")
+(in-package #:reasonable-utilities.tree)
 
 (defmacro dotree ((var tree-form &optional result-form) &body body)
   "The analog of <_:fun dolist />, operating on trees"

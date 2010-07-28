@@ -3,7 +3,7 @@
 
 ;;; see seq.txt for rationale and examples
 
-(in-package "REASONABLE-UTILITIES.SEQ")
+(in-package #:reasonable-utilities.seq)
 
 (locally-enable-literal-syntax :sharp-backq)
 

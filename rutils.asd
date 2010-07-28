@@ -6,7 +6,7 @@
 
 (defsystem #:rutils
   :name "Reasonable utilities"
-  :version (0 2 1)
+  :version '(0 3 0)
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
   :description "A reasonable collection of basic utilities for syntactic ~
@@ -15,7 +15,7 @@ CL history by efforts of different individuals, and gathered under ~
 the unbrella of a hierarchy of packages, which can be used ~
 selectively on demand.
 Includes user-space CDR's (see http://cdr.eurolisp.org)"
-;  :depends-on (:closer-mop)
+  :depends-on (:closer-mop)
   :serial t
   :components ((:file "packages")
                (:file "impl")
@@ -39,7 +39,6 @@ Includes user-space CDR's (see http://cdr.eurolisp.org)"
                #+:closer-mop (:file "object")
                (:file "condition")
                (:file "experimental")
-               (:file "short-after")
                (:file "user")
                (:file "rutils")))
 

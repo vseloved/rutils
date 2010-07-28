@@ -1,7 +1,7 @@
 ;;; RUTILS array handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.ARRAY")
+(in-package #:reasonable-utilities.array)
 
 
 (defun copy-array (array &key

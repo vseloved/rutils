@@ -1,6 +1,6 @@
 ;; For license see LICENSE
 
-(in-package "REASONABLE-UTILITIES.CONTROL")
+(in-package #:reasonable-utilities.control)
 
 (proclaim '(optimize speed))
 
@@ -50,6 +50,10 @@ is provided"
 
 ;; logic
 
+(proclaim '(inline true))
+(defun true (smth)
+  (not (null smth)))
+
 (defmacro when/t (condition &body body)
   "Like <_:fun when />, but returns T instead of NIL,
 if condition doesn't satisfy. Is logically equivalent to:
@@ -95,9 +99,8 @@ value is returned"
 (defun less (x y)
   "Like <, but works for NIL values of <_:arg x /> and <_:arg y />.
 Obviously, NIL is <_:fun less />, than anything"
-  (cond ((null x) y)
-        ((null y) nil)
-        (t (< x y))))
+  (when (and x y)
+    (< x y)))
 
 (defun not-more (x y)
   "Like <=, but works for NIL values of <_:arg x /> and <_:arg y />

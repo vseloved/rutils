@@ -1,7 +1,7 @@
 ;;; RUTILS list handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.LIST")
+(in-package #:reasonable-utilities.list)
 
 (locally-enable-literal-syntax :sharp-backq)
 
@@ -11,14 +11,26 @@
 
 
 (defun last1 (lst &optional (n 1))
-  "Get the <_:arg N />th element of a <_:arg lst /> from end,
+  "Get the <_:arg N />th element of <_:arg lst /> from end,
 starting from the last one (which is number 1)"
   (car (last lst n)))
+
+;; (defun first2 (lst &optional (n 1))
+;;   "Split <_:arg lst /> in 2 parts and return them as multiple values:
+;; head and tail.  If (= <_:arg n /> 1), which is the most common case,
+;; the head will be a single element, otherwise -- a list as well"
+;;   (let ((length (length lst)))
+;;     (assert (< n length))
+;;     (values (if (eql n 1)
+;;                 (first lst)
+;;                 (butlast lst (- length n 1)))
+;;             (last lst (- length n)))))
 
 (defun butlast2 (lst &optional (n 1))
   "Split <_:arg lst /> in 2 parts and return them as multiple values:
 head and tail.  If (= <_:arg n /> 1), which is the most common case,
 the tail will be a single element, otherwise -- a list as well"
+  (assert (< n (length lst)))
   (values (butlast lst n)
           (if (eql n 1) (last1 lst)
               (last lst n))))
@@ -114,6 +126,15 @@ by this formula: INDEX of ELEMENT = I * STEP for I from 0"
      :repeat num
      :collect (car rst)))
 
+(defmacro docoll ((item sequence) &body body)
+  "If <_:fun dolist /> is the approximate equivalent of <_:fun mapc />, then ~
+<_:fun docall /> is the equivalent of <_:fun mapcar />"
+  (with-gensyms (acc)
+    `(let (,acc)
+       (dolist (,item ,sequence)
+         (push (progn ,@body) ,acc))
+       (nreverse ,acc))))
+
 
 ;; plist
 
@@ -175,8 +196,9 @@ The usual <_:arg key />, <_:arg test /> and <_:arg test-not /> arguments apply"
   (let ((pair (apply #'assoc item alist :key key
                      (append (when testp (list :test     test))
                              (when notp  (list :test-not test-not))))))
-    (if pair (values (cdr pair)
-                     t)
+    (if pair
+        (values (cdr pair)
+                t)
         (values default
                 nil))))
 

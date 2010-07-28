@@ -6,8 +6,8 @@
 
 ;; general syntax
 
-(defpackage "REASONABLE-UTILITIES.CORE"
-  (:nicknames "RUTILS.CORE")
+(defpackage #:reasonable-utilities.core
+  (:nicknames #:rutils.core)
   (:documentation "The infrastructural utilities, mostly concerned with
 manipulation of <_:class symbol />s and reader syntax")
   (:use :common-lisp)
@@ -30,14 +30,25 @@ manipulation of <_:class symbol />s and reader syntax")
            #:with-gensyms
            #:with-unique-names))
 
-(defpackage "REASONABLE-UTILITIES.SHORT"
-  (:nicknames "RUTILS.SHORT")
-  (:use :common-lisp "RUTILS.CORE")
+(defpackage #:reasonable-utilities.pkg
+  (:nicknames #:rutils.pkg)
+  (:documentation "A per-form control over the reader side-effects
+\(like interning of symbols)")
+  (:use :common-lisp
+        #:rutils.core)
+  (:export ;; nothing
+   ))
+
+(defpackage #:reasonable-utilities.short
+  (:nicknames #:rutils.short)
+  (:use :common-lisp #:rutils.core)
   (:documentation "<_:fun Abbrevs />es of some common utilities with very
 long names")
   (:export #:2nd
            #:co
+           #:defpar
            #:ds-bind
+           #:fmt
            #:mk
            #:mkeyw
            #:mksym
@@ -46,22 +57,11 @@ long names")
            #:w/outstr
            #:w/uniqs))
 
-(defpackage "REASONABLE-UTILITIES.PKG"
-  (:nicknames "RUTILS.PKG")
-  (:documentation "A per-form control over the reader side-effects
-\(like interning of symbols)")
-  (:use :common-lisp
-        "RUTILS.CORE")
-  (:export ;; nothing
-   ))
-
-
-(defpackage "REASONABLE-UTILITIES.FUNCTION"
-  (:nicknames "RUTILS.FUNCTION")
+(defpackage #:reasonable-utilities.function
+  (:nicknames #:rutils.function)
   (:documentation "Basic utilities to support functional programming.
 Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
-  (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT")
+  (:use :common-lisp #:rutils.core #:rutils.short)
   (:export #:compose
            #:conjoin
            #:curry
@@ -72,11 +72,11 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
            #:rcurry
            #:_))
 
-(defpackage "REASONABLE-UTILITIES.CONTROL"
-  (:nicknames "RUTILS.CONTROL")
+(defpackage #:reasonable-utilities.control
+  (:nicknames #:rutils.control)
   (:documentation "Basic control structures and predicates")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:export #:and2
            #:dowhile
            #:dountil
@@ -86,6 +86,7 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
            #:not-less
            #:not-more
            #:or2
+           #:true
            #:when/t
            #:xor
            #:xor2))
@@ -93,16 +94,17 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
 
 ;; basic data-structures
 
-(defpackage "REASONABLE-UTILITIES.LIST"
-  (:nicknames "RUTILS.LIST")
+(defpackage #:reasonable-utilities.list
+  (:nicknames #:rutils.list)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:documentation "<_:class List /> utilities")
   (:export #:alistp
            #:alist-to-plist
            #:assoc1
            #:butlast2
            #:delete-from-plist
+           #:docoll
            #:dyadic
            #:ensure-list
            #:first-n
@@ -120,82 +122,84 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
            #:tryadic
            #:with-output-to-list))
 
-(defpackage "REASONABLE-UTILITIES.STRING"
-  (:nicknames "RUTILS.STRING")
+(defpackage #:reasonable-utilities.string
+  (:nicknames #:rutils.string)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION" "RUTILS.LIST")
-  (:documentation "<_:class String /> utilities")
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.list)
+  (:documentation "@class{String} utilities")
   (:export #:blankp
            #:read-file
+           #:split-string
            #:strcat
            #:strcat_
+           #:s+
            #:to-string))
 
 
 ;; special syntax
 
-(defpackage "REASONABLE-UTILITIES.ANAPHORIC/A"
-  (:nicknames "RUTILS.ANAPHORIC/A" "RUTILS.ANA/A")
+(defpackage #:reasonable-utilities.anaphoric/a
+  (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
   (:documentation "Anaphoric control constructs with a- prefix and
 automatic binding of test to <_:code it />")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:export #:aand
            #:acond
            #:adowhile
            #:aif
            #:awhen))
 
-(defpackage "REASONABLE-UTILITIES.ANAPHORIC/IT"
-  (:nicknames "RUTILS.ANAPHORIC/IT" "RUTILS.ANA/IT")
+(defpackage #:reasonable-utilities.anaphoric/it
+  (:nicknames #:rutils.anaphoric/it #:rutils.ana/it)
   (:documentation "Anaphoric control constructs with -it suffix and
 automatic binding of test to <_:code it />")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:export #:and-it
            #:cond-it
            #:dowhile-it
            #:if-it
            #:when-it))
 
-(defpackage "REASONABLE-UTILITIES.ANAPHORIC/LET"
-  (:nicknames "RUTILS.ANAPHORIC/LET" "RUTILS.ANA/LET")
+(defpackage #:reasonable-utilities.anaphoric/let
+  (:nicknames #:rutils.anaphoric/let #:rutils.ana/let)
   (:documentation "Anaphoric control constructs with -let suffix")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:export #:and-let
            #:cond-let
            #:dowhile-let
            #:if-let
            #:when-let))
 
-(defpackage "REASONABLE-UTILITIES.ANAPHORIC/BIND"
-  (:nicknames "RUTILS.ANAPHORIC/BIND" "RUTILS.ANA/BIND")
+(defpackage #:reasonable-utilities.anaphoric/bind
+  (:nicknames #:rutils.anaphoric/bind #:rutils.ana/bind)
   (:documentation "Anaphoric control constructs with -bind suffix")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:export #:and-bind
            #:cond-bind
            #:dowhile-bind
            #:if-bind
            #:when-bind))
 
-(defpackage "REASONABLE-UTILITIES.BIND"
-  (:nicknames "RUTILS.BIND")
+(defpackage #:reasonable-utilities.bind
+  (:nicknames #:rutils.bind)
   (:documentation "A unified <_:fun bind /> macro and destructuring utilities")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.LIST" "RUTILS.FUNCTION"
-        "RUTILS.STRING" "RUTILS.ANA/IT")
+        #:rutils.core #:rutils.short #:rutils.list #:rutils.function
+        #:rutils.string #:rutils.ana/it)
   (:export #:bind
            #:def-bind-rule
            #:tmpl-bind))
 
-(defpackage "REASONABLE-UTILITIES.ITER"
-  (:nicknames "RUTILS.ITER")
+(defpackage #:reasonable-utilities.iter
+  (:nicknames #:rutils.iter)
   (:documentation "An iteration macro with control keywords")
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION" "RUTILS.CONTROL"
-        "RUTILS.LIST" "RUTILS.STRING" "RUTILS.ANA/IT" "RUTILS.BIND")
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.control
+        #:rutils.list #:rutils.string #:rutils.ana/it #:rutils.bind)
   (:export #:iter
            #:iter-version
            #:declare-variables
@@ -210,17 +214,17 @@ automatic binding of test to <_:code it />")
 
 ;; collections and other data types
 
-(defpackage "REASONABLE-UTILITIES.ARRAY"
-  (:nicknames "RUTILS.ARRAY")
+(defpackage #:reasonable-utilities.array
+  (:nicknames #:rutils.array)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:documentation "<_:class Vector /> and array utilities")
   (:export #:copy-array))
 
-(defpackage "REASONABLE-UTILITIES.HASH-TABLE"
-  (:nicknames "RUTILS.HASH-TABLE")
+(defpackage #:reasonable-utilities.hash-table
+  (:nicknames #:rutils.hash-table)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION" "RUTILS.STRING")
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.string)
   (:documentation "<_:class Hash-table /> utilities")
   (:export #:copy-hash-table
            #:hash-table-keys
@@ -229,16 +233,17 @@ automatic binding of test to <_:code it />")
            #:maphash-keys
            #:maphash-vals
            #:maphash-values
+           #:merge-hash-tables
            #:hash-table-from-alist
            #:hash-table-from-list
            #:hash-table-to-alist
            #:hash-table-to-list))
 
-(defpackage "REASONABLE-UTILITIES.GENHASH"
-  (:nicknames "RUTILS.GENHASH")
+(defpackage #:reasonable-utilities.genhash
+  (:nicknames #:rutils.genhash)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION"
-        "RUTILS.ANA/IT")
+        #:rutils.core #:rutils.short #:rutils.function
+        #:rutils.ana/it)
   (:documentation "<_:class Genhash /> implementation (CDR 2) and
 utilities, similar to <_:pkg rutils.hash-table />")
   (:export #:all-hash-keys
@@ -269,11 +274,11 @@ utilities, similar to <_:pkg rutils.hash-table />")
            #:unknown-hash
            #:with-generic-hash-table-iterator))
 
-(defpackage "REASONABLE-UTILITIES.SEQ"
-  (:nicknames "RUTILS.SEQ")
+(defpackage #:reasonable-utilities.seq
+  (:nicknames #:rutils.seq)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION" "RUTILS.LIST"
-        "RUTILS.ANA/IT" "RUTILS.HASH-TABLE" "RUTILS.GENHASH")
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.list
+        #:rutils.ana/it #:rutils.hash-table #:rutils.genhash)
   (:documentation "An implementation of the SEQ interface for generic
 sequential iteration. And some utilities, based on it")
   (:export #:doseq
@@ -287,11 +292,11 @@ sequential iteration. And some utilities, based on it")
            #:take
            #:with-acc))
 
-(defpackage "REASONABLE-UTILITIES.NUMBER"
-  (:nicknames "RUTILS.NUMBER")
+(defpackage #:reasonable-utilities.number
+  (:nicknames #:rutils.number)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION"
-        "RUTILS.LIST" "RUTILS.STRING")
+        #:rutils.core #:rutils.short #:rutils.function
+        #:rutils.list #:rutils.string)
   (:documentation "Numeric utilities and the implementation of
 CDR 5 (Sub-interval numeric types)")
   (:export #:array-index
@@ -347,15 +352,15 @@ CDR 5 (Sub-interval numeric types)")
            #:ratio-minusp
            #:ratio-plusp))
 
-(defpackage "REASONABLE-UTILITIES.SEQUENCE"
-  (:nicknames "RUTILS.SEQUENCE")
+(defpackage #:reasonable-utilities.sequence
+  (:nicknames #:rutils.sequence)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION" "RUTILS.CONTROL"
-        "RUTILS.NUMBER" "RUTILS.SEQ" "RUTILS.ITER")
-  (:documentation "<_:class Sequence /> utilities,
-including <_:fun split-sequence />")
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.control
+        #:rutils.number #:rutils.seq #:rutils.iter)
+  (:documentation "@class{Sequence} utilities, including @fun{split-sequence}")
   (:export #:deletef
            #:doindex
+           #:find-all
            #:is-or-in
            #:split-sequence
            #:split-sequence-if
@@ -364,37 +369,36 @@ including <_:fun split-sequence />")
            #:removef
            #:shuffle-sequence))
 
-(defpackage "REASONABLE-UTILITIES.TREE"
-  (:nicknames "RUTILS.TREE")
+(defpackage #:reasonable-utilities.tree
+  (:nicknames #:rutils.tree)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:documentation "Tree utilities")
   (:export #:dotree
            #:maptree))
 
 #+:closer-mop
-(defpackage "REASONABLE-UTILITIES.OBJECT"
-  (:nicknames "RUTILS.OBJ")
+(defpackage #:reasonable-utilities.object
+  (:nicknames #:rutils.obj)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT"
-        "RUTILS.HASH-TABLE" "RUTILS.GENHASH")
+        #:rutils.core #:rutils.short #:rutils.hash-table #:rutils.genhash)
   (:documentation "OOP utilities")
   (:export #:obj-equal
            #:obj-equal-by-slots))
 
-(defpackage "REASONABLE-UTILITIES.CONDITION"
-  (:nicknames "RUTILS.CONDITION")
+(defpackage #:reasonable-utilities.condition
+  (:nicknames #:rutils.condition)
   (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+        #:rutils.core #:rutils.short #:rutils.function)
   (:documentation "Utilities, connected with conditions and error-handling")
   (:export #:maybe))
 
 
 ;; experimental           
 
-(defpackage "REASONABLE-UTILITIES.EXPERIMENTAL"
-  (:nicknames "RUTILS.EXPERIMENTAL")
-  (:use :common-lisp "RUTILS.CORE" "RUTILS.SHORT" "RUTILS.FUNCTION")
+(defpackage #:reasonable-utilities.experimental
+  (:nicknames #:rutils.experimental)
+  (:use :common-lisp #:rutils.core #:rutils.short #:rutils.function)
   (:documentation "Experimental utilities, whose presence in the library
 is not absolutely justified")
   (:export #:defmulti))
@@ -402,32 +406,22 @@ is not absolutely justified")
 
 ;; aggregate
 
-(defpackage "REASONABLE-UTILITIES.USER"
-  (:nicknames "RUTILS.USER")
+(defpackage #:reasonable-utilities.user
+  (:nicknames #:rutils.user)
   (:documentation "The basic set of utilities (mostly everything,
 except experimental (incl. SEQ) and different synonyms.
 The symbols are rexeported from appropriate packages")
-  (:use :common-lisp
-        "RUTILS.CORE" "RUTILS.FUNCTION" "RUTILS.CONTROL" "RUTILS.PKG"
-        "RUTILS.LIST" "RUTILS.STRING" "RUTILS.SEQUENCE"
-        "RUTILS.ANA/IT" "RUTILS.ANA/BIND" "RUTILS.ITER" "RUTILS.BIND"
-        "RUTILS.ARRAY" "RUTILS.HASH-TABLE" "RUTILS.GENHASH" "RUTILS.TREE"
-        "RUTILS.NUMBER" "RUTILS.CONDITION"
-        #+:closer-mop "RUTILS.OBJ"))
+  (:use :common-lisp))
 
-(defpackage "REASONABLE-UTILITIES.USR"
-  (:nicknames "RUTILS.USR")
-  (:documentation "RUTILS.USER + RUTILS.SHORT")
-  (:use :common-lisp
-        "RUTILS.USER" "RUTILS.SHORT"))
+(defpackage #:reasonable-utilities.usr
+  (:nicknames #:rutils.usr)
+  (:documentation "rutils.user + rutils.short")
+  (:use :common-lisp))
 
-(defpackage "REASONABLE-UTILITIES"
-  (:nicknames "RUTILS" "REASONABLE-UTILITIES.*" "RUTILS.*")
+(defpackage #:reasonable-utilities
+  (:nicknames #:rutils #:reasonable-utilities.* #:rutils.*)
   (:documentation "All of the utilities in one package.
 The symbols are rexeported from appropriate packages")
-  (:use :common-lisp
-        "RUTILS.USER" "RUTILS.SHORT"
-        "RUTILS.ANA/A" "RUTILS.ANA/LET"
-        "RUTILS.EXPERIMENTAL" "RUTILS.SEQ"))
+  (:use :common-lisp))
 
 ;;; end

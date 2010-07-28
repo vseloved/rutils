@@ -1,7 +1,7 @@
 ;;; RUTILS condition handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.CONDITION")
+(in-package #:reasonable-utilities.condition)
 
 (defmacro maybe (form)
   "Return a value, returned by a <_:arg form /> or nil,

@@ -1,3 +1,14 @@
+2010/07/28 - v. 0.3.0
+New additions:
+* control:true
+* list:docoll
+* sequence:find-all
+* string:split-string, string:s+
+* hash-table:merge-hashtables
+* short:fmt, short:defpar, short:@
+* experimental:macrocall
+
+
 2010/01/18 - v. 0.2.1
 * Corrected interdependency problem
 

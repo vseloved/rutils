@@ -3,10 +3,10 @@
 
 ;;; see pkg.txt
 
-(in-package "REASONABLE-UTILITIES.PKG")
+(in-package #:reasonable-utilities.pkg)
 
 (eval-always
-  (defconstant %directive-package% (find-package "RUTILS.PKG"))
+  (defconstant %directive-package% (find-package '#:rutils.pkg))
   (defconstant %dispatch-char% #\@)
 
   (defvar *env* nil)

@@ -1,22 +1,24 @@
 ;;; RUTILS USER and USR umbrella packages' definition
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.USER")
+(in-package #:reasonable-utilities.user)
 
-(eval-always
-  (dolist (pkg '("RUTILS.CORE" "RUTILS.FUNCTION" "RUTILS.CONTROL" "RUTILS.PKG"
-                 "RUTILS.LIST" "RUTILS.STRING" "RUTILS.SEQUENCE" "RUTILS.SEQ"
-                 "RUTILS.ANA/IT" "RUTILS.ANA/BIND" "RUTILS.ITER" "RUTILS.BIND"
-                 "RUTILS.ARRAY" "RUTILS.HASH-TABLE" "RUTILS.GENHASH"
-                 "RUTILS.TREE" "RUTILS.NUMBER" "RUTILS.CONDITION"))
-    (export-exported-symbols pkg "REASONABLE-UTILITIES.USER")))
+(rutils.core:eval-always
+  (dolist (pkg '(#:rutils.core #:rutils.function #:rutils.control #:rutils.pkg
+                 #:rutils.list #:rutils.string #:rutils.sequence #:rutils.seq
+                 #:rutils.ana/it #:rutils.ana/bind #:rutils.iter #:rutils.bind
+                 #:rutils.array #:rutils.hash-table #:rutils.genhash
+                 #:rutils.tree #:rutils.number #:rutils.condition
+                 #+closer-mpo #:rutils.object))
+    (rutils.core:export-exported-symbols pkg '#:reasonable-utilities.user)))
 
 
-(in-package "REASONABLE-UTILITIES.USR")
+(in-package #:reasonable-utilities.usr)
 
-(export-exported-symbols "REASONABLE-UTILITIES.USER"
-                         "REASONABLE-UTILITIES.USR")
-(export-exported-symbols "REASONABLE-UTILITIES.SHORT"
-                         "REASONABLE-UTILITIES.USR")
+(rutils.core:eval-always
+ (rutils.core:export-exported-symbols '#:reasonable-utilities.user
+                                      '#:reasonable-utilities.usr)
+ (rutils.core:export-exported-symbols '#:reasonable-utilities.short
+                                      '#:reasonable-utilities.usr))
 
 ;;; end

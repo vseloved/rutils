@@ -9,7 +9,7 @@
 ;;; (instead of symbol keywords from ITERATE package).
 ;;; See iter.txt for details
 
-(in-package "REASONABLE-UTILITIES.ITER")
+(in-package #:reasonable-utilities.iter)
 
 (declaim (declaration declare-variables))
 

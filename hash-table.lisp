@@ -1,7 +1,7 @@
 ;;; RUTILS hash-table handling
 ;;; see LICENSE file for permissions
 
-(in-package "REASONABLE-UTILITIES.HASH-TABLE")
+(in-package #:reasonable-utilities.hash-table)
 
 
 ;; literal syntax
@@ -17,7 +17,7 @@
          (test (when (oddp (length sexp))
                  (car sexp)))
          (kv-pairs (if test (cdr sexp) sexp)))
-    `(hash-table-from-list (list ,@kv-pairs) ,test)))
+    `(hash-table-from-list (list ,@kv-pairs) ',test)))
 
 (defmethod enable-literal-syntax ((which (eql :hash-table)))
   (set-dispatch-macro-character #\# #\{ #'|#{-reader|)
@@ -63,8 +63,23 @@ Before each of the original values is set into the new hash-table,
              ht)
     copy))
 
+(defun merge-hash-tables (&rest hts)
+  "From 1 or more <_:arg hts /> create one"
+  (if (single hts) (car hts)  ; don't perform unnecessary actions
+      (progn (assert (reduce #'eql hts :key #'hash-table-test))
+             (let ((rez (make-hash-table :test (hash-table-test (car hts)))))
+               (mapc #`(maphash (lambda (k v)
+                                  (setf (gethash k rez) v))
+                                _)
+                     hts)
+               rez))))
+
+;; #+mutest
+;; (deftest merge-hash-tables ()
+;; )
 
 ;; sequencing
+;; TODO: move to genhash
 
 (proclaim '(inline
             hash-table-keys hash-table-values hash-table-vals 
@@ -86,8 +101,8 @@ with each key in the hash table <_:arg ht />"
 (eval-always
   (defun hash-table-values (ht)
     "Return a list of values of hash-table <_:arg ht />"
-    (loop for v being the hash-values of ht
-       collect v))
+    (loop :for v :being :the :hash-values :of ht
+       :collect v))
 
   (defun maphash-values (function ht)
     "Like <_:fun maphash />, but calls <_:arg function />
@@ -114,7 +129,7 @@ is provided, it will be '<_:fun eql />"
   "Returns a list containing the keys and values of hash-table <_:arg ht />"
   (with-hash-table-iterator (gen-fn ht)
     (loop
-       :for (valid key val) = (multiple-value-list (gen-fn))
+       :for (valid key val) := (multiple-value-list (gen-fn))
        :unless valid :do (return rez)
        :nconc (list key val) :into rez)))
 
@@ -132,7 +147,7 @@ is provided, it will be '<_:fun eql />"
   "Returns an alist containing the keys and values of hash-table <_:arg ht />"
   (with-hash-table-iterator (gen-fn ht)
     (loop
-       :for (valid key val) = (multiple-value-list (gen-fn))
+       :for (valid key val) := (multiple-value-list (gen-fn))
        :unless valid :do (return rez)
        :collect (cons key val) :into rez)))
 
