@@ -1,3 +1,9 @@
+2010/08/07 - v. 0.3.1
+Bug fixes:
+* control:less
+* string:strcat_
+
+
 2010/07/28 - v. 0.3.0
 New additions:
 * control:true

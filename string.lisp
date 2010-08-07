@@ -30,7 +30,7 @@ with whitespace between them"
         (when str
           (princ str stream)
           (princ " " stream)))
-      (princ (last1 string-designators)))))
+      (princ (last1 string-designators) stream))))
 
 (defmacro s+ (&rest strings)
   "A macro for concatenating STINGS at compile time.  Could be used for
@@ -57,8 +57,8 @@ if NIL no newlines will be printed at line breaks"
          (when newline (terpri out))))))
 
 (defun split-string (string)
-  (split-sequence-if #`(member _ '(#\Space #\Tab)) string
-                     :remove-empty-subseqs t))
+  (rutils.sequence:split-sequence-if #`(member _ '(#\Space #\Tab)) string
+                                     :remove-empty-subseqs t))
 
 ;; (defun strsubst (new old string         
 ;;                  &rest args &key from-end (test #'char=) (test-not nil)

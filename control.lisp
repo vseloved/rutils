@@ -99,8 +99,10 @@ value is returned"
 (defun less (x y)
   "Like <, but works for NIL values of <_:arg x /> and <_:arg y />.
 Obviously, NIL is <_:fun less />, than anything"
-  (when (and x y)
-    (< x y)))
+  (cond
+    ((null x) t)
+    ((null y) nil)
+    (t (< x y))))
 
 (defun not-more (x y)
   "Like <=, but works for NIL values of <_:arg x /> and <_:arg y />

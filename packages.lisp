@@ -125,7 +125,8 @@ Also defines the #` reader-macro for 1-argument <_:fun lambda />s")
 (defpackage #:reasonable-utilities.string
   (:nicknames #:rutils.string)
   (:use :common-lisp
-        #:rutils.core #:rutils.short #:rutils.function #:rutils.list)
+        #:rutils.core #:rutils.short #:rutils.function
+        #:rutils.list)
   (:documentation "@class{String} utilities")
   (:export #:blankp
            #:read-file
@@ -224,7 +225,8 @@ automatic binding of test to <_:code it />")
 (defpackage #:reasonable-utilities.hash-table
   (:nicknames #:rutils.hash-table)
   (:use :common-lisp
-        #:rutils.core #:rutils.short #:rutils.function #:rutils.string)
+        #:rutils.core #:rutils.short #:rutils.function
+        #:rutils.string #:rutils.list)
   (:documentation "<_:class Hash-table /> utilities")
   (:export #:copy-hash-table
            #:hash-table-keys
@@ -398,7 +400,8 @@ CDR 5 (Sub-interval numeric types)")
 
 (defpackage #:reasonable-utilities.experimental
   (:nicknames #:rutils.experimental)
-  (:use :common-lisp #:rutils.core #:rutils.short #:rutils.function)
+  (:use :common-lisp
+        #:rutils.core #:rutils.short #:rutils.function #:rutils.ana/it)
   (:documentation "Experimental utilities, whose presence in the library
 is not absolutely justified")
   (:export #:defmulti))
