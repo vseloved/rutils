@@ -16,6 +16,7 @@
   (:method ((to (eql 'keyword)) smth &key format &allow-other-keys)
     (mkeyw smth :format format)))
 
+#-clisp
 (abbrev mv-bind multiple-value-bind)
 (abbrev ds-bind destructuring-bind)
 

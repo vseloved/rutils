@@ -146,7 +146,7 @@ types the removal will be destructive")
             0))
   (:method ((coll vector))
     ;; terribly inefficient
-    (multiple-value-prog1 
+    (multiple-value-prog1
         (values (elt coll 0)
                 0)
       (loop :for i :from 0 :to (1- (length coll)) :do
@@ -242,13 +242,7 @@ of the same type. If <_:arg step /> is provided, after each taken item skip ~
 
 (defun interleave (seq &rest seqs)
   ""
-  (loop :with all-seqs := (cons seq seqs)
-     :for i :from 0
-     :nconc (loop :for cur-seq :in all-seqs
-               :for item := (elt cur-seq i)
-               :collect item)
-     :into rez
-     :finally (return (coerce rez (type-of seq)))))
+  (apply #'mapcan (lambda (&rest args) args) seq seqs))
 
 (eval-always
   (pushnew :seq *features*))

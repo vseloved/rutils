@@ -4,7 +4,7 @@ REASONABLE-UTILITIES (RUTILS) is yet another general purpose utilities package f
 
 The other utility packages in CL-land include: CL-UTILITIES, METATILITIES, ARNESI and ALEXANDRIA to name a few.  There are following motivations for creating another collection:
 
-   1. Virually everyone talks about utilities in CL (probably, due to Paul Graham's "On Lisp", that starts with a chapter on the importance of utilities).  But the existing utility packages are not enough visible and widespread either due to: not enough utility :), poor names, or lack of community involvement.  The best and, probably, quite usable package is, in my opinion, ALEXANDRIA, which has a great team of developers, but basically suffers from 2 shortcommings:
+   1. Virtually everyone talks about utilities in CL (probably, due to Paul Graham's "On Lisp", that starts with a chapter on the importance of utilities).  But the existing utility packages are not enough visible and widespread either due to: not enough utility :), poor names, or lack of community involvement.  The best and, probably, quite usable package is, in my opinion, ALEXANDRIA, which has a great team of developers, but basically suffers from 2 shortcommings:
  - bad name (not recognized as a utilities package)
  - the idea to be a "good citizen" in the CL world and not include code from other well-established, but specific utilities packages (SPLIT-SEQUENCE, ITERATE, ANAPHORA, ...)
 
@@ -45,7 +45,7 @@ Enhanced handling of:
  - Arrays
  - Conditions
  - Lists
- - Functions 
+ - Functions
  - Hash-tables (+ GENHASH, CDR 2)
  - Numbers (incl. CDR 5)
  - Objects
@@ -55,7 +55,7 @@ Enhanced handling of:
  - String handling
  - Tree handling
 
-Excluded 
+Excluded
 --------
 * Support for concurrency.  The reason is not, that we consider this not useful or general-purpose enough, but rather, that it's a whole new paradigm, and the scope of RUTILS is too small to comfortably accomodate it.
 Look at:
