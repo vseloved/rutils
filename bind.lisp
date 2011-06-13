@@ -23,8 +23,7 @@ is similar to <_:fun let* />, rather than <_:fun let />"
     (car rez)))
 
 (defparameter *bind-dispatch-table*
-  (make-array 0 :fill-pointer t
-              #+openmcl :adjustable #+openmcl t)
+  (make-array 0 :fill-pointer t :adjustable t)
   "A vector, storing BIND-RULES")
 
 (defmacro def-bind-rule (rule expansion)

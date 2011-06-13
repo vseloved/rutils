@@ -15,10 +15,10 @@
   "Abbreviate a <_:arg long /> MACRO or FUNCTION name as <_:arg short />"
   `(eval-always
     (cond
-      ((special-operator-p ',long)
-       (error "Can't ABBREViate a special-operator ~a" ',long))
       ((macro-function ',long)
        (setf (macro-function ',short) (macro-function ',long)))
+      ((special-operator-p ',long)
+       (error "Can't ABBREViate a special-operator ~a" ',long))
       ((fboundp ',long)
        (setf (fdefinition ',short) (fdefinition ',long)))
       (t
