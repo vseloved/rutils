@@ -141,7 +141,7 @@ from <_:arg parent-packages /> and adding them to :use'd packages.
             (list parent-symbols parent-packages))
     `(defpackage ,name ,@defpackage-options)))
 
-(defmacro defconst (name value &optional doc)
+(defmacro defconst (name value &optional (doc ""))
   "<_:fun Defconstant /> only, whent it's not already defined"
   `(eval-always
      (unless (boundp ',name)
