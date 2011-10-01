@@ -6,38 +6,42 @@
 
 (locally-enable-literal-syntax :sharp-backq)
 
+(eval-always
+  (defmacro if-it (test then &optional else)
+    "Like <_:fun if />. IT is bound to <_:arg test />"
+    `(let ((it ,test))
+       (if it ,then ,else))))
 
-(defmacro if-it (test then &optional else)
-  "Like <_:fun if />. IT is bound to <_:arg test />"
-  `(let ((it ,test))
-    (if it ,then ,else)))
+(eval-always
+  (defmacro when-it (test &body body)
+    "Like <_:fun when />. IT is bound to <_:arg test />"
+    `(let ((it ,test))
+       (when it
+         ,@body))))
 
-(defmacro when-it (test &body body)
-  "Like <_:fun when />. IT is bound to <_:arg test />"
-  `(let ((it ,test))
-    (when it
-      ,@body)))
-
-(defmacro and-it (&rest args)
-  "Like <_:fun and />. IT is bound to the value of
+(eval-always
+  (defmacro and-it (&rest args)
+    "Like <_:fun and />. IT is bound to the value of
 the previous <_:fun and /> form"
-  (cond ((null args) t)
-        ((null (cdr args)) (car args))
-        (t `(when-it ,(car args) (and-it ,@(cdr args))))))
+    (cond ((null args) t)
+          ((null (cdr args)) (car args))
+          (t `(when-it ,(car args) (and-it ,@(cdr args)))))))
 
-(defmacro dowhile-it (test &body body)
-  "Like <_:fun dowhile />. IT is bound to <_:arg test />"
-  `(do ((it ,test ,test))
-       ((not it))
-     ,@body))
+(eval-always
+  (defmacro dowhile-it (test &body body)
+    "Like <_:fun dowhile />. IT is bound to <_:arg test />"
+    `(do ((it ,test ,test))
+         ((not it))
+       ,@body)))
 
-(defmacro cond-it (&body body)
-  "Like <_:fun cond />. IT is bound to the passed <_:fun cond /> test"
-  `(let (it)
-     (cond
-       ,@(mapcar #``((setf it ,(car _)) ,(cadr _))
-                 ;; uses the fact, that SETF returns the value set
-                 body))))
+(eval-always
+  (defmacro cond-it (&body body)
+    "Like <_:fun cond />. IT is bound to the passed <_:fun cond /> test"
+    `(let (it)
+       (cond
+         ,@(mapcar #``((setf it ,(car _)) ,(cadr _))
+                   ;; uses the fact, that SETF returns the value set
+                   body)))))
 
 
 (in-package #:reasonable-utilities.anaphoric/a)
@@ -51,38 +55,43 @@ the previous <_:fun and /> form"
 
 (in-package #:reasonable-utilities.anaphoric/let)
 
-(defmacro if-let (var test then &optional else)
-  "Like <_:fun if />. <_:arg Var /> will be bound to <_:arg test />"
-  `(let ((,var ,test))
-    (if ,var ,then ,else)))
+(eval-always
+  (defmacro if-let (var test then &optional else)
+    "Like <_:fun if />. <_:arg Var /> will be bound to <_:arg test />"
+    `(let ((,var ,test))
+       (if ,var ,then ,else))))
 
-(defmacro when-let (var test &body body)
-  "Like <_:fun when />. <_:arg Var /> will be bound to <_:arg test />"
-  `(let ((,var ,test))
-    (when ,var
-      ,@body)))
+(eval-always
+  (defmacro when-let (var test &body body)
+    "Like <_:fun when />. <_:arg Var /> will be bound to <_:arg test />"
+    `(let ((,var ,test))
+       (when ,var
+         ,@body))))
 
-(defmacro and-let (var &rest args)
-  "Like <_:fun and />. <_:arg Var /> will be bound to the value of
+(eval-always
+  (defmacro and-let (var &rest args)
+    "Like <_:fun and />. <_:arg Var /> will be bound to the value of
 the previous <_:fun and /> form"
-  (cond ((null args) t)
-        ((null (cdr args)) (car args))
-        (t `(when-let ,var ,(car args) (and-let ,@(cdr args))))))
+    (cond ((null args) t)
+          ((null (cdr args)) (car args))
+          (t `(when-let ,var ,(car args) (and-let ,@(cdr args)))))))
 
-(defmacro dowhile-let (var test &body body)
-  "Like <_:fun dowhile />. <_:arg Var /> will be bound to <_:arg test />"
-  `(do ((,var ,test ,test))
-       ((not ,var))
-     ,@body))
+(eval-always
+  (defmacro dowhile-let (var test &body body)
+    "Like <_:fun dowhile />. <_:arg Var /> will be bound to <_:arg test />"
+    `(do ((,var ,test ,test))
+         ((not ,var))
+       ,@body)))
 
-(defmacro cond-let (var &body body)
-  "Like <_:fun cond />. <_:arg Var /> will be bound to
+(eval-always
+  (defmacro cond-let (var &body body)
+    "Like <_:fun cond />. <_:arg Var /> will be bound to
 the passed <_:fun cond /> test"
-  `(let (,var)
-     (cond
-       ,@(mapcar #``((setf ,var ,(car _)) ,(cadr _))
-                 ;; uses the fact, that SETF returns the value set
-                 body))))
+    `(let (,var)
+       (cond
+         ,@(mapcar #``((setf ,var ,(car _)) ,(cadr _))
+                   ;; uses the fact, that SETF returns the value set
+                   body)))))
 
 
 (in-package #:reasonable-utilities.anaphoric/bind)
