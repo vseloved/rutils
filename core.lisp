@@ -57,10 +57,11 @@ using the second (optional, defaulting to \"G\") argument"
   (let ((g (if (typep x '(integer 0)) x (string x))))
     (loop :repeat length :collect (gensym g))))
 
-(defmacro with-gensyms ((&rest names) &body body)
-  "Provide gensyms for given <_:arg names />"
-  `(let ,(loop :for n :in names :collect `(,n (gensym)))
-     ,@body))
+(eval-always
+ (defmacro with-gensyms ((&rest names) &body body)
+   "Provide gensyms for given <_:arg names />"
+   `(let ,(loop :for n :in names :collect `(,n (gensym)))
+      ,@body)))
 
 (abbrev with-unique-names with-gensyms)
 
