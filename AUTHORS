@@ -20,10 +20,7 @@ The authors and contributors to the utilities in this system include (in alphabe
 
 Though it seems impossible to determine precisely the original author of every function or macro, at least some of the most important utilities' authors can be listed:
 * Arthur Lemmens: SPLIT-SEQUENCE
-* Ingvar Mattsson: GENHASH
 * Jonathan Amsterdam, Andreas Fuchs, Joerg Hoehle, Denis Budyak: ITERATE
-* Kaz Kylheku: PKG
 * Marco Baringer: DO-/MAPTREE, PARSE-FLOAT
-* Vsevolod Dyomkin: BIND, SEQ, DISTRO
 
 Besides, all of the utilities were at least minorly modified by Vsevolod Dyomkin to ensure consistency of documentation, use the same set of basic utilities and sometimes in other ways as well.

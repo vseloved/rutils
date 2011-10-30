@@ -6,41 +6,29 @@
 
 (defsystem #:rutils
   :name "Reasonable utilities"
-  :version "1.0.0"
+  :version "2.0.0-rc1"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
-  :description "A reasonable collection of basic utilities for syntactic ~
-extension and basic data-structures hadling, developed over the years of ~
-CL history by efforts of different individuals, and gathered under ~
-the unbrella of a hierarchy of packages, which can be used ~
-selectively on demand.
-Includes user-space CDR's (see http://cdr.eurolisp.org)"
+  :description "A reasonable collection of basic utilities for syntactic
+extension and basic data-structures hadling, developed over the years of
+CL history by efforts of different individuals, and gathered under
+the unbrella of a hierarchy of packages, which can be used
+selectively on demand."
+  :depends-on (#:named-readtables)
   :serial t
-  :components ((:file "packages")
-               (:file "impl")
-               (:file "core")
-               (:file "short")
-               (:file "pkg")
-               (:file "function")
-               (:file "control")
-               (:file "list")
-               (:file "string")
-               (:file "anaphoric")
-               (:file "bind")
-               (:file "iter")
-               (:file "array")
-               (:file "hash-table")
-               (:file "genhash")
-               (:file "seq")
-               (:file "number")
-               (:file "sequence")
-               (:file "tree")
-               #+:closer-mop (:file "object")
-               (:file "condition")
-               (:file "experimental")
-               (:file "user")
-               (:file "rutils")))
-
-;; TODO: add test package
-
-;;; end
+  :components
+  ((:module #:core
+            :serial t
+            :components ((:file "packages")
+                         (:file "readtable")
+                         (:file "symbol")
+                         (:file "anaphoric")
+                         (:file "misc")
+                         (:file "list")
+                         (:file "string")
+                         (:file "hash-table")
+                         (:file "tree")
+                         (:file "short")
+                         (:file "iter")
+                         (:file "sequence")
+                         (:file "rutils")))))
