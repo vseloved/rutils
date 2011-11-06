@@ -147,7 +147,8 @@ automatic binding of test to it.")
 
 (defpackage #:reasonable-utilities.short
   (:nicknames #:rutils.short)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable
+        #:rutils.symbol #:rutils.list #:rutils.hash-table)
   (:documentation "Short variants of some common utilities with very long names.")
   (:export #:2nd
            #:defpar
@@ -156,6 +157,10 @@ automatic binding of test to it.")
            #:get#
            #:ht-keys
            #:ht-vals
+           #:ht->plist
+           #:ht->alist
+           #:plist->ht
+           #:alist->ht
            #:merge-hts
            #:mkeyw
            #:mklist
