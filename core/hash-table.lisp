@@ -3,8 +3,13 @@
 (cl:in-package #:reasonable-utilities.hash-table)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
+
+(declaim (inline sethash))
+(defun sethash (key ht val)
+  "Set VAL at KEY in hash-table HT."
+  (setf (gethash key ht) val))
 
 (defun copy-hash-table (ht &key key test size
                                 rehash-size rehash-threshold)
@@ -33,7 +38,7 @@ a shallow copy is returned by default."
   (if hts
       (let ((rez (make-hash-table :test (hash-table-test ht))))
         (mapc (lambda (next)
-                (maphash #`(setf (gethash @ rez) %)
+                (maphash #`(sethash % rez %%)
                          next))
               hts)
         rez)
@@ -49,11 +54,11 @@ a shallow copy is returned by default."
   (loop :for v :being :the :hash-values :of ht
      :collect v))
 
-(defun hash-table-from-plist (plist &optional test)
+(defun hash-table-from-plist (plist &rest hash-table-initargs)
   "Returns a hash-table containing the keys and values, alternating in PLIST.
-Unless hash-table TEST is provided, it will be EQL."
+Hash table is initialized using the HASH-TABLE-INITARGS."
   (loop
-     :with ht = (make-hash-table :test (or test 'eql))
+     :with ht := (apply #'make-hash-table hash-table-initargs)
      :for (k v) :on plist :by #'cddr
      :do (setf (gethash k ht) v)
      :finally (return ht)))
@@ -66,11 +71,11 @@ Unless hash-table TEST is provided, it will be EQL."
        :unless valid :do (return rez)
        :nconc (list key val) :into rez)))
 
-(defun hash-table-from-alist (alist &optional test)
+(defun hash-table-from-alist (alist &rest hash-table-initargs)
   "Returns a hash-table containing the keys and values, alternating in ALIST.
-Unless hash-table TEST is provided, it will be EQL."
+Hash table is initialized using the HASH-TABLE-INITARGS."
   (loop
-     :with ht = (make-hash-table :test (or test 'eql))
+     :with ht := (apply #'make-hash-table hash-table-initargs)
      :for (k . v) :in alist
      :do (setf (gethash k ht) v)
      :finally (return ht)))

@@ -8,9 +8,10 @@
   (:documentation "Readtable definition.")
   (:use :common-lisp #:named-readtables)
   (:export #:*print-literally*
+           #:println
            #:rutils-readtable
-           #:@
-           #:%))
+           #:%
+           #:%%))
 
 (defpackage #:reasonable-utilities.symbol
   (:nicknames #:rutils.symbol)
@@ -26,6 +27,22 @@
            #:re-export-symbols
            #:with-gensyms
            #:with-unique-names))
+
+(defpackage #:reasonable-utilities.syntax
+  (:nicknames #:rutils.syntax)
+  (:documentation "Syntax extensions.")
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:export #:add-bind-rule
+           #:bind
+           #:dcase
+           #:dccase
+           #:decase
+           #:pcase
+           #:pccase
+           #:pecase
+           #:switch
+           #:cswitch
+           #:eswitch))
 
 (defpackage #:reasonable-utilities.anaphoric/a
   (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
@@ -81,7 +98,6 @@ automatic binding of test to it.")
            #:not-less
            #:not-more
            #:or2
-           #:pcase
            #:xor
            #:xor2))
 
@@ -92,6 +108,7 @@ automatic binding of test to it.")
   (:export #:alistp
            #:alist-to-plist
            #:assoc1
+           #:atomize
            #:butlast2
            #:delete-from-plist
            #:dyadic
@@ -115,6 +132,7 @@ automatic binding of test to it.")
   (:documentation "String utilities.")
   (:export #:blankp
            #:ends-with
+           #:read-file
            #:slurp
            #:split-string
            #:starts-with
@@ -135,7 +153,8 @@ automatic binding of test to it.")
            #:hash-table-from-alist
            #:hash-table-from-plist
            #:hash-table-to-alist
-           #:hash-table-to-plist))
+           #:hash-table-to-plist
+           #:sethash))
 
 (defpackage #:reasonable-utilities.tree
   (:nicknames #:rutils.tree)
@@ -193,6 +212,7 @@ automatic binding of test to it.")
   (:export #:deletef
            #:doindex
            #:mapindex
+           #:shuffle
            #:split-sequence
            #:split-sequence-if
            #:split-sequence-if-not

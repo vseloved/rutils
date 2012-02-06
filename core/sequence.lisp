@@ -3,7 +3,7 @@
 (cl:in-package #:reasonable-utilities.sequence)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
 (defun split-sequence (delimiter seq
@@ -201,7 +201,7 @@ Accepts KEY."
                                             (incf i))
                 (t (pop seq-s))))
     (values (map result-type
-                 #`(coerce @ result-type)
+                 #`(coerce % result-type)
                  rez)
             key-rez)))
 
@@ -243,6 +243,12 @@ CL-USER> (doindex (i e '(a b c))
          (let ((,elt-var (elt ,sequence-var ,index-var)))
            ,@body)))))
 
+(defun shuffle (sequence &key (start 0) (end (length sequence)))
+  "Shuffles SEQUENCE (in bounds of START and END) in-place."
+  (loop :for i :from start :below end :do
+     (rotatef (elt sequence i)
+              (elt sequence (+ i (random (- end i))))))
+  sequence)
 
 (eval-always
   (pushnew :split-sequence *features*))

@@ -3,25 +3,10 @@
 (in-package #:reasonable-utilities.misc)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
-(proclaim '(inline or2 and2 xor2))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
-;; gcase
+(declaim (inline or2 and2 xor2))
 
-(defmacro pcase (pred keyform &rest clauses)
-  "Like CASE, but uses given PRED instead of EQL to select appropriate CLAUSE.
-Example usage:
-CL-USER> (pcase 'apply 1
-           ('numberp  (print \"It's a number\"))
-           ('strindp  (print \"It's a string\"))
-           (otherwise (error \"Oops\")))
-"
-  (once-only (keyform)
-    `(cond
-       ,@(loop :for (key actions) :in clauses
-            :collect (cons (if (member key '(t otherwise)) t
-                               `(funcall ,pred ,keyform ,key))
-                           actions)))))
 
 (defun or2 (x y)
   "OR for 2 arguments as a function."

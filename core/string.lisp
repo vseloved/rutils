@@ -3,8 +3,9 @@
 (cl:in-package #:reasonable-utilities.string)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
-(proclaim '(inline white-char-p))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
+
+(declaim (inline white-char-p))
 
 
 (defun strcat (&rest string-designators)
@@ -32,12 +33,16 @@ between them."
   (and (stringp string)
        (string= string "")))
 
-(defun slurp (filename)
+(eval-always
+(defun read-file (filename)
   "Read a whole file by FILENAME into a string."
   (with-open-file (in filename)
-    (with-output-to-string (out)
-      (loop :for line := (read-line in nil) :while line :do
-         (write-line line out)))))
+    (let* ((buf (make-array (file-length in) :element-type 'character
+                            :adjustable t :fill-pointer t))
+           (chars-read (read-sequence buf in)))
+      (setf (fill-pointer buf) chars-read)
+      buf)))
+(abbr slurp read-file))
 
 (defun white-char-p (char)
   "Is CHAR a whitespace character (newline chars are also considered white)."

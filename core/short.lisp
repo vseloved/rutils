@@ -2,7 +2,7 @@
 
 (in-package #:reasonable-utilities.short)
 
-(proclaim '(optimize speed))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
 (defmacro 2nd (form)
@@ -13,7 +13,7 @@
 (abbr ds-bind destructuring-bind)
 (abbr mv-bind multiple-value-bind)
 
-(proclaim '(inline fmt))
+(declaim (inline fmt))
 (defun fmt (format-string &rest args)
   (apply #'format nil format-string args))
 

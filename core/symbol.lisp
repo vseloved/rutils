@@ -3,7 +3,7 @@
 (cl:in-package #:reasonable-utilities.symbol)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
 (defmacro eval-always (&body body)

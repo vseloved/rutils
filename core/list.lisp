@@ -3,8 +3,9 @@
 (cl:in-package #:reasonable-utilities.list)
 (named-readtables:in-readtable rutils-readtable)
 
-(proclaim '(optimize speed))
-(proclaim '(inline last1 single dyadic tryadic append1 conc1 ensure-list))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
+
+(declaim (inline last1 single dyadic tryadic append1 conc1 ensure-list))
 
 
 (defun last1 (list &optional (n 1))
@@ -81,7 +82,7 @@ will be returned NREVERSE-D.  BODY is wraped in implicit block NIL."
   "Return a list with N elements, which are taken from LIST by this formula:
     INDEX of ELEMENT = I * STEP for I from 0"
   (declare (type (integer 1) step))
-  (loop :for rest :on list :by #`(nthcdr step @) :repeat n
+  (loop :for rest :on list :by #`(nthcdr step %) :repeat n
      :collect (car rest)))
 
 (defun plistp (list)
@@ -99,7 +100,7 @@ will be returned NREVERSE-D.  BODY is wraped in implicit block NIL."
 
 (defun alist-to-plist (alist)
   "Make a plist from an alist ALIST."
-  (mapcan #`(list (car @) (cdr @))
+  (mapcan #`(list (car %) (cdr %))
           alist))
 
 (defun plist-to-alist (plist)
@@ -144,3 +145,8 @@ The usual KEY, TEST and TEST-NOT arguments apply."
                 t)
         (values default
                 nil))))
+
+(defun atomize (list-or-val)
+  (if (listp list-or-val)
+      (car list-or-val)
+      list-or-val))

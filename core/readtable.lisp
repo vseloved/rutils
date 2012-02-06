@@ -2,17 +2,17 @@
 
 (in-package #:reasonable-utilities.readtable)
 
-(proclaim '(optimize speed))
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
 
-(defun |{-reader| (stream char)
+(defun |#{-reader| (stream char)
   "Literal syntax for hash-tables.
 Examples:
-CL-USER> {:a 1 :b 2}
+CL-USER> #{:a 1 :b 2}
 #<HASH-TABLE :TEST EQL :COUNT 2> holding 2 key/value pairs: ((:a . 1) (:b . 2))
-CL-USER> {equalp \"a\" 1 \"b\" 2}
+CL-USER> #{equalp \"a\" 1 \"b\" 2}
 #<HASH-TABLE :TEST EQUALP :COUNT 2> holding 2 key/value pairs: ((\"a\" . 1) ...)
 "
   (declare (ignore char))
@@ -24,21 +24,12 @@ CL-USER> {equalp \"a\" 1 \"b\" 2}
 
 (defun |#`-reader| (stream char arg)
   "Literal syntax for zero/one/two argument lambdas.
-Use @ as the function's argument, % as the second.
+Use % as the function's argument, %% as the second.
 Examples:
-CL-USER> #`(+ 2 @)
-\(lambda (&optional x y)
-   (+ 2 x))
-CL-USER>  #`((1+ @) (print @))
-\(lambda (&optional x y)
-   (1+ x)
-   (print x))
-CL-USER> #`(+ 1 2)
-\(lambda (&optional x y)
-   (+ 1 2))
-CL-USER>  #`(+ @ %)
-\(lambda (&optional x y)
-   (+ x y))
+- #`(+ 2 %) => (lambda (&optional x y) (+ 2 x))
+- #`((1+ %) (print %)) => (lambda (&optional x) (1+ x) (print x))
+- #`(+ 1 2) => (lambda (&optional x y) (+ 1 2))
+- #`(+ % %%) => (lambda (&optional x y) (+ x y))
 "
   (declare (ignore char arg))
   (let ((sexp (read stream t nil t))
@@ -47,8 +38,8 @@ CL-USER>  #`(+ @ %)
     `(lambda (&optional ,x ,y)
        (declare (ignorable ,x)
                 (ignorable ,y))
-       ,@(subst y '%
-                (subst x '@
+       ,@(subst y '%%
+                (subst x '%
                        (if (listp (car sexp))
                            sexp
                            (list sexp)))))))
@@ -72,9 +63,8 @@ CL-USER> #/This is a \"test\" string/#
 
 (defreadtable rutils-readtable
     (:merge :standard)
-  (:case :invert)
-  (:macro-char #\{ #'|{-reader|)
   (:macro-char #\} (get-macro-character #\) nil))
+  (:dispatch-macro-char #\# #\{ #'|#{-reader|)
   (:dispatch-macro-char #\# #\` #'|#`-reader|)
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
 )
@@ -99,3 +89,9 @@ Similar to *PRINT-READABLY*.")
                            (prin1 v out))
                          obj)))
       (call-next-method)))
+
+(defun println (obj &optional (stream *standard-output*))
+  "Print OBJ readably to STREAM (default: *standard-output*) followed by Newline."
+  (let ((*print-literally* t))
+    (print obj stream)
+    (terpri stream)))

@@ -8,12 +8,12 @@
 ;;; (instead of ITERATE) and only keyword keywords are allowed inside ITER
 ;;; (instead of symbol keywords from ITERATE package).
 
-
 (cl:in-package #:reasonable-utilities.iter)
 (named-readtables:in-readtable rutils-readtable)
 
+
+(declaim (optimize (speed 3) (space 1) (debug 0)))
 (declaim (declaration declare-variables))
-(proclaim '(optimize speed))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Utils
@@ -518,7 +518,7 @@ it will not be seen."
 
       (t ;; Lisp function call
        (return-code-modifying-body #'walk-arglist (cdr form)
-                                   #`(list (cons (car form) @))))))
+                                   #`(list (cons (car form) %))))))
 
    ((lambda-expression? (car form))
     ;; Function call with a lambda in the car
@@ -654,12 +654,12 @@ compilers (like Lucid). Besides, to track Iterate special clauses."
 (defun walk-cdr (first &rest stuff)
   "Don't walk the CAR of a list. CDR might not be walked as well."
   (return-code-modifying-body #'walk-arglist stuff
-                              #`(list (cons first @))))
+                              #`(list (cons first %))))
 
 (defun walk-cddr (first second &rest stuff)
   "Don't walk the CAR and CADR of a list. CDDR might not be walked as well."
   (return-code-modifying-body #'walk-arglist stuff
-                              #`(list (cons first (cons second @)))))
+                              #`(list (cons first (cons second %)))))
 
 (defun walk-progn (progn &rest stuff)
   "Don't walk the CAR of a list. CDR might not be walked as well, though
@@ -668,7 +668,7 @@ This is so macros can return PROGNs of things. It's exactly like the definition
 of 'top-level' in lisp. (Also, just for looks, this returns NIL if the PROGN is
 empty.)"
   (return-code-modifying-body #'walk-list stuff
-                              #`(when @ (list (cons progn @)))))
+                              #`(when % (list (cons progn %)))))
 
 (defun walk-setq (setq &rest things)
   "Walk every thing in THINGS."
@@ -697,7 +697,7 @@ empty.)"
   "Walk FUNCTION specification."
   (if (lambda-expression? form)
       (return-code-modifying-body #'walk-fspec form
-                                  #`(list (list function @)))
+                                  #`(list (list function %)))
       (list (list function form))))
 
 (defun walk-declare (&rest declaration)
@@ -817,10 +817,10 @@ with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET,
 and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
   ;; Ignoring code-movement issues, this approach should be fine
   (let* ((forms (member 'declare stuff
-                        :key #`(and (consp @) (car @)) :test-not #'eq))
+                        :key #`(and (consp %) (car %)) :test-not #'eq))
          (decls (ldiff stuff forms)))
     (return-code-modifying-body #'walk-arglist forms
-                                #`(list (cons first (nconc decls @))))))
+                                #`(list (cons first (nconc decls %))))))
 
 (defun walk-cddr-with-declarations (first second &rest stuff) ; aka walk-locally
   "a.k.a. walk-locally
@@ -830,12 +830,12 @@ walk won't yield declarations, because WALK-DECLARE errors out since all forms
 with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET,
 and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
   (let* ((forms (member 'declare stuff
-                        :key #`(and (consp @) (car @)) :test-not #'eq))
+                        :key #`(and (consp %) (car %)) :test-not #'eq))
          (decls (ldiff stuff forms)))
     (return-code-modifying-body #'walk-arglist forms
                                 #`(list (cons first
                                               (cons second
-                                                    (nconc decls @)))))))
+                                                    (nconc decls %)))))))
 
 
 (defun walk-macrolet (form-name &rest stuff)
@@ -1198,7 +1198,9 @@ of CI2 (i.e. introduce ambiguity)."
 which is a list with its symbols keywordized."
     (let* ((all-keywords
             (cons (first clause-keywords)
-                  (mapcar #`(if (eq @ '&optional) @ (mkeyw @))
+                  (mapcar #`(if (eq % '&optional)
+                                %
+                                (mkeyw %))
                           (rest clause-keywords))))
            (req-keywords
             (ldiff all-keywords (member '&optional all-keywords :test #'eq))))
@@ -1891,18 +1893,15 @@ the body of the loop, so it must not contain anything that depends on the body."
         (function
          (free-vars-fspec (second form) bound-vars))
         ((flet labels macrolet)
-         (nconc (mapcan #`(free-vars-fspec @ bound-vars)
+         (nconc (mapcan #`(free-vars-fspec % bound-vars)
                         (second form))
                 (free-vars-list (cddr form) bound-vars)))
         ((let symbol-macrolet)
          (let* ((bindings (second form))
                 (body (cddr form))
-                (vars (mapcar #`(if (consp @)
-                                    (car @)
-                                    @)
-                              bindings)))
-           (nconc (mapcan #`(when (consp @)
-                              (free-vars (second @) bound-vars))
+                (vars (mapcar #'atomize bindings)))
+           (nconc (mapcan #`(when (consp %)
+                              (free-vars (second %) bound-vars))
                           bindings)
                   (free-vars-list body (append vars bound-vars)))))
         (let*
@@ -1927,7 +1926,7 @@ the body of the loop, so it must not contain anything that depends on the body."
 
 (defun free-vars-list (list bound-vars)
   ""
-  (mapcan #`(free-vars @ bound-vars)
+  (mapcan #`(free-vars % bound-vars)
           list))
 
 (defun free-vars-fspec (fspec bound-vars)
@@ -3161,11 +3160,11 @@ or a list of two variable specifiers." var)))
     :variable var
     :expression expr
     :start-operation `(subst (expr var)
-                             (nconc (delete-if #`(member @ var :test ,test)
+                             (nconc (delete-if #`(member % var :test ,test)
                                                (copy-list expr))
                                     var))
     :end-operation `(subst (var expr)
-                           (delete-if #`(member @ var :test ,test)
+                           (delete-if #`(member % var :test ,test)
                                       (copy-list expr)))
     :place place
     :one-element nil))
@@ -3183,11 +3182,11 @@ or a list of two variable specifiers." var)))
     :variable var
     :expression expr
     :start-operation `(subst (expr var)
-                             (nconc (delete-if #`(member @ var :test ,test)
+                             (nconc (delete-if #`(member % var :test ,test)
                                                expr)
                                     var))
     :end-operation `(subst (var expr)
-                           (delete-if #`(member @ var :test ,test)
+                           (delete-if #`(member % var :test ,test)
                                       expr))
     :place place
     :one-element nil))
@@ -3345,7 +3344,7 @@ for now."
        (when save-info-list
          (if (or code-list (eq class :step))
              (let ((prev-code (unless (eq class :next)
-                                (mapcan #`(make-prev-code var @)
+                                (mapcan #`(make-prev-code var %)
                                         save-info-list))))
                (case class
                  (:initial (splice-in-code prev-code nil code-list))

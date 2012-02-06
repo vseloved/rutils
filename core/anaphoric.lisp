@@ -1,10 +1,10 @@
 ;;; see LICENSE file for permissions
 
-(proclaim '(optimize speed))
-
-
 (cl:in-package #:reasonable-utilities.anaphoric/it)
 (named-readtables:in-readtable rutils-readtable)
+
+(declaim (optimize (speed 3) (space 1) (debug 0)))
+
 
 (defmacro if-it (test then &optional else)
   "Like IF. IT is bound to TEST."
@@ -33,7 +33,7 @@
   "Like COND. IT is bound to the passed COND test."
   `(let (it)
      (cond
-       ,@(mapcar #``((setf it ,(car @)) ,(cadr @))
+       ,@(mapcar #``((setf it ,(car %)) ,(cadr %))
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
@@ -68,7 +68,7 @@
   "Like COND. VAR will be bound to the passed COND test."
   `(let (,var)
      (cond
-       ,@(mapcar #``((setf ,var ,(car @)) ,(cadr @))
+       ,@(mapcar #``((setf ,var ,(car %)) ,(cadr %))
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
