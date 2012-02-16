@@ -18,6 +18,8 @@
   (apply #'format nil format-string args))
 
 (abbr get# gethash (key hash-table))
+(abbr set# sethash)
+(abbr rem# remhash)
 
 (abbr merge-hts merge-hash-tables)
 (abbr ht-vals hash-table-vals)

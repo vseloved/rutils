@@ -185,6 +185,8 @@ automatic binding of test to it.")
            #:mklist
            #:mksym
            #:mv-bind
+           #:rem#
+           #:set#
            #:w/instr
            #:w/outstr
            #:w/uniqs))

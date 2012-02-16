@@ -7,7 +7,7 @@
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
 
-(defun |#{-reader| (stream char)
+(defun |#{-reader| (stream char arg)
   "Literal syntax for hash-tables.
 Examples:
 CL-USER> #{:a 1 :b 2}
@@ -15,12 +15,12 @@ CL-USER> #{:a 1 :b 2}
 CL-USER> #{equalp \"a\" 1 \"b\" 2}
 #<HASH-TABLE :TEST EQUALP :COUNT 2> holding 2 key/value pairs: ((\"a\" . 1) ...)
 "
-  (declare (ignore char))
+  (declare (ignore char arg))
   (let* ((sexp (read-delimited-list #\} stream t))
          (test (when (oddp (length sexp))
                  (car sexp)))
          (kv-pairs (if test (cdr sexp) sexp)))
-    `(rutils.hash-table:hash-table-from-plist '(,@kv-pairs) ',test)))
+    `(rutils.hash-table:hash-table-from-plist '(,@kv-pairs) :test (or ',test 'eql))))
 
 (defun |#`-reader| (stream char arg)
   "Literal syntax for zero/one/two argument lambdas.
@@ -67,7 +67,9 @@ CL-USER> #/This is a \"test\" string/#
   (:dispatch-macro-char #\# #\{ #'|#{-reader|)
   (:dispatch-macro-char #\# #\` #'|#`-reader|)
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
+
 )
+
 
 (in-readtable rutils-readtable)
 
