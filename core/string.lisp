@@ -90,7 +90,6 @@ negative, which means counting from the end."
 
 (defun ends-with (string suffix)
   "Test, whether STRING ends with SUFFIX."
-  (if-it (mismatch string suffix :from-end t)
-         (= it
-            (- (length string) (length suffix)))
+  (if-it (mismatch suffix string :from-end t)
+         (= it 0)
          t))
