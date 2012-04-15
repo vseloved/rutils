@@ -32,17 +32,17 @@
   (:nicknames #:rutils.syntax)
   (:documentation "Syntax extensions.")
   (:use :common-lisp #:rutils.readtable #:rutils.symbol)
-  (:export #:add-bind-rule
-           #:bind
-           #:dcase
+  (:export #:dcase
            #:dccase
            #:decase
+           #:multiple-value-prog2
            #:pcase
            #:pccase
            #:pecase
            #:switch
            #:cswitch
-           #:eswitch))
+           #:eswitch
+           #:dotable))
 
 (defpackage #:reasonable-utilities.anaphoric/a
   (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
@@ -93,8 +93,12 @@ automatic binding of test to it.")
   (:documentation "Basic control structures and predicates.")
   (:use :common-lisp #:rutils.readtable #:rutils.symbol)
   (:export #:and2
+           #:array-index
+           #:array-length
+           #:coercef
            #:less
            #:more
+           #:named-lambda
            #:not-less
            #:not-more
            #:or2
@@ -107,22 +111,29 @@ automatic binding of test to it.")
   (:documentation "List utilities.")
   (:export #:alistp
            #:alist-to-plist
+           #:appendf
            #:assoc1
            #:atomize
            #:butlast2
            #:delete-from-plist
            #:dyadic
            #:ensure-list
-           #:take
            #:flatten
            #:group
            #:interleave
            #:last1
+           #:nconcf
+           #:nreversef
+           #:nunionf
            #:plistp
            #:plist-to-alist
            #:remove-from-plist
+           #:reversef
+           #:set-equal
            #:single
+           #:take
            #:tryadic
+           #:unionf
            #:with-output-to-list))
 
 (defpackage #:reasonable-utilities.string
@@ -138,6 +149,7 @@ automatic binding of test to it.")
            #:starts-with
            #:strcat
            #:strcat_
+           #:string-designator
            #:substr
            #:white-char-p))
 
@@ -154,7 +166,9 @@ automatic binding of test to it.")
            #:hash-table-from-plist
            #:hash-table-to-alist
            #:hash-table-to-plist
-           #:sethash))
+           #:print-hash-table
+           #:sethash
+           #:takehash))
 
 (defpackage #:reasonable-utilities.tree
   (:nicknames #:rutils.tree)
@@ -167,12 +181,13 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.short
   (:nicknames #:rutils.short)
   (:use :common-lisp #:rutils.readtable
-        #:rutils.symbol #:rutils.list #:rutils.hash-table)
+        #:rutils.symbol #:rutils.list #:rutils.hash-table #:rutils.misc)
   (:documentation "Short variants of some common utilities with very long names.")
   (:export #:2nd
            #:defpar
            #:ds-bind
            #:fmt
+           #:fn
            #:get#
            #:ht-keys
            #:ht-vals
@@ -187,6 +202,7 @@ automatic binding of test to it.")
            #:mv-bind
            #:rem#
            #:set#
+           #:take#
            #:w/instr
            #:w/outstr
            #:w/uniqs))
@@ -213,13 +229,17 @@ automatic binding of test to it.")
   (:documentation "Sequence utilities, including SPLIT-SEQUENCE.")
   (:export #:deletef
            #:doindex
-           #:mapindex
+           #:emptyp
+           #:equal-lengths
+           #:length=
+           #:partition-with
+           #:removef
+           #:rotate
+           #:sequence-of-length
            #:shuffle
            #:split-sequence
            #:split-sequence-if
-           #:split-sequence-if-not
-           #:partition-with
-           #:removef))
+           #:split-sequence-if-not))
 
 
 (defpackage #:reasonable-utilities

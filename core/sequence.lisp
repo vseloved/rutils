@@ -250,5 +250,124 @@ CL-USER> (doindex (i e '(a b c))
               (elt sequence (+ i (random (- end i))))))
   sequence)
 
-(eval-always
-  (pushnew :split-sequence *features*))
+(defun rotate (sequence &optional (n 1))
+  "Returns a sequence of the same type as SEQUENCE, with the elements of
+SEQUENCE rotated by N: N elements are moved from the end of the sequence to
+the front if N is positive, and -N elements moved from the front to the end if
+N is negative. SEQUENCE must be a proper sequence. N must be an integer,
+defaulting to 1.
+
+If absolute value of N is greater then the length of the sequence, the results
+are identical to calling ROTATE with
+
+  (* (signum n) (mod n (length sequence))).
+
+Note: the original sequence may be destructively altered, and result sequence may
+share structure with it."
+  (if (plusp n)
+      (rotate-tail-to-head sequence n)
+      (if (minusp n)
+          (rotate-head-to-tail sequence (- n))
+          sequence)))
+
+(defun emptyp (sequence)
+  "Returns true if SEQUENCE is an empty sequence. Signals an error if SEQUENCE
+is not a sequence."
+  (etypecase sequence
+    (list (null sequence))
+    (sequence (zerop (length sequence)))))
+
+(defun equal-lengths (&rest sequences)
+  "Takes any number of sequences or integers in any order. Returns true iff
+the length of all the sequences and the integers are equal. Hint: there's a
+compiler macro that expands into more efficient code if the first argument
+is a literal integer."
+  (declare (dynamic-extent sequences)
+           (inline length=)
+           (optimize speed))
+  (unless (cdr sequences)
+    (error "You must call LENGTH= with at least two arguments"))
+  (let* ((first (pop sequences))
+         (current (if (integerp first)
+                      first
+                      (length first))))
+    (declare (type array-index current))
+    (dolist (el sequences)
+      (if (integerp el)
+          (unless (= el current)
+            (return-from equal-lengths nil))
+          (unless (equal-lengths el current)
+            (return-from equal-lengths nil)))))
+  t)
+
+(define-compiler-macro equal-lengths (&whole form length &rest sequences)
+  (if (zerop (length sequences))
+      form
+      (let ((optimizedp (integerp length)))
+        (with-unique-names (tmp current)
+          (declare (ignorable current))
+          `(locally (declare (inline sequence-of-length-p))
+             (let (,tmp
+                   ,@(unless optimizedp
+                       `((,current ,length))))
+               ,@(unless optimizedp
+                   `((unless (integerp ,current)
+                       (setf ,current (length ,current)))))
+               (and ,@(loop :for sequence :in sequences :collect
+                         (let ((len (if optimizedp length current)))
+                           `(if (integerp (setf ,tmp ,sequence))
+                                (= ,tmp ,len)
+                                (length= ,tmp ,len)))))))))))
+
+(defun length= (sequence length)
+  "Return true if SEQUENCE's length equals LENGTH. Returns FALSE for circular
+lists. Signals an error if SEQUENCE is not a sequence."
+  (declare (type array-index length)
+           (inline length)
+           (optimize speed))
+  (etypecase sequence
+    (null
+     (zerop length))
+    (cons
+     (let ((n (1- length)))
+       (unless (minusp n)
+         (let ((tail (nthcdr n sequence)))
+           (and tail
+                (null (cdr tail)))))))
+    (sequence
+     (= length (length sequence)))))
+
+(defun last-elt (sequence)
+  "Returns the last element of SEQUENCE.
+Signals a type-error if SEQUENCE is not a proper sequence, or is an empty
+sequence."
+  (block nil
+    (typecase sequence
+      (list (cond
+              ((cdr sequence) (return (last1 sequence)))
+              ((plusp (length sequence)) (return (car sequence)))))
+      (sequence (let ((len (length sequence)))
+                  (unless (zerop len)
+                    (return (elt sequence (1- len)))))))
+    (error 'type-error
+           :datum sequence
+           :expected-type '(and proper-sequence (not (satisfies emptyp))))))
+
+(defun (setf last-elt) (object sequence)
+  "Sets the last element of SEQUENCE.
+Signals a type-error if SEQUENCE is not a proper sequence, is an empty sequence."
+  (block nil
+    (typecase sequence
+      (list (cond
+              ((cdr sequence) (return (setf (last1 sequence) object)))
+              ((plusp (length sequence)) (return (setf (car sequence) object)))))
+      (sequence (let ((len (length sequence)))
+                  (unless (zerop len)
+                    (return (setf (elt sequence (1- len)) object))))))
+    (error 'type-error
+           :datum sequence
+           :expected-type '(and proper-sequence (not (satisfies emptyp))))))
+
+
+
+(eval-always (pushnew :split-sequence *features*))

@@ -11,6 +11,12 @@
   "Set VAL at KEY in hash-table HT."
   (setf (gethash key ht) val))
 
+(declaim (inline takehash))
+(defun takehash (key ht val)
+  "Set VAL at KEY in hash-table HT."
+  (prog1 (gethash key ht)
+    (remhash key ht)))
+
 (defun copy-hash-table (ht &key key test size
                                 rehash-size rehash-threshold)
   "Returns a copy of hash table HT, with the same keys and values.

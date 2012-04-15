@@ -5,7 +5,7 @@
   (dolist (p '(#:rutils.symbol #:rutils.readtable #:rutils.misc
                #:rutils.iter #:rutils.ana/it #:rutils.ana/bind
                #:rutils.list #:rutils.string #:rutils.sequence #:rutils.tree
-               #:rutils.hash-table))
+               #:rutils.hash-table #:rutils.syntax))
     (rutils.symbol:re-export-symbols p '#:reasonable-utilities)))
 
 

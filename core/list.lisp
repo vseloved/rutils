@@ -13,6 +13,9 @@
 is number 1)."
   (car (last list n)))
 
+(defun (setf last1) (object list &optional (n 1))
+  (setf (car (last list n)) object))
+
 (defun butlast2 (list &optional (n 1))
   "Split LIST in 2 parts and return them as multiple values:
 head and tail.  If (= N 1), which is the most common case,
@@ -34,11 +37,9 @@ the tail will be a single element, otherwise -- a list as well."
   "Test wheather LIST contains exactly 3 elements."
   (and (consp list) (cddr list) (not (cdddr list))))
 
-
 (defun ensure-list (obj)
   "Wrap OBJ in a list, if it's not a list."
   (if (listp obj) obj (list obj)))
-
 
 (defmacro with-output-to-list ((out) &body body)
   "A simple list analog of WITH-OUTPUT-TO-STRING, which supports the general
@@ -150,3 +151,48 @@ The usual KEY, TEST and TEST-NOT arguments apply."
   (if (listp list-or-val)
       (car list-or-val)
       list-or-val))
+
+
+(define-modify-macro appendf (&rest lists) append
+  "Modify-macro for APPEND. Appends LISTS to the place designated by the first
+argument.")
+
+(define-modify-macro nconcf (&rest lists) nconc
+  "Modify-macro for NCONC. Concatenates LISTS to place designated by the first
+argument.")
+
+(define-modify-macro unionf (list &rest args) union
+  "Modify-macro for UNION. Saves the union of LIST and the contents of the
+place designated by the first argument to the designated place.")
+
+(define-modify-macro nunionf (list &rest args) nunion
+  "Modify-macro for NUNION. Saves the union of LIST and the contents of the
+place designated by the first argument to the designated place. May modify
+either argument.")
+
+(define-modify-macro reversef () reverse
+  "Modify-macro for REVERSE. Copies and reverses the list stored in the given
+place and saves back the result into the place.")
+
+(define-modify-macro nreversef () nreverse
+  "Modify-macro for NREVERSE. Reverses the list stored in the given place by
+destructively modifying it and saves back the result into the place.")
+
+(defmacro doplist ((key val plist &optional values) &body body)
+  (with-gensyms (tail)
+    `(do ((,tail ,plist (cddr ,tail)))
+         ((null ,tail) ,values)
+       (ds-bind (,key ,val &rest) ,tail
+         ,@body))))
+
+(defun set-equal (list1 list2 &key (test #'eql) (key nil keyp))
+  "Returns true if every element of LIST1 matches some element of LIST2 and
+every element of LIST2 matches some element of LIST1. Otherwise returns false."
+  (let ((keylist1 (if keyp (mapcar key list1) list1))
+        (keylist2 (if keyp (mapcar key list2) list2)))
+    (and (dolist (elt keylist1 t)
+           (or (member elt keylist2 :test test)
+               (return nil)))
+         (dolist (elt keylist2 t)
+           (or (member elt keylist1 :test test)
+               (return nil))))))

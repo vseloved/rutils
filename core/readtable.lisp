@@ -80,7 +80,7 @@ Similar to *PRINT-READABLY*.")
 
 (defmethod print-object :around ((obj hash-table) stream)
   (if *print-literally*
-      (format stream "{~@[~a ~]~a}~%"
+      (format stream "#{~@[~a ~]~a}~%"
               (unless (eq (hash-table-test obj) 'eql)
                 (hash-table-test obj))
               (with-output-to-string (out)

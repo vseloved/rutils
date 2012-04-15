@@ -20,6 +20,7 @@
 (abbr get# gethash (key hash-table))
 (abbr set# sethash)
 (abbr rem# remhash)
+(abbr take# takehash)
 
 (abbr merge-hts merge-hash-tables)
 (abbr ht-vals hash-table-vals)
@@ -37,3 +38,5 @@
 (abbr w/instr with-input-from-string)
 (abbr w/outstr with-output-to-string)
 (abbr w/uniqs with-gensyms)
+
+(abbr fn named-lambda)

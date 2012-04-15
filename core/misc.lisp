@@ -71,3 +71,21 @@ Obviously, NIL is not NOT-LESS, than anything, including itself."
   (cond ((null x) nil)
         ((null y) x)
         (t (>= x y))))
+
+(defmacro named-lambda (name lambda-list &body body)
+  "Expands into a lambda-expression within whose BODY NAME denotes the
+corresponding function."
+  `(labels ((,name ,lambda-list ,@body))
+     #',name))
+
+(deftype array-index (&optional (length array-dimension-limit))
+  "Type designator for an index into array of LENGTH: an integer between
+0 (inclusive) and LENGTH (exclusive). LENGTH defaults to ARRAY-DIMENSION-LIMIT."
+  `(integer 0 (,length)))
+
+(deftype array-length (&optional (length array-dimension-limit))
+  "Type designator for a dimension of an array of LENGTH: an integer between
+0 (inclusive) and LENGTH (inclusive). LENGTH defaults to ARRAY-DIMENSION-LIMIT."
+  `(integer 0 ,length))
+
+(define-modify-macro coercef (type-spec) coerce "Modify-macro for COERCE.")

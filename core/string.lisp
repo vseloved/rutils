@@ -82,15 +82,18 @@ negative, which means counting from the end."
 ;;               `(substr ,getter ,start ,end)))))
 
 
-(defun starts-with (string prefix)
+(defun starts-with (prefix string)
   "Test, whether STRING starts with PREFIX."
-  (if-it (mismatch string prefix)
+  (if-it (mismatch prefix string)
          (= it (length prefix))
          t))
 
-(defun ends-with (string suffix)
+(defun ends-with (suffix string)
   "Test, whether STRING ends with SUFFIX."
-  (if-it (mismatch string suffix :from-end t)
-         (= it
-            (- (length string) (length suffix)))
+  (if-it (mismatch suffix string :from-end t)
+         (zerop it)
          t))
+
+(deftype string-designator ()
+  "A string designator type. It is either a string, a symbol, or a character."
+  `(or symbol string character))
