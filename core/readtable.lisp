@@ -20,7 +20,8 @@ CL-USER> #{equalp \"a\" 1 \"b\" 2}
          (test (when (oddp (length sexp))
                  (car sexp)))
          (kv-pairs (if test (cdr sexp) sexp)))
-    `(rutils.hash-table:hash-table-from-plist '(,@kv-pairs) :test (or ',test 'eql))))
+    (rutils.hash-table:hash-table-from-plist kv-pairs
+                                             :test (or test 'eql))))
 
 (defun |#`-reader| (stream char arg)
   "Literal syntax for zero/one/two argument lambdas.

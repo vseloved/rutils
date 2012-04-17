@@ -69,7 +69,8 @@ CL-USER> (pecase '< 1
     `(if (typep ,key 'cons)
          (,case (car ,key)
            ,@(mapcar (lambda (clause)
-                       (destructuring-bind ((keys . lambda-list) &body body) clause
+                       (destructuring-bind ((keys . lambda-list) &body body)
+                           clause
                          `(,keys
                            (destructuring-bind ,lambda-list (cdr ,key)
                              ,@body))))
@@ -227,12 +228,15 @@ returns the values of DEFAULT if no keys match."
 (defmacro cswitch (&whole whole (object &key (test 'eql) (key 'identity))
                           &body clauses)
   "Like SWITCH, but signals a continuable error if no key matches."
-  (generate-switch-body whole object clauses test key '(cerror "Return NIL from CSWITCH.")))
+  (generate-switch-body whole object clauses test key
+                        '(cerror "Return NIL from CSWITCH.")))
 
-(defmacro dotable (k v table &optional rez)
-  (with-gensyms (pair slot)
+(defmacro dotable ((k v table &optional rez) &body body)
+  "Like DOLIST but iterates over key-value pairs (K V) in anything, that can be
+viewed as a table (hash-table, alist, plist, object)."
+  (with-gensyms (pair)
     `(block nil
-       (etypecase table
+       (etypecase ,table
          (list (if (alistp ,table)
                    (dolist (,pair ,table)
                      (ds-bind (,k . ,v) ,pair
@@ -242,11 +246,11 @@ returns the values of DEFAULT if no keys match."
          (hash-table (maphash (lambda (,k ,v)
                                 ,@body)
                               ,table))
-         #+:closer-mop
-         (object (dolist (,k (mapcar #'c2mop:slot-definition-name
-                                     (c2mop:class-slots (class-of ,table))))
-                   (let ((,v (slot-value ,table ',k)))
-                     ,@body))))
+         (standard-object (dolist (,k (mapcar #'c2mop:slot-definition-name
+                                              (c2mop:class-slots
+                                               (class-of ,table))))
+                            (let ((,v (slot-value ,table ',k)))
+                              ,@body))))
        ,rez)))
 
 
@@ -254,3 +258,37 @@ returns the values of DEFAULT if no keys match."
   "Evaluates FIRST-FORM, then SECOND-FORM, and then FORMS. Yields as its value
 all the value returned by SECOND-FORM."
   `(progn ,first-form (multiple-value-prog1 ,second-form ,@forms)))
+
+
+;; bind
+
+(defmacro bind ((&rest bindings) &body body)
+  "Bind variables from BINDINGS to be active inside BODY, as if by LET*,
+combined with MULTIPLE-VALUE-BIND, DESTRUCTURING-BIND and other -bind forms,
+depending on the type of the first argument."
+  (let ((rez body))
+    (dolist (binding (reverse bindings) (car rez))
+      (setf rez `((,@(funcall #'expand-binding binding rez)))))))
+
+(defun expand-binding (binding form)
+  (append (apply #'bind-dispatch binding)
+          form))
+
+(defgeneric bind-dispatch (arg &rest args)
+  (:method ((arg symbol) &rest args)
+    (if (cdr args)
+        `(multiple-value-bind (,arg ,@(butlast args)) ,(car (last args)))
+        `(let ((,arg ,(car args))))))
+  (:method ((arg list) &rest args)
+    `(destructuring-bind ,arg ,args))
+  (:method ((arg hash-table) &rest args)
+    `(let (,@(let (bindings)
+               (dotable (k v arg (reverse bindings))
+                 (push (list v `(gethash ,k ,(car args)))
+                       bindings)))))))
+
+
+#+:cl-ppcre
+(defmethod bind-dispatch ((arg string) &rest args)
+  (assert (cdr args))
+  `(ppcre:register-groups-bind ,(car args) (,arg ,(cadr args))))

@@ -32,7 +32,9 @@
   (:nicknames #:rutils.syntax)
   (:documentation "Syntax extensions.")
   (:use :common-lisp #:rutils.readtable #:rutils.symbol)
-  (:export #:dcase
+  (:export #:bind
+           #:bind-dispatch
+           #:dcase
            #:dccase
            #:decase
            #:multiple-value-prog2
