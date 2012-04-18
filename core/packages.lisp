@@ -198,6 +198,7 @@ automatic binding of test to it.")
            #:plist->ht
            #:alist->ht
            #:merge-hts
+           #:print-ht
            #:mkeyw
            #:mklist
            #:mksym

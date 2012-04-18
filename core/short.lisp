@@ -3,11 +3,11 @@
 (in-package #:reasonable-utilities.short)
 
 (declaim (optimize (speed 3) (space 1) (debug 0)))
+(declaim (inline 2nd))
 
-
-(defmacro 2nd (form)
-  "(NTH 1 FORM)"
-  `(nth-value 1 ,form))
+(defun 2nd (form)
+  "(NTH-VALUE 1 FORM)"
+  (nth-value 1 form))
 
 (abbr defpar defparameter)
 (abbr ds-bind destructuring-bind)
@@ -22,14 +22,14 @@
 (abbr rem# remhash)
 (abbr take# takehash)
 
-(abbr merge-hts merge-hash-tables)
 (abbr ht-vals hash-table-vals)
 (abbr ht-keys hash-table-keys)
-
 (abbr ht->alist hash-table-to-alist)
 (abbr ht->plist hash-table-to-plist)
 (abbr alist->ht hash-table-from-alist)
 (abbr plist->ht hash-table-from-plist)
+(abbr merge-hts merge-hash-tables)
+(abbr print-ht print-hash-table)
 
 (abbr mkeyw  ensure-keyword)
 (abbr mklist ensure-list)

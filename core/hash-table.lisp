@@ -93,3 +93,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
        :for (valid key val) := (multiple-value-list (gen-fn))
        :unless valid :do (return rez)
        :collect (cons key val) :into rez)))
+
+(defun print-hash-table (ht &optional (stream *standard-output*))
+  (let ((*print-literally* t))
+    (print-object ht stream)))
