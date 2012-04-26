@@ -3,11 +3,10 @@
 (in-package #:reasonable-utilities.short)
 
 (declaim (optimize (speed 3) (space 1) (debug 0)))
-(declaim (inline 2nd))
 
-(defun 2nd (form)
+(defmacro 2nd (form)
   "(NTH-VALUE 1 FORM)"
-  (nth-value 1 form))
+  `(nth-value 1 ,form))
 
 (abbr defpar defparameter)
 (abbr ds-bind destructuring-bind)
