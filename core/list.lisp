@@ -196,3 +196,11 @@ every element of LIST2 matches some element of LIST1. Otherwise returns false."
          (dolist (elt keylist2 t)
            (or (member elt keylist1 :test test)
                (return nil))))))
+
+(defun filter (pred list)
+  "A simpler version of MAPCAN, that automatically leaves the element itself,
+if it satisfies PRED."
+  (mapcan (lambda (x)
+            (when (funcall pred x)
+              (list x)))
+          list))

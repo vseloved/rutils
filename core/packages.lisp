@@ -120,6 +120,7 @@ automatic binding of test to it.")
            #:delete-from-plist
            #:dyadic
            #:ensure-list
+           #:filter
            #:flatten
            #:group
            #:interleave
@@ -144,6 +145,7 @@ automatic binding of test to it.")
         #:rutils.ana/it #:rutils.list)
   (:documentation "String utilities.")
   (:export #:blankp
+           #:dolines
            #:ends-with
            #:read-file
            #:slurp
