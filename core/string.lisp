@@ -17,16 +17,13 @@
         (when str
           (princ str stream))))))
 
-(defun strcat_ (&rest string-designators)
-  "CONCATENATE all the strings in STRING-DESIGNATORS inserting whitespace
-between them."
-  (let ((*print-pretty* nil)
-        (*print-circle* nil))
-    (with-output-to-string (stream)
-      (dolist (str (butlast string-designators))
-        (princ str stream)
-        (princ " " stream))
-      (princ (last1 string-designators) stream))))
+(defun strjoin (delim &rest strings)
+  "Join STRINGS with DELIM."
+  (multiple-value-call
+   #`(format nil (strcat (format nil "~~{~~A~A~~}" delim) "~A")
+             % %%)
+   (butlast2 strings)))
+
 
 (defun blankp (string)
   "Test whether a STRING is blank (empty)."

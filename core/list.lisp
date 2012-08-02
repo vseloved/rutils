@@ -20,7 +20,7 @@ is number 1)."
   "Split LIST in 2 parts and return them as multiple values:
 head and tail.  If (= N 1), which is the most common case,
 the tail will be a single element, otherwise -- a list as well."
-  (assert (< n (length list)))
+  (assert (<= n (length list)))
   (values (butlast list n)
           (if (eql n 1) (last1 list)
               (last list n))))
@@ -196,11 +196,3 @@ every element of LIST2 matches some element of LIST1. Otherwise returns false."
          (dolist (elt keylist2 t)
            (or (member elt keylist1 :test test)
                (return nil))))))
-
-(defun filter (pred list)
-  "A simpler version of MAPCAN, that automatically leaves the element itself,
-if it satisfies PRED."
-  (mapcan (lambda (x)
-            (when (funcall pred x)
-              (list x)))
-          list))

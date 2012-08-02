@@ -6,8 +6,8 @@
 (declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
-(define-condition case-failure (type-error
-                                #+sbcl sb-kernel:case-failure)
+(define-condition case-failure (#+sbcl sb-kernel:case-failure
+                                type-error)
   ((name :reader case-failure-name :initarg :name)
    (possibilities :reader case-failure-possibilities :initarg :possibilities))
   (:report
@@ -15,8 +15,8 @@
       (format stream "~@<~S fell through ~S expression. ~
                       ~:_Wanted one of ~:S.~:>"
               (type-error-datum condition)
-              (case-failure-name condition)
-              (case-failure-possibilities condition)))))
+              (slot-value condition 'name)
+              (slot-value condition 'possibilities)))))
 
 ;; predicate case
 
@@ -24,9 +24,9 @@
   `(once-only (,keyform)
      `(cond
         ,@(loop :for (key actions) :in ,clauses
-             :collect (cons (if (and (eq case 'case) (eq key 'otherwise))
+             :collect (cons (if (and (eq ,case 'case) (eq key 'otherwise))
                                 t
-                                `(funcall ,pred ,keyform ,key))
+                                `(funcall ,',pred ,keyform ,key))
                             actions))
         ,@(ecase case
             (case nil)
@@ -191,6 +191,14 @@ Example:
 
 ;; switch
 
+(defun extract-function-name (spec)
+  "Useful for macros that want to mimic the functional interface for functions
+like #'eq and 'eq."
+  (if (and (consp spec)
+           (member (first spec) '(quote function)))
+      (second spec)
+      spec))
+
 (defun generate-switch-body (whole object clauses test key &optional default)
   (with-gensyms (value)
     (setf test (extract-function-name test))
@@ -237,15 +245,18 @@ viewed as a table (hash-table, alist, plist, object)."
   (with-gensyms (pair)
     `(block nil
        (etypecase ,table
-         (list (if (alistp ,table)
-                   (dolist (,pair ,table)
-                     (ds-bind (,k . ,v) ,pair
-                              ,@body))
-                   (error 'simple-type-error
-                          :format-control "Can't iterate over proper list in DOTABLE: need an alist")))
          (hash-table (maphash (lambda (,k ,v)
                                 ,@body)
                               ,table))
+
+         (list (if (rutils.list:alistp ,table)
+                   (dolist (,pair ,table)
+                     (destructuring-bind (,k . ,v) ,pair
+                       ,@body))
+                   (error 'simple-type-error
+                          :format-control "Can't iterate over proper list in DOTABLE: need an alist")))
+
+         #+:c2mop
          (standard-object (dolist (,k (mapcar #'c2mop:slot-definition-name
                                               (c2mop:class-slots
                                                (class-of ,table))))

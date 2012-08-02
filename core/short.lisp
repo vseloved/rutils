@@ -39,3 +39,5 @@
 (abbr w/uniqs with-gensyms)
 
 (abbr fn named-lambda)
+
+(abbr filter remove-if-not)

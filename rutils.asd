@@ -6,7 +6,7 @@
 
 (defsystem #:rutils
   :name "Reasonable utilities"
-  :version "2.2.1"
+  :version "2.3.0"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
   :description "A reasonable collection of basic utilities for syntactic
@@ -22,6 +22,7 @@ selectively on demand."
             :components ((:file "packages")
                          (:file "readtable")
                          (:file "symbol")
+                         (:file "syntax")
                          (:file "anaphoric")
                          (:file "misc")
                          (:file "list")

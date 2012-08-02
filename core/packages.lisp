@@ -120,7 +120,6 @@ automatic binding of test to it.")
            #:delete-from-plist
            #:dyadic
            #:ensure-list
-           #:filter
            #:flatten
            #:group
            #:interleave
@@ -153,6 +152,7 @@ automatic binding of test to it.")
            #:starts-with
            #:strcat
            #:strcat_
+           #:strjoin
            #:string-designator
            #:substr
            #:white-char-p))
@@ -190,6 +190,7 @@ automatic binding of test to it.")
   (:export #:2nd
            #:defpar
            #:ds-bind
+           #:filter
            #:fmt
            #:fn
            #:get#
