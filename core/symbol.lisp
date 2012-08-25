@@ -12,35 +12,36 @@
      ,@body))
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
-  (defmacro abbr (short long &optional lambda-list)
-    "Abbreviate LONG macro or function name as SHORT. If LAMBDA-LIST is present,
+
+(defmacro abbr (short long &optional lambda-list)
+  "Abbreviate LONG macro or function name as SHORT. If LAMBDA-LIST is present,
 also copy appropriate SETF-expander."
-    `(eval-always
-       (cond
-         ((macro-function ',long)
-          (setf (macro-function ',short) (macro-function ',long)))
-         ((special-operator-p ',long)
-          (error "Can't abbreviate a special-operator ~a" ',long))
-         ((fboundp ',long)
-          (setf (fdefinition ',short) (fdefinition ',long))
-          ,(when lambda-list
-            `(define-setf-expander ,short ,(append lambda-list)
-               (values ,@(multiple-value-bind
-                              (dummies vals store store-form access-form)
-                              (get-setf-expansion (cons long lambda-list))
-                           (let ((expansion-vals (mapcar (lambda (x) `(quote ,x))
-                                                         (list dummies
-                                                               vals
-                                                               store
-                                                               store-form
-                                                               access-form))))
-                             (setf (second expansion-vals)
-                                   (cons 'list vals))
-                             expansion-vals))))))
-         (t
-          (error "Can't abbreviate ~a" ',long)))
-       (setf (documentation ',short 'function) (documentation ',long 'function))
-       ',short)))
+  `(eval-always
+    (cond
+      ((macro-function ',long)
+       (setf (macro-function ',short) (macro-function ',long)))
+      ((special-operator-p ',long)
+       (error "Can't abbreviate a special-operator ~a" ',long))
+      ((fboundp ',long)
+       (setf (fdefinition ',short) (fdefinition ',long))
+       ,(when lambda-list
+          `(define-setf-expander ,short ,(append lambda-list)
+             (values ,@(multiple-value-bind
+                        (dummies vals store store-form access-form)
+                        (get-setf-expansion (cons long lambda-list))
+                        (let ((expansion-vals (mapcar (lambda (x) `(quote ,x))
+                                                      (list dummies
+                                                            vals
+                                                            store
+                                                            store-form
+                                                            access-form))))
+                          (setf (second expansion-vals)
+                                (cons 'list vals))
+                          expansion-vals))))))
+      (t
+       (error "Can't abbreviate ~a" ',long)))
+    (setf (documentation ',short 'function) (documentation ',long 'function))
+    ',short))
 
 
 ;; symbols
@@ -55,6 +56,8 @@ defaulting to 'G') argument."
   "Provide gensyms for given NAMES."
   `(let ,(loop :for n :in names :collect `(,n (gensym)))
      ,@body))
+
+) ; end of eval-when
 
 (abbr with-unique-names with-gensyms)
 

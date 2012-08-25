@@ -6,6 +6,8 @@
 (declaim (optimize (speed 3) (space 1) (debug 0)))
 
 
+(eval-always
+
 (defmacro if-it (test then &optional else)
   "Like IF. IT is bound to TEST."
   `(let ((it ,test))
@@ -33,13 +35,17 @@
   "Like COND. IT is bound to the passed COND test."
   `(let (it)
      (cond
-       ,@(mapcar #``((setf it ,(car %)) ,(cadr %))
+       ,@(mapcar (lambda (clause)
+                   `((setf it ,(car clause)) ,@(cdr clause)))
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
+) ; end of eval-always
 
 (cl:in-package #:reasonable-utilities.anaphoric/let)
 (named-readtables:in-readtable rutils-readtable)
+
+(eval-always
 
 (defmacro if-let (var test then &optional else)
   "Like IF. VAR will be bound to TEST."
@@ -71,6 +77,8 @@
        ,@(mapcar #``((setf ,var ,(car %)) ,(cadr %))
                  ;; uses the fact, that SETF returns the value set
                  body))))
+
+) ; end of eval-always
 
 
 (cl:in-package #:reasonable-utilities.anaphoric/a)

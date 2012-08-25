@@ -19,9 +19,12 @@ CL-USER> #{equalp \"a\" 1 \"b\" 2}
   (let* ((sexp (read-delimited-list #\} stream t))
          (test (when (oddp (length sexp))
                  (car sexp)))
-         (kv-pairs (if test (cdr sexp) sexp)))
-    (rutils.hash-table:hash-table-from-plist kv-pairs
-                                             :test (or test 'eql))))
+         (kvs (if test (cdr sexp) sexp))
+         (ht (gensym)))
+    `(let ((,ht (make-hash-table :test ',(or test 'eql))))
+       ,@(loop :for tail :on kvs :by #'cddr :while kvs
+               :collect `(setf (gethash ,(car tail) ,ht) ,(cadr tail)))
+       ,ht)))
 
 (defun |#`-reader| (stream char arg)
   "Literal syntax for zero/one/two argument lambdas.
@@ -64,7 +67,7 @@ CL-USER> #/This is a \"test\" string/#
 
 (defreadtable rutils-readtable
     (:merge :standard)
-  (:macro-char #\} (get-macro-character #\) nil))
+  (:macro-char #\} (get-macro-character #\)))
   (:dispatch-macro-char #\# #\{ #'|#{-reader|)
   (:dispatch-macro-char #\# #\` #'|#`-reader|)
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
@@ -81,7 +84,7 @@ Similar to *PRINT-READABLY*.")
 
 (defmethod print-object :around ((obj hash-table) stream)
   (if *print-literally*
-      (format stream "#{~@[~a ~]~a}~%"
+      (format stream "#{~@[~a ~]~a~%}~%"
               (unless (eq (hash-table-test obj) 'eql)
                 (hash-table-test obj))
               (with-output-to-string (out)

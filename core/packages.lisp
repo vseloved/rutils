@@ -151,7 +151,6 @@ automatic binding of test to it.")
            #:split-string
            #:starts-with
            #:strcat
-           #:strcat_
            #:strjoin
            #:string-designator
            #:substr
@@ -201,6 +200,7 @@ automatic binding of test to it.")
            #:plist->ht
            #:alist->ht
            #:merge-hts
+           #:m1
            #:print-ht
            #:mkeyw
            #:mklist

@@ -13,5 +13,5 @@
 (named-readtables:in-readtable rutils-readtable)
 
 (rutils.symbol:eval-always
-  (dolist (p '(#:rutils #:rutils.short))
+  (dolist (p '(#:rutils.short #:rutils))
     (rutils.symbol:re-export-symbols p '#:rutil)))
