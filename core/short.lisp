@@ -16,7 +16,7 @@
 (defun fmt (format-string &rest args)
   (apply #'format nil format-string args))
 
-(abbr get# gethash (key hash-table))
+(abbr get# gethash (key hashtable &optional default))
 (abbr set# sethash)
 (abbr rem# remhash)
 (abbr take# takehash)

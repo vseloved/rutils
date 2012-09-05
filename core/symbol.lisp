@@ -28,7 +28,10 @@ also copy appropriate SETF-expander."
           `(define-setf-expander ,short ,(append lambda-list)
              (values ,@(multiple-value-bind
                         (dummies vals store store-form access-form)
-                        (get-setf-expansion (cons long lambda-list))
+                        (get-setf-expansion
+                         (cons long (remove-if (lambda (sym)
+                                                 (member sym '(&optional &key)))
+                                               lambda-list)))
                         (let ((expansion-vals (mapcar (lambda (x) `(quote ,x))
                                                       (list dummies
                                                             vals
