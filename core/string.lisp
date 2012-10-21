@@ -17,13 +17,10 @@
         (when str
           (princ str stream))))))
 
-(defun strjoin (delim &rest strings)
+(defun strjoin (delim strings)
   "Join STRINGS with DELIM."
-  (multiple-value-call
-   #`(format nil (strcat (format nil "~~{~~A~A~~}" delim) "~A")
-             % %%)
-   (butlast2 strings)))
-
+  (format nil (format nil "~~{~~A~~^~A~~}" delim)
+          strings))
 
 (defun blankp (string)
   "Test whether a STRING is blank (empty)."

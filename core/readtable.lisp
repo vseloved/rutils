@@ -100,4 +100,5 @@ Similar to *PRINT-READABLY*.")
   "Print OBJ readably to STREAM (default: *standard-output*) followed by Newline."
   (let ((*print-literally* t))
     (print obj stream)
-    (terpri stream)))
+    (terpri stream))
+  obj)
