@@ -64,7 +64,6 @@ CL-USER> #/This is a \"test\" string/#
                     (loop-finish))
              (write-char char str)))))
 
-
 (defreadtable rutils-readtable
     (:merge :standard)
   (:macro-char #\} (get-macro-character #\)))
@@ -72,33 +71,7 @@ CL-USER> #/This is a \"test\" string/#
   (:dispatch-macro-char #\# #\` #'|#`-reader|)
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
 
+(defreadtable rutils-rt
+  (:merge rutils-readtable))
+
 )
-
-
-(in-readtable rutils-readtable)
-
-(defparameter *print-literally* nil
-  "Turn on overriding methods for literal printing of those types of objects,
-that have special literal syntax.
-Similar to *PRINT-READABLY*.")
-
-(defmethod print-object :around ((obj hash-table) stream)
-  (if *print-literally*
-      (format stream "#{~@[~a ~]~a~%}~%"
-              (unless (eq (hash-table-test obj) 'eql)
-                (hash-table-test obj))
-              (with-output-to-string (out)
-                (maphash (lambda (k v)
-                           (terpri out)
-                           (prin1 k out)
-                           (princ " " out)
-                           (prin1 v out))
-                         obj)))
-      (call-next-method)))
-
-(defun println (obj &optional (stream *standard-output*))
-  "Print OBJ readably to STREAM (default: *standard-output*) followed by Newline."
-  (let ((*print-literally* t))
-    (print obj stream)
-    (terpri stream))
-  obj)

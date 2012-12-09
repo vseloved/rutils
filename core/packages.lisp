@@ -7,16 +7,19 @@
   (:nicknames #:rutils.readtable)
   (:documentation "Readtable definition.")
   (:use :common-lisp #:named-readtables)
-  (:export #:*print-literally*
-           #:println
-           #:rutils-readtable
+  (:export #:rutils-readtable
+           #:rutils-rt
+
+           #:|#{-reader|
+           #:|#`-reader|
+           #:|#/-reader|
            #:%
            #:%%))
 
 (defpackage #:reasonable-utilities.symbol
   (:nicknames #:rutils.symbol)
   (:documentation "Symbol manipulation utilities.")
-  (:use :common-lisp #:rutils.readtable)
+  (:use :common-lisp)
   (:export #:abbr
            #:ensure-keyword
            #:ensure-symbol
@@ -31,7 +34,7 @@
 (defpackage #:reasonable-utilities.syntax
   (:nicknames #:rutils.syntax)
   (:documentation "Syntax extensions.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.symbol)
   (:export #:bind
            #:bind-dispatch
            #:dcase
@@ -50,7 +53,7 @@
   (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
   (:documentation "Anaphoric control constructs with a- prefix and
 automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:aand
            #:acond
            #:adowhile
@@ -62,7 +65,7 @@ automatic binding of test to it.")
   (:nicknames #:rutils.anaphoric/it #:rutils.ana/it)
   (:documentation "Anaphoric control constructs with -it suffix and
 automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:and-it
            #:cond-it
            #:dowhile-it
@@ -73,7 +76,7 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.anaphoric/let
   (:nicknames #:rutils.anaphoric/let #:rutils.ana/let)
   (:documentation "Anaphoric control constructs with -let suffix.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:and-let
            #:cond-let
            #:dowhile-let
@@ -83,7 +86,7 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.anaphoric/bind
   (:nicknames #:rutils.anaphoric/bind #:rutils.ana/bind)
   (:documentation "Anaphoric control constructs with -bind suffix.")
-  (:use :common-lisp #:rutils.symbol #:rutils.readtable)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:and-bind
            #:cond-bind
            #:dowhile-bind
@@ -93,23 +96,26 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.misc
   (:nicknames #:rutils.misc)
   (:documentation "Basic control structures and predicates.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:and2
            #:array-index
            #:array-length
            #:coercef
            #:less
+           #:map-indexed
+           #:maptimes
            #:more
            #:named-lambda
            #:not-less
            #:not-more
            #:or2
+           #:range
            #:xor
            #:xor2))
 
 (defpackage #:reasonable-utilities.list
   (:nicknames #:rutils.list)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:documentation "List utilities.")
   (:export #:alistp
            #:alist-to-plist
@@ -140,7 +146,7 @@ automatic binding of test to it.")
 
 (defpackage #:reasonable-utilities.string
   (:nicknames #:rutils.string)
-  (:use :common-lisp #:rutils.symbol #:rutils.readtable
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
         #:rutils.ana/it #:rutils.list)
   (:documentation "String utilities.")
   (:export #:blankp
@@ -154,11 +160,12 @@ automatic binding of test to it.")
            #:strjoin
            #:string-designator
            #:substr
+           #:with-out-file
            #:white-char-p))
 
 (defpackage #:reasonable-utilities.hash-table
   (:nicknames #:rutils.hash-table)
-  (:use :common-lisp #:rutils.symbol #:rutils.readtable
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
         #:rutils.string #:rutils.list)
   (:documentation "Hash-table utilities.")
   (:export #:copy-hash-table
@@ -175,7 +182,7 @@ automatic binding of test to it.")
 
 (defpackage #:reasonable-utilities.tree
   (:nicknames #:rutils.tree)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:documentation "Tree utilities.")
   (:export #:dotree
            #:maptree
@@ -183,8 +190,8 @@ automatic binding of test to it.")
 
 (defpackage #:reasonable-utilities.short
   (:nicknames #:rutils.short)
-  (:use :common-lisp #:rutils.readtable
-        #:rutils.symbol #:rutils.list #:rutils.hash-table #:rutils.misc)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+        #:rutils.list #:rutils.hash-table #:rutils.misc)
   (:documentation "Short variants of some common utilities with very long names.")
   (:export #:2nd
            #:defpar
@@ -216,7 +223,7 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.iter
   (:nicknames #:rutils.iter)
   (:documentation "Iterate macro, using keywords for clauses.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
         #:rutils.ana/it #:rutils.short #:rutils.string)
   (:export #:iter
            #:iter-version
@@ -230,7 +237,7 @@ automatic binding of test to it.")
 
 (defpackage #:reasonable-utilities.sequence
   (:nicknames #:rutils.sequence)
-  (:use :common-lisp #:rutils.symbol #:rutils.readtable
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
         #:rutils.misc #:rutils.iter)
   (:documentation "Sequence utilities, including SPLIT-SEQUENCE.")
   (:export #:deletef

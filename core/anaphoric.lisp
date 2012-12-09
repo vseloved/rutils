@@ -47,12 +47,12 @@
 
 (eval-always
 
-(defmacro if-let (var test then &optional else)
+(defmacro if-let ((var test) then &optional else)
   "Like IF. VAR will be bound to TEST."
   `(let ((,var ,test))
      (if ,var ,then ,else)))
 
-(defmacro when-let (var test &body body)
+(defmacro when-let ((var test) &body body)
   "Like WHEN. VAR will be bound to TEST."
   `(let ((,var ,test))
      (when ,var
@@ -64,7 +64,7 @@
         ((null (cdr args)) (car args))
         (t `(when-let ,var ,(car args) (and-let ,@(cdr args))))))
 
-(defmacro dowhile-let (var test &body body)
+(defmacro dowhile-let ((var test) &body body)
   "Like DOWHILE. VAR will be bound to TEST."
   `(do ((,var ,test ,test))
        ((not ,var))

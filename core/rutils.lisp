@@ -3,7 +3,7 @@
 
 (rutils.symbol:eval-always
   (dolist (p '(#:rutils.symbol #:rutils.readtable #:rutils.misc
-               #:rutils.iter #:rutils.ana/it #:rutils.ana/bind
+               #:rutils.iter #:rutils.ana/it #:rutils.ana/let
                #:rutils.list #:rutils.string #:rutils.sequence #:rutils.tree
                #:rutils.hash-table #:rutils.syntax))
     (rutils.symbol:re-export-symbols p '#:reasonable-utilities)))

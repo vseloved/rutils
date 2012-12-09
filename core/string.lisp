@@ -98,3 +98,8 @@ negative, which means counting from the end."
     `(with-open-file (,in ,file)
        (loop :for ,line := (read-line ,in nil) :while ,line :do
          ,@body))))
+
+(defmacro with-out-file ((var path) &body body)
+  `(with-open-file (,var ,path :direction :output
+                         :if-exists :supersede :if-does-not-exist :create)
+     ,@body))

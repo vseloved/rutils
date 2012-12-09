@@ -89,3 +89,23 @@ corresponding function."
   `(integer 0 ,length))
 
 (define-modify-macro coercef (type-spec) coerce "Modify-macro for COERCE.")
+
+(defun range (start limit &key (step 1))
+  "Return a list of numbers, starting from START up to LIMIT
+incremented by STEP (default 1)."
+  (loop :for i :from start :to (1- (+ start limit)) :by step
+     :collect i))
+
+(defun maptimes (fn times)
+  "Map FN with number range from 0 to TIMES (exclusive)."
+  (mapcar fn (range 0 times)))
+
+(defun map-indexed (fn list)
+  "Map FN with 2 lists:
+- numeric inidices for LIST, starting from 0
+- LIST itself"
+  (mapcar fn
+          (loop :for i :from 0
+                :for x :in list
+                :collect i)
+          list))

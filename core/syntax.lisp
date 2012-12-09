@@ -1,7 +1,6 @@
 ;; For license see LICENSE
 
 (in-package #:reasonable-utilities.syntax)
-(named-readtables:in-readtable rutils-readtable)
 
 (declaim (optimize (speed 3) (space 1) (debug 0)))
 

@@ -12,8 +12,8 @@
   (setf (gethash key ht) val))
 
 (declaim (inline takehash))
-(defun takehash (key ht val)
-  "Set VAL at KEY in hash-table HT."
+(defun takehash (key ht)
+  "Get and remove VAL at KEY in hash-table HT."
   (prog1 (gethash key ht)
     (remhash key ht)))
 
@@ -95,5 +95,15 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
        :collect (cons key val) :into rez)))
 
 (defun print-hash-table (ht &optional (stream *standard-output*))
-  (let ((*print-literally* t))
-    (print-object ht stream)))
+  (format stream "#{~@[~a ~]~a~%}~%"
+          (unless (eq (hash-table-test ht) 'eql)
+            (hash-table-test ht))
+          (with-output-to-string (out)
+            (maphash (lambda (k v)
+                       (terpri out)
+                       (when (listp k) (princ #\' out))
+                       (prin1 k out)
+                       (princ " " out)
+                       (when (listp v) (princ #\' out))
+                       (prin1 v out))
+                     ht))))
