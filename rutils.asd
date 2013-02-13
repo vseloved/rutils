@@ -14,7 +14,7 @@ extension and basic data-structures hadling, developed over the years of
 CL history by efforts of different individuals, and gathered under
 the unbrella of a hierarchy of packages, which can be used
 selectively on demand."
-  :depends-on (#:named-readtables)
+  :depends-on (#:named-readtables #:defmacro-enhance)
   :serial t
   :components
   ((:module #:core

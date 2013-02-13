@@ -8,35 +8,35 @@
 
 (eval-always
 
-(defmacro if-it (test then &optional else)
+(defmacro! if-it (test then &optional else)
   "Like IF. IT is bound to TEST."
-  `(let ((it ,test))
-     (if it ,then ,else)))
+  `(let ((,e!-it ,test))
+     (if ,e!-it ,then ,else)))
 
-(defmacro when-it (test &body body)
+(defmacro! when-it (test &body body)
   "Like WHEN. IT is bound to TEST."
-  `(let ((it ,test))
-     (when it
+  `(let ((,e!-it ,test))
+     (when ,e!-it
        ,@body)))
 
-(defmacro and-it (&rest args)
+(defmacro! and-it (&rest args)
   "Like AND. IT is bound to the value of the previous AND form."
   (cond ((null args) t)
         ((null (cdr args)) (car args))
         (t `(when-it ,(car args) (and-it ,@(cdr args))))))
 
-(defmacro dowhile-it (test &body body)
+(defmacro! dowhile-it (test &body body)
   "Like DOWHILE. IT is bound to TEST."
-  `(do ((it ,test ,test))
-       ((not it))
+  `(do ((,e!-it ,test ,test))
+       ((not ,e!-it))
      ,@body))
 
 (defmacro cond-it (&body body)
   "Like COND. IT is bound to the passed COND test."
-  `(let (it)
+  `(let (,e!-it)
      (cond
        ,@(mapcar (lambda (clause)
-                   `((setf it ,(car clause)) ,@(cdr clause)))
+                   `((setf ,e!-it ,(car clause)) ,@(cdr clause)))
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
