@@ -53,30 +53,31 @@
   (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
   (:documentation "Anaphoric control constructs with a- prefix and
 automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+	#:defmacro-enhance)
   (:export #:aand
            #:acond
            #:adowhile
            #:aif
-           #:awhen
-           #:it))
+           #:awhen))
 
 (defpackage #:reasonable-utilities.anaphoric/it
   (:nicknames #:rutils.anaphoric/it #:rutils.ana/it)
   (:documentation "Anaphoric control constructs with -it suffix and
 automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+	#:defmacro-enhance)
   (:export #:and-it
            #:cond-it
            #:dowhile-it
            #:if-it
-           #:when-it
-           #:it))
+           #:when-it))
 
 (defpackage #:reasonable-utilities.anaphoric/let
   (:nicknames #:rutils.anaphoric/let #:rutils.ana/let)
   (:documentation "Anaphoric control constructs with -let suffix.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+	#:defmacro-enhance)
   (:export #:and-let
            #:cond-let
            #:dowhile-let
@@ -86,7 +87,8 @@ automatic binding of test to it.")
 (defpackage #:reasonable-utilities.anaphoric/bind
   (:nicknames #:rutils.anaphoric/bind #:rutils.ana/bind)
   (:documentation "Anaphoric control constructs with -bind suffix.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+	#:defmacro-enhance)
   (:export #:and-bind
            #:cond-bind
            #:dowhile-bind
