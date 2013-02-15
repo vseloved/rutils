@@ -41,3 +41,7 @@
 (abbr fn named-lambda)
 
 (abbr filter remove-if-not)
+
+(abbr m1 macroexpand-1)
+
+(abbr make make-instance)

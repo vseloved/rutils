@@ -74,7 +74,7 @@ will be returned NREVERSE-D.  BODY is wraped in implicit block NIL."
 
 (defun interleave (list &rest lists)
   "Return a list whose elements are taken from LIST and each of LISTS like this:
-    1st of list, 1st of 1st of lists,..., 1st of last of lists, 2nd of list,..."
+   1st of list, 1st of 1st of lists,..., 1st of last of lists, 2nd of list,..."
   (apply #'mapcan (lambda (&rest els)
                     els)
          list lists))

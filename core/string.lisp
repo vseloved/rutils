@@ -92,12 +92,13 @@ negative, which means counting from the end."
   "A string designator type. It is either a string, a symbol, or a character."
   `(or symbol string character))
 
-(defmacro dolines ((line file) &body body)
+(defmacro dolines ((line file &optional result) &body body)
   "Iterate over each LINE in a FILE as in DOLIST."
   (let ((in (gensym)))
     `(with-open-file (,in ,file)
        (loop :for ,line := (read-line ,in nil) :while ,line :do
-         ,@body))))
+         ,@body)
+       ,result)))
 
 (defmacro with-out-file ((var path) &body body)
   `(with-open-file (,var ,path :direction :output

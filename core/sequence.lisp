@@ -238,7 +238,7 @@ CL-USER> (doindex (i e '(a b c))
 3 c
 "
   (let ((sequence-var (gensym "SEQUENCE")))
-    `(let ((,sequence-var ,sequence))
+    `(let ((,sequence-var (coerce ,sequence 'vector)))
        (dotimes (,index-var (length ,sequence-var) ,result-form)
          (let ((,elt-var (elt ,sequence-var ,index-var)))
            ,@body)))))

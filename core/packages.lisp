@@ -49,18 +49,6 @@
            #:eswitch
            #:dotable))
 
-(defpackage #:reasonable-utilities.anaphoric/a
-  (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
-  (:documentation "Anaphoric control constructs with a- prefix and
-automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:export #:aand
-           #:acond
-           #:adowhile
-           #:aif
-           #:awhen
-           #:it))
-
 (defpackage #:reasonable-utilities.anaphoric/it
   (:nicknames #:rutils.anaphoric/it #:rutils.ana/it)
   (:documentation "Anaphoric control constructs with -it suffix and
@@ -71,6 +59,19 @@ automatic binding of test to it.")
            #:dowhile-it
            #:if-it
            #:when-it
+           #:it))
+
+(defpackage #:reasonable-utilities.anaphoric/a
+  (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
+  (:documentation "Anaphoric control constructs with a- prefix and
+automatic binding of test to it.")
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+        #:rutils.ana/it)
+  (:export #:aand
+           #:acond
+           #:adowhile
+           #:aif
+           #:awhen
            #:it))
 
 (defpackage #:reasonable-utilities.anaphoric/let
@@ -207,8 +208,9 @@ automatic binding of test to it.")
            #:plist->ht
            #:alist->ht
            #:merge-hts
-           #:m1
            #:print-ht
+           #:m1
+           #:make
            #:mkeyw
            #:mklist
            #:mksym
