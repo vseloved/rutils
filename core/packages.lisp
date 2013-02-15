@@ -65,8 +65,7 @@ automatic binding of test to it.")
   (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
   (:documentation "Anaphoric control constructs with a- prefix and
 automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.ana/it)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
   (:export #:aand
            #:acond
            #:adowhile
