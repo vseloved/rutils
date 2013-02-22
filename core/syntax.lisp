@@ -242,26 +242,27 @@ returns the values of DEFAULT if no keys match."
   "Like DOLIST but iterates over key-value pairs (K V) in anything, that can be
 viewed as a table (hash-table, alist, plist, object)."
   (with-gensyms (pair)
-    `(block nil
-       (etypecase ,table
-         (hash-table (maphash (lambda (,k ,v)
-                                ,@body)
-                              ,table))
+    (once-only (table)
+      `(block nil
+         (etypecase ,table
+           (hash-table (maphash (lambda (,k ,v)
+                                  ,@body)
+                                ,table))
 
-         (list (if (rutils.list:alistp ,table)
-                   (dolist (,pair ,table)
-                     (destructuring-bind (,k . ,v) ,pair
-                       ,@body))
-                   (error 'simple-type-error
-                          :format-control "Can't iterate over proper list in DOTABLE: need an alist")))
+           (list (if (rutils.list:alistp ,table)
+                     (dolist (,pair ,table)
+                       (destructuring-bind (,k . ,v) ,pair
+                         ,@body))
+                     (error 'simple-type-error
+                            :format-control "Can't iterate over proper list in DOTABLE: need an alist")))
 
-         #+:c2mop
-         (standard-object (dolist (,k (mapcar #'c2mop:slot-definition-name
-                                              (c2mop:class-slots
+           #+:c2mop
+           (standard-object (dolist (,k (mapcar #'c2mop:slot-definition-name
+                                                (c2mop:class-slots
                                                (class-of ,table))))
-                            (let ((,v (slot-value ,table ',k)))
-                              ,@body))))
-       ,rez)))
+                              (let ((,v (slot-value ,table ',k)))
+                                ,@body))))
+         ,rez))))
 
 
 (defmacro multiple-value-prog2 (first-form second-form &body forms)

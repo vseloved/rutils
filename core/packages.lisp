@@ -216,6 +216,7 @@ automatic binding of test to it.")
            #:mv-bind
            #:rem#
            #:set#
+           #:sub
            #:take#
            #:w/instr
            #:w/outstr

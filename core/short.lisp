@@ -45,3 +45,5 @@
 (abbr m1 macroexpand-1)
 
 (abbr make make-instance)
+
+(abbr sub subseq)

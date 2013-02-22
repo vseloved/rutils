@@ -115,4 +115,4 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                ht)
       (pprint-indent :block 1 stream)
       (pprint-newline :mandatory stream)
-      (princ "}" stream))))
+      (format stream "}~%"))))
