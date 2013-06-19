@@ -9,12 +9,17 @@
 
 (defun |#{-reader| (stream char arg)
   "Literal syntax for hash-tables.
-Examples:
-CL-USER> #{:a 1 :b 2}
-#<HASH-TABLE :TEST EQL :COUNT 2> holding 2 key/value pairs: ((:a . 1) (:b . 2))
-CL-USER> #{equalp \"a\" 1 \"b\" 2}
-#<HASH-TABLE :TEST EQUALP :COUNT 2> holding 2 key/value pairs: ((\"a\" . 1) ...)
-"
+
+   Examples:
+
+      CL-USER> #{:a 1 :b 2}
+      #<HASH-TABLE :TEST EQL :COUNT 2>
+      ;; holding 2 key/value pairs: ((:a . 1) (:b . 2))
+
+      CL-USER> #{equalp \"a\" 1 \"b\" 2}
+      #<HASH-TABLE :TEST EQUALP :COUNT 2>
+      ;; holding 2 key/value pairs: ((\"a\" . 1) ...)
+  "
   (declare (ignore char arg))
   (let* ((sexp (read-delimited-list #\} stream t))
          (test (when (oddp (length sexp))
@@ -28,13 +33,15 @@ CL-USER> #{equalp \"a\" 1 \"b\" 2}
 
 (defun |#`-reader| (stream char arg)
   "Literal syntax for zero/one/two argument lambdas.
-Use % as the function's argument, %% as the second.
-Examples:
-- #`(+ 2 %) => (lambda (&optional x y) (+ 2 x))
-- #`((1+ %) (print %)) => (lambda (&optional x) (1+ x) (print x))
-- #`(+ 1 2) => (lambda (&optional x y) (+ 1 2))
-- #`(+ % %%) => (lambda (&optional x y) (+ x y))
-"
+   Use % as the function's argument, %% as the second.
+
+   Examples:
+
+   - #`(+ 2 %) => (lambda (&optional x y) (+ 2 x))
+   - #`((1+ %) (print %)) => (lambda (&optional x) (1+ x) (print x))
+   - #`(+ 1 2) => (lambda (&optional x y) (+ 1 2))
+   - #`(+ % %%) => (lambda (&optional x y) (+ x y))
+  "
   (declare (ignore char arg))
   (let ((sexp (read stream t nil t))
         (x (gensym "X"))
@@ -50,11 +57,13 @@ Examples:
 
 (defun |#/-reader| (stream char arg)
   "Literal syntax for raw strings (which don't need escapin of control chars).
-Example:
-CL-USER> #/This is a \"test\" string/#
-\"This is a \"test\" string\"
-; here \" are actually unescaped, but you can't write it in docstring
-"
+
+   Example:
+
+       CL-USER> #/This is a \"test\" string/#
+       \"This is a \\\"test\\\" string\"
+       ;; here \" are actually unescaped, but you can't write it in docstring :)
+  "
   (declare (ignore char arg))
   (with-output-to-string (str)
     (loop :for char := (read-char stream) :do
@@ -72,6 +81,6 @@ CL-USER> #/This is a \"test\" string/#
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
 
 (defreadtable rutils-rt
-  (:merge rutils-readtable))
+    (:merge rutils-readtable))
 
 )

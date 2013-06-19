@@ -383,15 +383,15 @@ Evaluate (iter:display-iterate-clauses) for an overview of clauses."
          (*driver-info-alist* nil)
          (*block-name* (when (symbolp (car body))
                          (pop body)))
-         (*loop-top*  (mksym *block-name* :format "loop-top-~a"))
-         (*loop-step* (mksym *block-name* :format "loop-step-~a"))
-         (*loop-end*  (mksym *block-name* :format "loop-end-~a"))
+         (*loop-top*  (ensure-symbol *block-name* :format "loop-top-~a"))
+         (*loop-step* (ensure-symbol *block-name* :format "loop-step-~a"))
+         (*loop-end*  (ensure-symbol *block-name* :format "loop-end-~a"))
          (*loop-step-used?* nil)
          (*loop-end-used?* nil))
     (process-top-level-decls body)
-    (mv-bind (body decls init-code steppers final-code final-prot)
+    (multiple-value-bind (body decls init-code steppers final-code final-prot)
         (walk-list body)
-      (mv-bind (init step)
+      (multiple-value-bind (init step)
           (insert-previous-code)
         (augment init-code init)
         (augment steppers step)
@@ -462,12 +462,12 @@ to T, when such a declaration was seen."
 
 (defun walk (form)
   "Walk the FORM and return the usual 6 things as multiple-values:
-* body
-* type declarations
-* initializations code
-* stepping code
-* final code
-* final protected (by UNWIND-PROTECT)"
+   * body
+   * type declarations
+   * initializations code
+   * stepping code
+   * final code
+   * final protected (by UNWIND-PROTECT)"
   (cond
    ((atom form)
     ;; different processing for symbol-macros and regular symbols
@@ -522,9 +522,9 @@ it will not be seen."
 
    ((lambda-expression? (car form))
     ;; Function call with a lambda in the car
-    (mv-bind (bod decs init step final final-prot)
+    (multiple-value-bind (bod decs init step final final-prot)
         (walk-fspec (car form))
-      (mv-bind (abod adecs ainit astep afinal afinal-prot)
+      (multiple-value-bind (abod adecs ainit astep afinal afinal-prot)
           (walk-arglist (cdr form))
         (values (list (cons bod abod))
                 (nconc decs adecs)
@@ -553,15 +553,15 @@ it will not be seen."
 
 (defun walk-fspec (form)
   "Walk lambdas' and functions' specs in FLET and LABELS.
-FORM is (lambda-or-name args . body).
-Only walk at the body. The args are set up as internal variables.
-Declarations are kept internal to the body."
+   FORM is (lambda-or-name args . body).
+   Only walk at the body. The args are set up as internal variables.
+   Declarations are kept internal to the body."
   (let* ((args (cadr form))
          (body (cddr form))
          (*top-level?* nil)
          (*declaration-context?* t)
          (*internal-variables* (add-internal-vars args)))
-    (mv-bind (bod decs init step final finalp)
+    (multiple-value-bind (bod decs init step final finalp)
         (walk-list body)
       (values `(,(first form) ,args ,.decs ,.bod)
               nil
@@ -575,7 +575,7 @@ Declarations are kept internal to the body."
                                                     (declare (ignore form))
                                                     body)))
   "Lowest-level walking function for lists. Applies WALK-FN to LST.
-Applies BODY-DURING to the body part, returned by WALK-FN."
+   Applies BODY-DURING to the body part, returned by WALK-FN."
   (let (body-code decls init-code step-code final-code finalp-code)
     (dolist (form lst)
       (declare (optimize (speed 0)))
@@ -596,7 +596,7 @@ Applies BODY-DURING to the body part, returned by WALK-FN."
 
 (defun return-code-modifying-body (f stuff mod-f)
   "Call F with STUFF and return the regular 6 values (see WALK) with 1st return
-value - body - being the result of application of MOD-F to body, returned by F."
+   value being the result of application of MOD-F to body, returned by F."
   (declare (optimize (speed 0)))
   (multiple-value-bind (bod decs init step final finalp)
       (funcall f stuff)
@@ -610,17 +610,16 @@ value - body - being the result of application of MOD-F to body, returned by F."
 
 (defun add-internal-var (var)
   "Return a list of VAR, CONS'ed at the front to *INTERNAL-VARIABLES*."
-  (cons (car (mklist var)) *internal-variables*))
+  (cons (car (ensure-list var)) *internal-variables*))
 
 (defun add-internal-vars (vars)
   "Return a list of VARS, NCONC'ed at the front to *INTERNAL-VARIABLES*.
-
-VARS can be a lambda-list, a list of LET bindings, or just a list of variables."
+   VARS can be a lambda-list, a list of LET bindings, or a list of variables."
   (nconc (lambda-list-vars vars) *internal-variables*))
 
 (defun lambda-list-vars (lambda-list)
-  "Return the variables in the LAMBDA-LIST, omitting keywords, default and
-values."
+  "Return the variables in the LAMBDA-LIST, omitting keywords,
+   default and values."
   (mapcan (lambda (arg)
             (cond ((consp arg)
                    (if (consp (car arg)) ; this is a full keyword spec
@@ -637,8 +636,8 @@ values."
 
 (defun special-form? (symbol)
   "Check, that SYMBOL is present in *SPECIAL-FORM-ALIST*.
-Used instead of SPECIAL-OPERATOR-P, which doesn't work properly in some
-compilers (like Lucid). Besides, to track Iterate special clauses."
+   Used instead of SPECIAL-OPERATOR-P, which doesn't work properly in some
+   compilers (like Lucid). Besides, to track Iterate special clauses."
   (assoc symbol *special-form-alist*))
 
 (defun walk-special-form (form)
@@ -662,11 +661,11 @@ compilers (like Lucid). Besides, to track Iterate special clauses."
                               #`(list (cons first (cons second %)))))
 
 (defun walk-progn (progn &rest stuff)
-  "Don't walk the CAR of a list. CDR might not be walked as well, though
-The only difference between this and WALK-CDR is that *TOP-LEVEL* is not bound.
-This is so macros can return PROGNs of things. It's exactly like the definition
-of 'top-level' in lisp. (Also, just for looks, this returns NIL if the PROGN is
-empty.)"
+  "Don't walk the CAR of a list. CDR might not be walked as well, though.
+   The only difference between this and WALK-CDR is that *TOP-LEVEL* isn't bound.
+   This is so macros can return PROGNs of things.
+   It's exactly like the definition of 'top-level' in lisp.
+   (Also, just for looks, this returns NIL if the PROGN is empty.)"
   (return-code-modifying-body #'walk-list stuff
                               #`(when % (list (cons progn %)))))
 
@@ -702,27 +701,28 @@ empty.)"
 
 (defun walk-declare (&rest declaration)
   "Walk DECLARATION. Declarations should be put in the declaration section
-of the loop. They are only allowed at top-level, except that they are allowed
-within binding environments, in which case they apply only to that
-binding environment."
+   of the loop. They are only allowed at top-level, except that they are allowed
+   within binding environments, in which case they apply only to that
+   binding environment."
   #+ symbolics (setq declaration (copy-list declaration))
   (if (or *top-level?* *declaration-context?*)
       (return-code :declarations (list declaration))
       (clause-error "Declarations must occur at top-level, or inside a ~
-  binding context like let or multiple-value-bind.")))
+                     binding context like let or multiple-value-bind.")))
 
 (defun walk-let (let-key bindings &rest body)
   "Walk LET-form, with BINDINGS and BODY, which may contain ITERATE clauses.
-The declarations go inside this let, not to the top-level. It is an error
-to use a variable in the LET-bindings as the target of accumulation (i.e. INTO),
-because ITERATE will try to make a top-level binding for that variable.
-The same goes for other variables, that might be so bound."
+   The declarations go inside this let, not to the top-level. It is an error
+   to use a variable in the LET-bindings as the target of accumulation
+   (i.e. INTO), because ITERATE will try to make a top-level binding for
+   that variable.
+   The same goes for other variables, that might be so bound."
   (let ((*top-level?* nil))
-    (mv-bind (binds b-decls b-init b-step b-final b-finalp)
+    (multiple-value-bind (binds b-decls b-init b-step b-final b-finalp)
         (walk-let-bindings let-key bindings)
       (let ((*declaration-context?* t)
             (*internal-variables* (add-internal-vars binds)))
-        (mv-bind (bod decls init step final finalp)
+        (multiple-value-bind (bod decls init step final finalp)
             (walk-list body)
           (return-code :declarations b-decls
                        :initial (nconc b-init init)
@@ -744,10 +744,10 @@ The same goes for other variables, that might be so bound."
 (defun walk-let*-bindings (bindings)
   "Walk BINDINGS for LET* one at a time, to get the variable scoping right."
   (when bindings
-    (mv-bind (bod decls init step final finalp)
+    (multiple-value-bind (bod decls init step final finalp)
         (walk-let-binding (car bindings))
       (let ((*internal-variables* (add-internal-var (car bindings))))
-        (mv-bind (bod1 decls1 init1 step1 final1 finalp1)
+        (multiple-value-bind (bod1 decls1 init1 step1 final1 finalp1)
             (walk-let*-bindings (cdr bindings))
           (values (cons bod bod1)
                   (nconc decls decls1)
@@ -772,15 +772,15 @@ The same goes for other variables, that might be so bound."
 
 (defun walk-multiple-value-bind (mvb vars expr &rest body)
   "Walk BINDINGS for MULTIPLE-VALUE-BIND. Declarations go inside the
-MULTIPLE-VALUE-BIND form, not to the top-level. See WALK-LET for binding
-subtleties."
+   MULTIPLE-VALUE-BIND form, not to the top-level. See WALK-LET for binding
+   subtleties."
   (declare (ignore mvb))
   (let ((*top-level?* nil))
-    (mv-bind (ebod edecls einit estep efinal efinalp)
+    (multiple-value-bind (ebod edecls einit estep efinal efinalp)
         (walk expr)
       (let ((*declaration-context?* t)
             (*internal-variables* (add-internal-vars vars)))
-        (mv-bind (bod decls init step final finalp)
+        (multiple-value-bind (bod decls init step final finalp)
             (walk-list body)
           (return-code :declarations edecls
                        :initial (nconc einit init)
@@ -793,13 +793,13 @@ subtleties."
 (defun walk-flet (flet bindings &rest body)
   "Walk FLET or LABELS declarations. We don't worry about the function bindings."
   (let ((*top-level?* nil))
-    (mv-bind (binds b-decls b-init b-step b-final b-finalp)
+    (multiple-value-bind (binds b-decls b-init b-step b-final b-finalp)
         (walk-list-nconcing bindings #'walk-fspec
                             (lambda (x y)
                               (declare (ignore x))
                               (list y)))
       (let ((*declaration-context?* t))
-        (mv-bind (bod decls init step final finalp)
+        (multiple-value-bind (bod decls init step final finalp)
             (walk-list body)
           (return-code :declarations b-decls
                        :initial (nconc b-init init)
@@ -810,11 +810,11 @@ subtleties."
 
 (defun walk-cdr-with-declarations (first &rest stuff)
   "a.k.a. walk-locally
-Walk CDR, ignoring declarations, that might be present in it.
-Set *TOP-LEVEL?* to NIL (via WALK-ARGLIST). Note that when *TOP-LEVEL?* is NIL,
-walk won't yield declarations,  because WALK-DECLARE errors out since all forms
-with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET,
-and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
+   Walk CDR, ignoring declarations, that might be present in it.
+   Set *TOP-LEVEL?* to NIL (via WALK-ARGLIST). Note that when *TOP-LEVEL?* is NIL
+   walk won't yield declarations, because WALK-DECLARE errors out since all forms
+   with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET
+   and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL.)"
   ;; Ignoring code-movement issues, this approach should be fine
   (let* ((forms (member 'declare stuff
                         :key #`(and (consp %) (car %)) :test-not #'eq))
@@ -824,11 +824,11 @@ and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
 
 (defun walk-cddr-with-declarations (first second &rest stuff) ; aka walk-locally
   "a.k.a. walk-locally
-Walk CDDR, ignoring declarations, that might be present in it.
-Set *TOP-LEVEL?* to NIL (via WALK-ARGLIST). Note that when *TOP-LEVEL?* is NIL,
-walk won't yield declarations, because WALK-DECLARE errors out since all forms
-with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET,
-and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
+   Walk CDDR, ignoring declarations, that might be present in it.
+   Set *TOP-LEVEL?* to NIL (via WALK-ARGLIST). Note that when *TOP-LEVEL?* is NIL
+   walk won't yield declarations, because WALK-DECLARE errors out since all forms
+   with *DECLARATION-CONTEXT?* T keep them local (that is, in WALK-LET, WALK-FLET
+   and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL.)"
   (let* ((forms (member 'declare stuff
                         :key #`(and (consp %) (car %)) :test-not #'eq))
          (decls (ldiff stuff forms)))
@@ -842,13 +842,13 @@ and WALK-MULTIPLE-VALUE-BIND b-decls/edecls are always NIL)."
   "MACROLET is not supported inside ITER. Signal an error."
   (declare (ignore form-name stuff))
   (error "MACROLET is not permitted inside Iterate. Please ~
-refactor the Iterate form (e.g. by using macrolets that wrap ~
-the ITERATE form)."))
+          refactor the Iterate form (e.g. by using macrolets that wrap ~
+          the ITERATE form)."))
 
 #+allegro
 (defun walk-cond (cond &rest stuff)
   "Walk COND, because the Allegro compiler insists on treating it as a special
-form, and because some version MACROEXPAND (COND #) into (COND #)!"
+   form, and because some version MACROEXPAND (COND #) into (COND #)!"
   (declare (ignore cond))
   (unless stuff
     (let* ((first-clause (first stuff))
@@ -879,8 +879,8 @@ form, and because some version MACROEXPAND (COND #) into (COND #)!"
 
 (defun process-clause (clause)
   "Process ITERATE CLAUSE according to the rules, defined for it.
-This should observe the invariant, that the forms it returns are already
-copied from the original code, hence NCONC-able."
+   This should observe the invariant, that the forms it returns are already
+   copied from the original code, hence NCONC-able."
   (let ((*clause* clause)
         (special-func (assoc (car clause) *special-clause-alist*)))
     (if special-func (apply-clause-function (car clause) (cdr clause))
@@ -888,14 +888,14 @@ copied from the original code, hence NCONC-able."
                (info (get-clause-info ppclause)))
           (if info
               (progn (arg-check ppclause info)
-                     (let ((args (cons (mkeyw (first ppclause))
+                     (let ((args (cons (ensure-keyword (first ppclause))
                                        (cdr ppclause)))
                            (func (clause-info-function info)))
                        (if (macro-function func *env*)
                            (walk (macroexpand-1 (cons func args) *env*))
                            (apply-clause-function func args))))
               (clause-error "No iterate function for this clause; do (~S) ~
-to see the existing clauses."
+                             to see the existing clauses."
                             'display-iterate-clauses))))))
 
 (defun apply-clause-function (func args)
@@ -931,10 +931,10 @@ to see the existing clauses."
         (syn (synonym (first clause))))
     (do ((cl (cddr clause) (cddr cl)))
         ((null cl))
-      (push (mkeyw (first cl)) new-clause)
+      (push (ensure-keyword (first cl)) new-clause)
       (push (second cl) new-clause))
     ;; turn (generate ...) into (for ... :generate t)
-    (if (eq (mkeyw syn) :generate)
+    (if (eq (ensure-keyword syn) :generate)
         `(for  ,(second clause) ,.(nreverse new-clause) :generate t)
         `(,syn ,(second clause) ,.(nreverse new-clause)))))
 
@@ -953,11 +953,11 @@ to see the existing clauses."
 
 (defun walk-expr (expr)
   "Walk EXPR and return just the PROGN-WRAP'ped body.
-Other returned by walking values are AUGMENT'ed to globals and
-returned by PROCESS-CLAUSE in the end of processing it.
+   Other returned by walking values are AUGMENT'ed to globals and
+   returned by PROCESS-CLAUSE in the end of processing it.
 
-This isn't used by the code walker itself, but is useful for clauses, that
-need to walk parts of themselves."
+   This isn't used by the code walker itself, but is useful for clauses, that
+   need to walk parts of themselves."
   (multiple-value-bind (body decls init step final finalp) (walk expr)
     (augment *decls* decls)
     (augment *initial* init)
@@ -977,9 +977,10 @@ need to walk parts of themselves."
     ((and clause-spec (symbolp clause-spec)) (setq clause-spec
                                                    (list clause-spec)))
     ((member '&optional clause-spec) (error "Iterate: clause-spec cannot ~
-mention optional keywords"))
+                                             mention optional keywords"))
     (clause-spec (setq clause-spec (cons (car clause-spec)
-                                         (mapcar #'mkeyw (cdr clause-spec))))))
+                                         (mapcar #'ensure-keyword
+                                                 (cdr clause-spec))))))
   (dolist (spec-entry *special-clause-alist*)
     (let ((spec-clause-kws (list (car spec-entry))))
       (when (clause-matches? clause-spec spec-clause-kws)
@@ -1026,7 +1027,7 @@ mention optional keywords"))
 
 (defun clause-matches? (clause-spec kws)
   "Test wheather CLAUSE-SPEC matches KWS. If no CLAUSE-SPEC is given, assume,
-that it matches."
+   that it matches."
   (or (null clause-spec)
       (every #'eq clause-spec kws)))
 
@@ -1198,9 +1199,7 @@ of CI2 (i.e. introduce ambiguity)."
 which is a list with its symbols keywordized."
     (let* ((all-keywords
             (cons (first clause-keywords)
-                  (mapcar #`(if (eq % '&optional)
-                                %
-                                (mkeyw %))
+                  (mapcar #`(if (eql % '&optional) % (ensure-keyword %))
                           (rest clause-keywords))))
            (req-keywords
             (ldiff all-keywords (member '&optional all-keywords :test #'eq))))
@@ -1284,12 +1283,12 @@ as generators."
                        (if (member '&optional clause-template)
                            +sequence-keyword-list+
                            (cons '&optional +sequence-keyword-list+))))))
-      (mv-bind (rkws rvals okws ovals)
+      (multiple-value-bind (rkws rvals okws ovals)
           (split-clause-template clause-template)
-        (let* ((req-keywords (mapcar #'mkeyw rkws))
+        (let* ((req-keywords (mapcar #'ensure-keyword rkws))
                (req-kws-but-first (cons (car clause-template)
                                         (cdr req-keywords)))
-               (opt-keywords (mapcar #'mkeyw okws))
+               (opt-keywords (mapcar #'ensure-keyword okws))
                (keywords&opt (if opt-keywords
                                  (append req-kws-but-first
                                          '(&optional) opt-keywords)
@@ -1343,8 +1342,8 @@ as generators."
          (error "DEFCLAUSE: required part of template ~a is of odd length" ct))
         ((oddp (length opt-list))
          (error "DEFCLAUSE: optional part of template ~a is of odd length" ct)))
-      (mv-bind (rkws rvals) (split-list-odd-even req-list)
-        (mv-bind (okws ovals) (split-list-odd-even opt-list)
+      (multiple-value-bind (rkws rvals) (split-list-odd-even req-list)
+        (multiple-value-bind (okws ovals) (split-list-odd-even opt-list)
           (values rkws
                   rvals
                   okws
@@ -1423,7 +1422,7 @@ be specified for this clause")
   ;; Deprecated. Dangerous when incorrectly nested
   "Execute BODY iside the temporary binding of VAR to."
   (let ((old-var (gensym "OLD"))
-        (vars (mklist var)))
+        (vars (ensure-list var)))
     `(flet ((get-free-temp ()
               (let ((temp (some (lambda (temp)
                                   (unless (member temp *temps-in-use*)
@@ -1912,7 +1911,7 @@ the body of the loop, so it must not contain anything that depends on the body."
                 (when (consp binding)
                   (augment free-vars (free-vars (second binding)
                                                 bound-vars)))
-                (push (car (mklist binding)) bound-vars))
+                (push (car (ensure-list binding)) bound-vars))
               (nconc free-vars (free-vars-list body bound-vars))))
         (otherwise nil)))
      ((macro-function (car form) *env*)
@@ -2106,7 +2105,7 @@ the body of the loop, so it must not contain anything that depends on the body."
 (defmacro def-special-clause (name arglist &body body)
   "Define clause by DEFUN. Special-clause names should be exported."
   `(progn
-     (defun ,(mksym name) ,arglist .,body)
+     (defun ,(ensure-symbol name) ,arglist .,body)
      (install-special-clause-function ',name
                                       ,(when (stringp (car body))
                                          (car body)))))
@@ -2114,7 +2113,7 @@ the body of the loop, so it must not contain anything that depends on the body."
 (defun install-special-clause-function (symbol &optional docstring)
   "Put the SYMBOL with DOCSTRING at the end of *SPECIAL-CLAUSE-ALIST*,
 if not already present."
-  (let* ((key-symbol (mkeyw symbol))
+  (let* ((key-symbol (ensure-keyword symbol))
          (entry (assoc key-symbol *special-clause-alist*)))
     (if entry (setf (cdr entry) docstring)
         (augment *special-clause-alist* (list (cons key-symbol docstring))))
@@ -2714,7 +2713,7 @@ for the keys, the second for the values."
               (entry (make-accum-var-default-binding var-spec nil
                                                      :using-type-of expr))
               (prev-first-time-var (third entry)))
-          (mv-bind (update-code first-time-var)
+          (multiple-value-bind (update-code first-time-var)
               (if-1st-time `((setq ,var ,expr))
                            `((setq ,var ,(make-funcall op var expr)))
                            prev-first-time-var)
@@ -2771,7 +2770,7 @@ for the keys, the second for the values."
                                                     :min :max)
                                                 :using-type-of expr))
          (prev-first-time-var (third entry)))
-    (mv-bind (update-code first-time-var)
+    (multiple-value-bind (update-code first-time-var)
         (if-1st-time `((setq ,m-var ,expr))
                      `((setq ,m-var (,operation ,m-var ,expr)))
                      prev-first-time-var)
@@ -2968,7 +2967,8 @@ for the keys, the second for the values."
       (setq expr-var (first var))
       (setq m-var (second var)))
      (t (clause-error "The value for INTO, ~A, should be a variable specifier ~
-or a list of two variable specifiers." var)))
+                       or a list of two variable specifiers."
+                      var)))
     (make-default-binding expr-var :using-type-of expr)
     (make-accum-var-default-binding m-var kind :using-type-of m-expr)
     (setq expr-var (extract-var expr-var))
@@ -3267,7 +3267,7 @@ or a list of two variable specifiers." var)))
   ""
   ;; It's important for this that code is never copied;
   ;; we keep a pointer to it
-  (dolist (var (mklist vars))
+  (dolist (var (ensure-list vars))
     (let ((p-i (intern-previous-info var)))
       (setf (previous-info-class p-i) class)
       (push (cons code (last code)) (previous-info-code p-i)))))

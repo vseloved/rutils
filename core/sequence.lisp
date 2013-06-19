@@ -231,12 +231,13 @@ and the REMOVE-KEYWORDS.")
                    &body body)
   "Iterates over a sequence while keeping track of an index. A DO-style macro.
 
-CL-USER> (doindex (i e '(a b c))
-           (format T \"~&~S ~S\" i e))
-1 a
-2 b
-3 c
-"
+   Example usage:
+
+       CL-USER> (doindex (i e '(a b c))
+                  (format T \"~&~S ~S\" i e))
+       1 a
+       2 b
+       3 c"
   (let ((sequence-var (gensym "SEQUENCE")))
     `(let ((,sequence-var (coerce ,sequence 'vector)))
        (dotimes (,index-var (length ,sequence-var) ,result-form)

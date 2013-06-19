@@ -92,15 +92,24 @@ negative, which means counting from the end."
   "A string designator type. It is either a string, a symbol, or a character."
   `(or symbol string character))
 
-(defmacro dolines ((line file &optional result) &body body)
-  "Iterate over each LINE in a FILE as in DOLIST."
+(defmacro dolines ((line src &optional result) &body body)
+  "Iterate over each LINE in SRC (a stream or path to a file) as in DOLIST."
   (let ((in (gensym)))
-    `(with-open-file (,in ,file)
-       (loop :for ,line := (read-line ,in nil) :while ,line :do
-         ,@body)
-       ,result)))
+    `(if (streamp ,src)
+         (loop :for ,line := (read-line ,src nil nil) :while ,line :do
+            (progn ,@body)
+            :finally (return ,result))
+         (with-open-file (,in ,src)
+           (loop :for ,line := (read-line ,in nil nil) :while ,line :do
+              (progn ,@body)
+              :finally (return ,result))))))
 
 (defmacro with-out-file ((var path) &body body)
   `(with-open-file (,var ,path :direction :output
                          :if-exists :supersede :if-does-not-exist :create)
      ,@body))
+
+(defun last-char (string)
+  "Return the last character of STRING if it's not empty, otherwise - nil."
+  (unless (blankp string)
+    (char string (1- (length string)))))

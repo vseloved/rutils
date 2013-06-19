@@ -142,7 +142,9 @@ automatic binding of test to it.")
            #:take
            #:tryadic
            #:unionf
-           #:with-output-to-list))
+           #:with-output-to-list
+           #:zip
+           #:zip-with))
 
 (defpackage #:reasonable-utilities.string
   (:nicknames #:rutils.string)
@@ -152,6 +154,7 @@ automatic binding of test to it.")
   (:export #:blankp
            #:dolines
            #:ends-with
+           #:last-char
            #:read-file
            #:slurp
            #:split-string
@@ -188,45 +191,11 @@ automatic binding of test to it.")
            #:maptree
            #:tree-size))
 
-(defpackage #:reasonable-utilities.short
-  (:nicknames #:rutils.short)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.list #:rutils.hash-table #:rutils.misc)
-  (:documentation "Short variants of some common utilities with very long names.")
-  (:export #:2nd
-           #:defpar
-           #:ds-bind
-           #:filter
-           #:fmt
-           #:fn
-           #:get#
-           #:ht-keys
-           #:ht-vals
-           #:ht->plist
-           #:ht->alist
-           #:plist->ht
-           #:alist->ht
-           #:merge-hts
-           #:print-ht
-           #:m1
-           #:make
-           #:mkeyw
-           #:mklist
-           #:mksym
-           #:mv-bind
-           #:rem#
-           #:set#
-           #:sub
-           #:take#
-           #:w/instr
-           #:w/outstr
-           #:w/uniqs))
-
 (defpackage #:reasonable-utilities.iter
   (:nicknames #:rutils.iter)
   (:documentation "Iterate macro, using keywords for clauses.")
   (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.ana/it #:rutils.short #:rutils.string)
+        #:rutils.ana/it #:rutils.list #:rutils.string)
   (:export #:iter
            #:iter-version
            #:declare-variables
@@ -256,6 +225,43 @@ automatic binding of test to it.")
            #:split-sequence-if
            #:split-sequence-if-not))
 
+
+
+(defpackage #:reasonable-utilities.short
+  (:nicknames #:rutils.short)
+  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+        #:rutils.sequence #:rutils.list #:rutils.hash-table #:rutils.misc)
+  (:documentation "Short variants of some common utilities with long names.")
+  (:export #:2nd
+           #:defpar
+           #:ds-bind
+           #:filter
+           #:fmt
+           #:fn
+           #:get#
+           #:ht-count
+           #:ht-keys
+           #:ht-vals
+           #:ht->plist
+           #:ht->alist
+           #:plist->ht
+           #:alist->ht
+           #:merge-hts
+           #:print-ht
+           #:m1
+           #:make
+           #:mkeyw
+           #:mklist
+           #:mksym
+           #:mv-bind
+           #:rem#
+           #:set#
+           #:split
+           #:sub
+           #:take#
+           #:w/instr
+           #:w/outstr
+           #:w/uniqs))
 
 (defpackage #:reasonable-utilities
   (:nicknames #:rutils)

@@ -21,8 +21,9 @@
 (abbr rem# remhash)
 (abbr take# takehash)
 
-(abbr ht-vals hash-table-vals)
+(abbr ht-count hash-table-count)
 (abbr ht-keys hash-table-keys)
+(abbr ht-vals hash-table-vals)
 (abbr ht->alist hash-table-to-alist)
 (abbr ht->plist hash-table-to-plist)
 (abbr alist->ht hash-table-from-alist)
@@ -47,3 +48,5 @@
 (abbr make make-instance)
 
 (abbr sub subseq)
+
+(abbr split split-sequence)

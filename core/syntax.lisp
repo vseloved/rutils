@@ -240,29 +240,29 @@ returns the values of DEFAULT if no keys match."
 
 (defmacro dotable ((k v table &optional rez) &body body)
   "Like DOLIST but iterates over key-value pairs (K V) in anything, that can be
-viewed as a table (hash-table, alist, plist, object)."
+   viewed as a table (hash-table, alist, plist, object).
+   Autodeclares variables named _ as ignored."
   (with-gensyms (pair)
     (once-only (table)
-      `(block nil
-         (etypecase ,table
-           (hash-table (maphash (lambda (,k ,v)
-                                  ,@body)
-                                ,table))
+      (let ((_ (find "_" (list k v)
+                     :test 'string=
+                     :key 'symbol-name)))
+        `(block nil
+           (etypecase ,table
+             (hash-table (maphash (lambda (,k ,v)
+                                    ,(when _ `(declare (ignore ,_)))
+                                    ,@body)
+                                  ,table))
 
-           (list (if (rutils.list:alistp ,table)
-                     (dolist (,pair ,table)
-                       (destructuring-bind (,k . ,v) ,pair
-                         ,@body))
-                     (error 'simple-type-error
-                            :format-control "Can't iterate over proper list in DOTABLE: need an alist")))
-
-           #+:c2mop
-           (standard-object (dolist (,k (mapcar #'c2mop:slot-definition-name
-                                                (c2mop:class-slots
-                                               (class-of ,table))))
-                              (let ((,v (slot-value ,table ',k)))
-                                ,@body))))
-         ,rez))))
+             (list (if (rutils.list:alistp ,table)
+                       (dolist (,pair ,table)
+                         (destructuring-bind (,k . ,v) ,pair
+                           ,(when _ `(declare (ignore ,_)))
+                           ,@body))
+                       (error 'simple-type-error
+                              :format-control "Can't iterate over proper list ~
+                                               in DOTABLE: need an alist"))))
+           ,rez)))))
 
 
 (defmacro multiple-value-prog2 (first-form second-form &body forms)

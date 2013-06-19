@@ -93,7 +93,7 @@ corresponding function."
 (defun range (start limit &key (step 1))
   "Return a list of numbers, starting from START up to LIMIT
 incremented by STEP (default 1)."
-  (loop :for i :from start :to (1- (+ start limit)) :by step
+  (loop :for i :from start :to (1- limit) :by step
      :collect i))
 
 (defun maptimes (fn times)

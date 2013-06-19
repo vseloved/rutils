@@ -196,3 +196,35 @@ every element of LIST2 matches some element of LIST1. Otherwise returns false."
          (dolist (elt keylist2 t)
            (or (member elt keylist1 :test test)
                (return nil))))))
+
+(defun zip (&rest lists)
+  "Return a single list whose elements are lists
+   of the consecutive elements of LISTS,
+   until one of the LISTS ends."
+  (apply #'zip-with #'list lists))
+
+(defun zip-with (fn &rest lists)
+  "Return a single list whose elements are the results
+   of applying FN to groups of the consecutive elements of LISTS,
+   until one of the LISTS ends."
+  (let (rez)
+    (do ((tails lists (mapcar #'cdr tails)))
+        ((some #'null tails))
+      (push (apply fn (mapcar #'car tails)) rez))
+    (reverse rez)))
+
+(defun zip* (&rest lists)
+  "Return a single list whose elements are lists
+   of the consecutive elements of LISTS,
+   until one of the LISTS ends."
+  (apply #'zip*-with #'list lists))
+
+(defun zip*-with (fn &rest lists)
+  "Return a single list whose elements are the results
+   of applying FN to groups of the consecutive elements of LISTS,
+   until one of the LISTS ends."
+  (let (rez)
+    (do ((tails lists (mapcar #'cdr tails)))
+        ((every #'null tails))
+      (push (apply fn (mapcar #'car tails)) rez))
+    (reverse rez)))

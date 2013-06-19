@@ -6,7 +6,7 @@
 
 (defsystem #:rutils
   :name "Reasonable utilities"
-  :version "2.6.3"
+  :version "2.8.0"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
   :description "A reasonable collection of basic utilities for syntactic
@@ -29,7 +29,21 @@ selectively on demand."
                          (:file "string")
                          (:file "hash-table")
                          (:file "tree")
-                         (:file "short")
                          (:file "iter")
                          (:file "sequence")
+                         (:file "short")
                          (:file "rutils")))))
+
+(defsystem #:rutilsx
+  :name "Unreasonable utilities"
+  :version "0.0.2"
+  :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
+  :licence "3-clause MIT licence"
+  :description "Some crazy extensions to rutils."
+  :depends-on (#:rutils #:named-readtables)
+  :serial t
+  :components
+  ((:module #:contrib
+            :serial t
+            :components ((:file "packages")
+                         (:file "readtable")))))

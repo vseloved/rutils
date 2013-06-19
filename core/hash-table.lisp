@@ -95,6 +95,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
        :collect (cons key val) :into rez)))
 
 (defun print-hash-table (ht &optional (stream *standard-output*))
+  "Pretty print hash-table HT to STREAM."
   (let ((*print-pretty* t))
     (pprint-logical-block (stream nil)
       (princ "#{" stream)
@@ -117,3 +118,10 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
       (pprint-newline :mandatory stream)
       (princ "} " stream)))
   ht)
+
+(defmacro with-keys ((&rest kv-pairs) ht &body body)
+  "Like WITH-ACCESSORS but for pairs in hash-table HT."
+  (once-only (ht)
+    `(let (,@(mapcar #`(list (car %) `(get# ,(second %) ,ht))
+                     kv-pairs))
+       ,@body)))
