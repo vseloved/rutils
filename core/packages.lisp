@@ -1,140 +1,133 @@
-;;; see LICENSE file for permissions
+;;;;; RUTILS package definitions
+;;;;; see LICENSE file for permissions
+
 
 (cl:in-package :cl-user)
 
 
-(defpackage #:reasonable-utilities.readtable
-  (:nicknames #:rutils.readtable)
-  (:documentation "Readtable definition.")
+(defpackage #:rutils.readtable
+  (:documentation "Literate syntax definitions.")
   (:use :common-lisp #:named-readtables)
   (:export #:rutils-readtable
-           #:rutils-rt
 
+           #:+default-opts+
+
+           #:|#h-reader|
+           #:|#v-reader|
            #:|#{-reader|
            #:|#`-reader|
            #:|#/-reader|
            #:%
            #:%%))
 
-(defpackage #:reasonable-utilities.symbol
-  (:nicknames #:rutils.symbol)
-  (:documentation "Symbol manipulation utilities.")
-  (:use :common-lisp)
+(defpackage #:rutils.core
+  (:documentation "Core utilities.")
+  (:use :common-lisp #:rutils.readtable)
   (:export #:abbr
+           #:eval-always
            #:ensure-keyword
            #:ensure-symbol
-           #:eval-always
-           #:once-only
+           #:make-gensym-list
            #:package-symbols
+           #:package-internal-symbols
            #:package-external-symbols
            #:re-export-symbols
            #:with-gensyms
            #:with-unique-names))
 
-(defpackage #:reasonable-utilities.syntax
-  (:nicknames #:rutils.syntax)
-  (:documentation "Syntax extensions.")
-  (:use :common-lisp #:rutils.symbol)
-  (:export #:bind
-           #:bind-dispatch
+(defpackage #:rutils.misc
+  (:documentation "Assorted small utilities.")
+  (:use :common-lisp #:rutils.readtable #:rutils.core)
+  (:export #:2nd
+           #:and2
+           #:array-index
+           #:array-length
+           #:case-failure
+           #:coercef
+           #:cswitch
            #:dcase
            #:dccase
            #:decase
+           #:eswitch
+           #:less
+           #:more
            #:multiple-value-prog2
+           #:named-lambda
+           #:not-less
+           #:not-more
+           #:once-only
+           #:or2
            #:pcase
            #:pccase
            #:pecase
+           #:re-setf
            #:switch
-           #:cswitch
-           #:eswitch
-           #:dotable))
+           #:true
+           #:void
+           #:xor
+           #:xor2))
 
-(defpackage #:reasonable-utilities.anaphoric/it
-  (:nicknames #:rutils.anaphoric/it #:rutils.ana/it)
-  (:documentation "Anaphoric control constructs with -it suffix and
-automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:export #:and-it
-           #:cond-it
-           #:dowhile-it
-           #:if-it
-           #:when-it
-           #:it))
-
-(defpackage #:reasonable-utilities.anaphoric/a
-  (:nicknames #:rutils.anaphoric/a #:rutils.ana/a)
-  (:documentation "Anaphoric control constructs with a- prefix and
-automatic binding of test to it.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+(defpackage #:rutils.anaphora
+  (:documentation "Anaphoric control constructs.")
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc)
   (:export #:aand
            #:acond
            #:adowhile
            #:aif
            #:awhen
-           #:it))
-
-(defpackage #:reasonable-utilities.anaphoric/let
-  (:nicknames #:rutils.anaphoric/let #:rutils.ana/let)
-  (:documentation "Anaphoric control constructs with -let suffix.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:export #:and-let
+           #:and-bind
+           #:and-it
+           #:and-let
+           #:cond-bind
+           #:cond-it
            #:cond-let
+           #:dowhile-bind
+           #:dowhile-it
            #:dowhile-let
+           #:if-bind
+           #:if-it
            #:if-let
+           #:it
+           #:when-bind
+           #:when-it
            #:when-let))
 
-(defpackage #:reasonable-utilities.anaphoric/bind
-  (:nicknames #:rutils.anaphoric/bind #:rutils.ana/bind)
-  (:documentation "Anaphoric control constructs with -bind suffix.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:export #:and-bind
-           #:cond-bind
-           #:dowhile-bind
-           #:if-bind
-           #:when-bind))
 
-(defpackage #:reasonable-utilities.misc
-  (:nicknames #:rutils.misc)
-  (:documentation "Basic control structures and predicates.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:export #:and2
-           #:array-index
-           #:array-length
-           #:coercef
-           #:less
-           #:map-indexed
-           #:maptimes
-           #:more
-           #:named-lambda
-           #:not-less
-           #:not-more
-           #:or2
-           #:range
-           #:xor
-           #:xor2))
+;;; basic data-structures
 
-(defpackage #:reasonable-utilities.list
-  (:nicknames #:rutils.list)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
+(defpackage #:rutils.list
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc)
   (:documentation "List utilities.")
-  (:export #:alistp
+  (:export #:alist
+           #:alistp
            #:alist-to-plist
            #:appendf
            #:assoc1
            #:atomize
            #:butlast2
+           #:dcons
            #:delete-from-plist
+           #:dlist
+           #:dlistp
+           #:doplist
            #:dyadic
            #:ensure-list
            #:flatten
            #:group
            #:interleave
            #:last1
+           #:listcase
+           #:remove-idx
+           #:mapindex
+           #:mapcanindex
+           #:maptimes
            #:nconcf
            #:nreversef
            #:nunionf
+           #:permutations
            #:plistp
            #:plist-to-alist
+           #:range
            #:remove-from-plist
            #:reversef
            #:set-equal
@@ -144,16 +137,18 @@ automatic binding of test to it.")
            #:unionf
            #:with-output-to-list
            #:zip
-           #:zip-with))
+           #:zip-with
+           #:zip*
+           #:zip*-with))
 
-(defpackage #:reasonable-utilities.string
-  (:nicknames #:rutils.string)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.ana/it #:rutils.list)
+(defpackage #:rutils.string
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.anaphora #:rutils.list)
   (:documentation "String utilities.")
   (:export #:blankp
            #:dolines
            #:ends-with
+           #:fmt
            #:last-char
            #:read-file
            #:slurp
@@ -166,12 +161,12 @@ automatic binding of test to it.")
            #:with-out-file
            #:white-char-p))
 
-(defpackage #:reasonable-utilities.hash-table
-  (:nicknames #:rutils.hash-table)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
+(defpackage #:rutils.hash-table
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
         #:rutils.string #:rutils.list)
   (:documentation "Hash-table utilities.")
   (:export #:copy-hash-table
+           #:dotable
            #:hash-table-keys
            #:hash-table-vals
            #:merge-hash-tables
@@ -181,41 +176,20 @@ automatic binding of test to it.")
            #:hash-table-to-plist
            #:print-hash-table
            #:sethash
-           #:takehash))
+           #:takehash
+           #:with-keys))
 
-(defpackage #:reasonable-utilities.tree
-  (:nicknames #:rutils.tree)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax)
-  (:documentation "Tree utilities.")
-  (:export #:dotree
-           #:maptree
-           #:tree-size))
-
-(defpackage #:reasonable-utilities.iter
-  (:nicknames #:rutils.iter)
-  (:documentation "Iterate macro, using keywords for clauses.")
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.ana/it #:rutils.list #:rutils.string)
-  (:export #:iter
-           #:iter-version
-           #:declare-variables
-           #:defclause
-           #:defclause-driver
-           #:defclause-sequence
-           #:defmacro-clause
-           #:defmacro-driver
-           #:display-iter-clauses))
-
-(defpackage #:reasonable-utilities.sequence
-  (:nicknames #:rutils.sequence)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.misc #:rutils.iter)
+(defpackage #:rutils.sequence
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.list #:rutils.hash-table)
   (:documentation "Sequence utilities, including SPLIT-SEQUENCE.")
   (:export #:deletef
            #:doindex
            #:emptyp
            #:equal-lengths
+           #:last-elt
            #:length=
+           #:nshuffle
            #:partition-with
            #:removef
            #:rotate
@@ -225,18 +199,39 @@ automatic binding of test to it.")
            #:split-sequence-if
            #:split-sequence-if-not))
 
+(defpackage #:rutils.pair
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.list)
+  (:documentation "Generic pair data structure.")
+  (:export #:ht->pairs
+           #:lt
+           #:make-pair
+           #:pair
+           #:pairs
+           #:pairs->ht
+           #:rt))
+
+(defpackage #:rutils.tree
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.anaphora #:rutils.list)
+  (:documentation "Tree utilities.")
+  (:export #:doleaves
+           #:dotree
+           #:mapleaves
+           #:maptree
+           #:tree-depth
+           #:tree-size))
 
 
-(defpackage #:reasonable-utilities.short
-  (:nicknames #:rutils.short)
-  (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.syntax
-        #:rutils.sequence #:rutils.list #:rutils.hash-table #:rutils.misc)
-  (:documentation "Short variants of some common utilities with long names.")
-  (:export #:2nd
-           #:defpar
+;;; special packages
+
+(defpackage #:rutils.abbr
+  (:use :common-lisp #:rutils.core #:rutils.misc
+        #:rutils.sequence #:rutils.list #:rutils.hash-table)
+  (:documentation "Abbreviations of some common utilities with long names.")
+  (:export #:defpar
            #:ds-bind
            #:filter
-           #:fmt
            #:fn
            #:get#
            #:ht-count
@@ -257,17 +252,26 @@ automatic binding of test to it.")
            #:rem#
            #:set#
            #:split
+           #:split-if
+           #:split-if-not
            #:sub
            #:take#
            #:w/instr
            #:w/outstr
            #:w/uniqs))
 
-(defpackage #:reasonable-utilities
-  (:nicknames #:rutils)
-  (:documentation "The whole set of core reasonable utilities, excluding short.")
-  (:use :common-lisp #:rutils.readtable))
+(defpackage #:rutils
+  (:documentation "The whole set of utilities in one package.")
+  (:use :common-lisp))
 
 (defpackage #:rutil
-  (:documentation "rutils + rutils.short")
-  (:use :common-lisp #:rutils.readtable))
+  (:documentation "The whole set of utilities + abbreviations in one package.")
+  (:use :common-lisp))
+
+
+(in-package #:rutils.readtable)
+
+(defvar +default-opts+
+  #-rutils-dev '(optimize (speed 3) (space 1) (debug 0))
+  #+rutils-dev '(optimize (debug 3))
+  "Default optimization settings for RUTILS.")

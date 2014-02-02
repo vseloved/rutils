@@ -1,20 +1,13 @@
 ;;; see LICENSE file for permissions
 
-(in-package #:reasonable-utilities.short)
 
-(declaim (optimize (speed 3) (space 1) (debug 0)))
+(in-package #:rutils.abbr)
 
-(defmacro 2nd (form)
-  "(NTH-VALUE 1 FORM)"
-  `(nth-value 1 ,form))
 
 (abbr defpar defparameter)
+
 (abbr ds-bind destructuring-bind)
 (abbr mv-bind multiple-value-bind)
-
-(declaim (inline fmt))
-(defun fmt (format-string &rest args)
-  (apply #'format nil format-string args))
 
 (abbr get# gethash (key hashtable &optional default))
 (abbr set# sethash)
@@ -41,8 +34,6 @@
 
 (abbr fn named-lambda)
 
-(abbr filter remove-if-not)
-
 (abbr m1 macroexpand-1)
 
 (abbr make make-instance)
@@ -50,3 +41,5 @@
 (abbr sub subseq)
 
 (abbr split split-sequence)
+(abbr split-if split-sequence-if)
+(abbr split-if-not split-sequence-if-not)

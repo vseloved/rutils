@@ -1,27 +1,26 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:reasonable-utilities.sequence)
+(cl:in-package #:rutils.sequence)
 (named-readtables:in-readtable rutils-readtable)
-
-(declaim (optimize (speed 3) (space 1) (debug 0)))
+(declaim #.+default-opts+)
 
 
 (defun split-sequence (delimiter seq
                        &key (count nil) (remove-empty-subseqs nil)
-                            (from-end nil) (include-delimiter nil)
-                            (start 0) (end nil) (key nil key-supplied)
+                            (from-end nil) (start 0) (end nil)
+                            (key nil key-supplied)
                             (test nil test-supplied)
                             (test-not nil test-not-supplied))
   "Return a list of subsequences in SEQ delimited by DELIMITER.
 
-If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will
-be included in the result; otherwise they will be discarded.
-All other keywords work analogously to those for SUBSTITUTE.
-In particular, the behavior of FROM-END is possibly different
-from other versions of this function; FROM-END values of NIL
-and T are equivalent unless COUNT is supplied. The second return
-value is an index suitable as an argument to SUBSEQ into the
-sequence indicating where processing stopped."
+   If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will
+   be included in the result; otherwise they will be discarded.
+   All other keywords work analogously to those for SUBSTITUTE.
+   In particular, the behavior of FROM-END is possibly different
+   from other versions of this function; FROM-END values of NIL
+   and T are equivalent unless COUNT is supplied. The second return
+   value is an index suitable as an argument to SUBSEQ into the
+   sequence indicating where processing stopped."
   (let ((len (length seq))
         (other-keys (nconc (when test-supplied
                              (list :test test))
@@ -44,7 +43,7 @@ sequence indicating where processing stopped."
               ;; we can't take any more. Return now.
               :return (values (nreverse subseqs) right)
               :else
-              :collect (subseq seq (if include-delimiter left (1+ left)) right)
+              :collect (subseq seq (1+ left) right)
                 :into subseqs
               :and sum 1 :into nr-elts
               :until (< left start)
@@ -72,13 +71,13 @@ sequence indicating where processing stopped."
                                (key nil key-supplied))
   "Return a list of subsequences in SEQ delimited by items, satisfying PREDICATE.
 
-If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will be included in the
-result; otherwise they will be discarded.  All other keywords work analogously
-to those for SUBSTITUTE.  In particular, the behavior of FROM-END is possibly
-different from other versions of this function; FROM-END values of NIL
-and T are equivalent unless COUNT is supplied.  The second return value is
-an index suitable as an argument to SUBSEQ into the sequence indicating where
-processing stopped."
+   If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will be included in the
+   result; otherwise they will be discarded.  All other keywords work analogously
+   to those for SUBSTITUTE.  In particular, the behavior of FROM-END is possibly
+   different from other versions of this function; FROM-END values of NIL
+   and T are equivalent unless COUNT is supplied.  The second return value is
+   an index suitable as an argument to SUBSEQ into the sequence indicating where
+   processing stopped."
   (let ((len (length seq))
         (other-keys (when key-supplied
                       (list :key key))))
@@ -123,16 +122,16 @@ processing stopped."
                                    (from-end nil) (start 0) (end nil)
                                    (key nil key-supplied))
   "Return a list of subsequences in SEQ delimited by items, satisfying
-\(complement PREDICATE).
+   (complement PREDICATE).
 
-If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will be
-included in the result; otherwise they will be discarded. All other
-keywords work analogously to those for SUBSTITUTE.
-In particular, the behavior of FROM-END is possibly different
-from other versions of this function; FROM-END values of NIL
-and T are equivalent unless COUNT is supplied.  The second return
-value is an index suitable as an argument to SUBSEQ into the
-sequence indicating where processing stopped."
+   If REMOVE-EMPTY-SUBSEQS is NIL, empty subsequences will be
+   included in the result; otherwise they will be discarded. All other
+   keywords work analogously to those for SUBSTITUTE.
+   In particular, the behavior of FROM-END is possibly different
+   from other versions of this function; FROM-END values of NIL
+   and T are equivalent unless COUNT is supplied.  The second return
+   value is an index suitable as an argument to SUBSEQ into the
+   sequence indicating where processing stopped."
   (let ((len (length seq))
         (other-keys (when key-supplied
                       (list :key key))))
@@ -176,30 +175,32 @@ sequence indicating where processing stopped."
                        &key (ordering #'less) (test #'eql) (key nil key-p)
                             (result-type 'list) keys-sorted)
   "Partition a SEQUENCE into a sequence of sequences, each one related
-by TEST to one key in KEY-SEQUENCE (which may be already sorted: KEYS-SORTED).
+   by TEST to one key in KEY-SEQUENCE (which may be already sorted: KEYS-SORTED).
 
-Returns a sorted KEY-SEQUENCE as a 2nd value.
+   Returns a sorted KEY-SEQUENCE as a 2nd value.
 
-Return values are coerced to RESULT-TYPE, that should be a sequence subtype
-\(default is LIST).
+   Return values are coerced to RESULT-TYPE, that should be a sequence subtype
+   (default is LIST).
 
-ORDERING is used for sorting both SEQUENCE and KEY-SEQUENCE.
-Accepts KEY."
+   ORDERING is used for sorting both SEQUENCE and KEY-SEQUENCE.
+   Accepts KEY."
   (let* ((seq-s (apply #'sort (copy-seq sequence) ordering
                        (when key-p (list :key key))))
          (key-s (if keys-sorted key-sequence
                     (sort (copy-seq key-sequence) ordering)))
          (key-rez (copy-seq key-s))
          (n (length key-s))
-         (rez (make-list n)))
-    (iter (:with i := 0)
-          (:while (and seq-s key-s))
-          (:for elt-k := (funcall (if key-p key #'identity) (first seq-s)))
-          (:for k := (car key-s))
-          (cond ((funcall test elt-k k) (push (pop seq-s) (elt rez i)))
-                ((funcall ordering k elt-k) (pop key-s)
-                                            (incf i))
-                (t (pop seq-s))))
+         (rez (make-list n))
+         (i 0))
+    (loop :while (and seq-s key-s)
+       :for elt-k := (funcall (if key-p key #'identity) (first seq-s))
+       :for k := (car key-s) :do
+       (cond ((funcall test elt-k k)
+              (push (pop seq-s) (elt rez i)))
+             ((funcall ordering k elt-k)
+              (pop key-s)
+              (incf i))
+             (t (pop seq-s))))
     (values (map result-type
                  #`(coerce % result-type)
                  rez)
@@ -213,8 +214,8 @@ Accepts KEY."
 (define-modify-macro removef (item &rest remove-keywords)
   remove/swapped-arguments
   "Modify-macro for REMOVE. Sets place designated by the first
-argument to the result of calling REMOVE with ITEM, place,
-and the REMOVE-KEYWORDS.")
+   argument to the result of calling REMOVE with ITEM, place,
+   and the REMOVE-KEYWORDS.")
 
 (declaim (inline delete/swapped-arguments))
 (defun delete/swapped-arguments (sequence item &rest keyword-arguments)
@@ -223,8 +224,8 @@ and the REMOVE-KEYWORDS.")
 (define-modify-macro deletef (item &rest remove-keywords)
   delete/swapped-arguments
   "Modify-macro for DELETE. Sets place designated by the first
-argument to the result of calling DELETE with ITEM, place,
-and the REMOVE-KEYWORDS.")
+   argument to the result of calling DELETE with ITEM, place,
+   and the REMOVE-KEYWORDS.")
 
 
 (defmacro doindex ((index-var elt-var sequence &optional result-form)
@@ -244,8 +245,26 @@ and the REMOVE-KEYWORDS.")
          (let ((,elt-var (elt ,sequence-var ,index-var)))
            ,@body)))))
 
-(defun shuffle (sequence &key (start 0) (end (length sequence)))
-  "Shuffles SEQUENCE (in bounds of START and END) in-place."
+(defun shuffle (sequence &key (start 0) end)
+  "Return a shuffled copy of SEQUENCE (in bounds of START and END)."
+  (let* ((len (length sequence))
+         (end (or end len))
+         (indices (range 0 len))
+         rez)
+    (coerce (do ((i len (1- i)))
+                ((zerop i) rez)
+              (let ((idx (if (or (> i end) (<= i start))
+                             (1- i)
+                             (+ start (random (- i start))))))
+                (push (elt sequence (elt indices idx)) rez)
+                (if (zerop idx)
+                    (setf indices (rest indices))
+                    (rplacd (nthcdr (1- idx) indices)
+                            (nthcdr (1+ idx) indices)))))
+            (type-of sequence))))
+
+(defun nshuffle (sequence &key (start 0) (end (length sequence)))
+  "Shuffle SEQUENCE (in bounds of START and END) in-place."
   (loop :for i :from start :below end :do
      (rotatef (elt sequence i)
               (elt sequence (+ i (random (- end i))))))
@@ -253,41 +272,74 @@ and the REMOVE-KEYWORDS.")
 
 (defun rotate (sequence &optional (n 1))
   "Returns a sequence of the same type as SEQUENCE, with the elements of
-SEQUENCE rotated by N: N elements are moved from the end of the sequence to
-the front if N is positive, and -N elements moved from the front to the end if
-N is negative. SEQUENCE must be a proper sequence. N must be an integer,
-defaulting to 1.
+   SEQUENCE rotated by N: N elements are moved from the end of the sequence to
+   the front if N is positive, and -N elements moved from the front to the end
+   if N is negative. SEQUENCE must be a proper sequence. N must be an integer,
+   defaulting to 1.
 
-If absolute value of N is greater then the length of the sequence, the results
-are identical to calling ROTATE with
+   If absolute value of N is greater then the length of the sequence, the results
+   are identical to calling ROTATE with
 
-  (* (signum n) (mod n (length sequence))).
+   (* (signum n) (mod n (length sequence))).
 
-Note: the original sequence may be destructively altered, and result sequence may
-share structure with it."
+   Note: the original sequence may be destructively altered,
+   and result sequence may share structure with it."
   (if (plusp n)
       (rotate-tail-to-head sequence n)
       (if (minusp n)
           (rotate-head-to-tail sequence (- n))
           sequence)))
 
+(defun rotate-tail-to-head (sequence n)
+  (declare (type (integer 1) n))
+  (if (listp sequence)
+      (let ((m (mod n (length sequence))))
+        (if (rest sequence)
+            (let* ((tail (last sequence (+ m 1)))
+                   (last (rest tail)))
+              (void (rest tail))
+              (nconc last sequence))
+            sequence))
+      (let* ((len (length sequence))
+             (m (mod n len))
+             (tail (subseq sequence (- len m))))
+        (replace sequence sequence :start1 m :start2 0)
+        (replace sequence tail)
+        sequence)))
+
+(defun rotate-head-to-tail (sequence n)
+  (declare (type (integer 1) n))
+  (if (listp sequence)
+      (let ((m (mod (1- n) (length sequence))))
+        (if (rest sequence)
+            (let* ((headtail (nthcdr m sequence))
+                   (tail (rest headtail)))
+              (void (rest headtail))
+              (nconc tail sequence))
+            sequence))
+      (let* ((len (length sequence))
+             (m (mod n len))
+             (head (subseq sequence 0 m)))
+        (replace sequence sequence :start1 0 :start2 m)
+        (replace sequence head :start1 (- len m))
+        sequence)))
+
 (defun emptyp (sequence)
   "Returns true if SEQUENCE is an empty sequence. Signals an error if SEQUENCE
-is not a sequence."
+   is not a sequence."
   (etypecase sequence
     (list (null sequence))
     (sequence (zerop (length sequence)))))
 
 (defun equal-lengths (&rest sequences)
   "Takes any number of sequences or integers in any order. Returns true iff
-the length of all the sequences and the integers are equal. Hint: there's a
-compiler macro that expands into more efficient code if the first argument
-is a literal integer."
+   the length of all the sequences and the integers are equal.
+   Hint: there's a compiler macro that expands into more efficient code
+   if the first argument is a literal integer."
   (declare (dynamic-extent sequences)
-           (inline length=)
            (optimize speed))
-  (unless (cdr sequences)
-    (error "You must call LENGTH= with at least two arguments"))
+  (unless (rest sequences)
+    (error "You must call EQUAL-LENGTHS with at least two arguments"))
   (let* ((first (pop sequences))
          (current (if (integerp first)
                       first
@@ -307,22 +359,21 @@ is a literal integer."
       (let ((optimizedp (integerp length)))
         (with-unique-names (tmp current)
           (declare (ignorable current))
-          `(locally (declare (inline sequence-of-length-p))
-             (let (,tmp
-                   ,@(unless optimizedp
-                       `((,current ,length))))
-               ,@(unless optimizedp
-                   `((unless (integerp ,current)
-                       (setf ,current (length ,current)))))
-               (and ,@(loop :for sequence :in sequences :collect
-                         (let ((len (if optimizedp length current)))
-                           `(if (integerp (setf ,tmp ,sequence))
-                                (= ,tmp ,len)
-                                (length= ,tmp ,len)))))))))))
+          `(let (,tmp
+                 ,@(unless optimizedp `((,current ,length))))
+             ,@(unless optimizedp
+                 `((unless (integerp ,current)
+                     (setf ,current (length ,current)))))
+             (and ,@(loop :for sequence :in sequences :collect
+                       (let ((len (if optimizedp length current)))
+                         `(if (integerp (setf ,tmp ,sequence))
+                              (= ,tmp ,len)
+                              (length= ,tmp ,len))))))))))
 
 (defun length= (sequence length)
-  "Return true if SEQUENCE's length equals LENGTH. Returns FALSE for circular
-lists. Signals an error if SEQUENCE is not a sequence."
+  "Return true if SEQUENCE's length equals LENGTH.
+   Returns FALSE for circular lists.
+   Signals an error if SEQUENCE is not a sequence."
   (declare (type array-index length)
            (inline length)
            (optimize speed))
@@ -340,8 +391,8 @@ lists. Signals an error if SEQUENCE is not a sequence."
 
 (defun last-elt (sequence)
   "Returns the last element of SEQUENCE.
-Signals a type-error if SEQUENCE is not a proper sequence, or is an empty
-sequence."
+   Signals a type-error if SEQUENCE is not a proper sequence,
+   or is an empty sequence."
   (block nil
     (typecase sequence
       (list (cond
@@ -356,7 +407,8 @@ sequence."
 
 (defun (setf last-elt) (object sequence)
   "Sets the last element of SEQUENCE.
-Signals a type-error if SEQUENCE is not a proper sequence, is an empty sequence."
+   Signals a type-error if SEQUENCE is not a proper sequence,
+   is an empty sequence."
   (block nil
     (typecase sequence
       (list (cond
@@ -368,7 +420,6 @@ Signals a type-error if SEQUENCE is not a proper sequence, is an empty sequence.
     (error 'type-error
            :datum sequence
            :expected-type '(and proper-sequence (not (satisfies emptyp))))))
-
 
 
 (eval-always (pushnew :split-sequence *features*))

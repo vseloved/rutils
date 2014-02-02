@@ -1,11 +1,9 @@
 ;; For license see LICENSE
 
-(in-package #:reasonable-utilities.readtable)
+(in-package #:rutilsx.readtable)
+(declaim #.+default-opts+)
 
-(declaim (optimize (speed 3) (space 1) (debug 0)))
-
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
+(eval-always
 
 (defun |@-reader| (stream char)
   "Short slot and sequence elements access syntax.
@@ -67,17 +65,10 @@
            (set# ,key *funcall-memory* ,form)))))
 
 
-(defreadtable rutils-readtable
-    (:merge :standard)
+(defreadtable rutilsx-readtable
+    (:merge rutils-readtable)
   (:macro-char #\@ #'|@-reader| t)
-  (:macro-char #\} (get-macro-character #\)))
-  (:dispatch-macro-char #\# #\{ #'|#{-reader|)
-  (:dispatch-macro-char #\# #\` #'|#`-reader|)
-  (:dispatch-macro-char #\# #\/ #'|#/-reader|)
   (:dispatch-macro-char #\# #\^ #'|#^-reader|)
 )
 
-(defreadtable rutils-rt
-    (:merge rutils-readtable))
-
-) ; end of eval-when
+) ; end of eval-always

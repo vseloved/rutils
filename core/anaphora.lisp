@@ -1,9 +1,8 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:reasonable-utilities.anaphoric/it)
+(cl:in-package #:rutils.anaphora)
 (named-readtables:in-readtable rutils-readtable)
-
-(declaim (optimize (speed 3) (space 1) (debug 0)))
+(declaim #.+default-opts+)
 
 
 (defmacro if-it (test then &optional else)
@@ -38,11 +37,6 @@
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
-(cl:in-package #:reasonable-utilities.anaphoric/let)
-(named-readtables:in-readtable rutils-readtable)
-
-(eval-always
-
 (defmacro if-let ((var test) then &optional else)
   "Like IF. VAR will be bound to TEST."
   `(let ((,var ,test))
@@ -58,7 +52,8 @@
   "Like AND. VAR will be bound to the value of the previous AND form"
   (cond ((null args) t)
         ((null (cdr args)) (car args))
-        (t `(when-let ,var ,(car args) (and-let ,@(cdr args))))))
+        (t `(when-let (,var ,(car args))
+              (and ,@(cdr args))))))
 
 (defmacro dowhile-let ((var test) &body body)
   "Like DOWHILE. VAR will be bound to TEST."
@@ -74,50 +69,15 @@
                  ;; uses the fact, that SETF returns the value set
                  body))))
 
-) ; end of eval-always
 
+(abbr aand and-it)
+(abbr acond cond-it)
+(abbr adowhile dowhile-it)
+(abbr aif if-it)
+(abbr awhen when-it)
 
-(cl:in-package #:reasonable-utilities.anaphoric/a)
-(named-readtables:in-readtable rutils-readtable)
-
-(defmacro aif (test then &optional else)
-  "Like IF. IT is bound to TEST."
-  `(let ((it ,test))
-     (if it ,then ,else)))
-
-(defmacro awhen (test &body body)
-  "Like WHEN. IT is bound to TEST."
-  `(let ((it ,test))
-     (when it
-       ,@body)))
-
-(defmacro aand (&rest args)
-  "Like AND. IT is bound to the value of the previous AND form."
-  (cond ((null args) t)
-        ((null (cdr args)) (car args))
-        (t `(when-it ,(car args) (and-it ,@(cdr args))))))
-
-(defmacro adowhile (test &body body)
-  "Like DOWHILE. IT is bound to TEST."
-  `(do ((it ,test ,test))
-       ((not it))
-     ,@body))
-
-(defmacro acond (&body body)
-  "Like COND. IT is bound to the passed COND test."
-  `(let (it)
-     (cond
-       ,@(mapcar (lambda (clause)
-                   `((setf it ,(car clause)) ,@(cdr clause)))
-                 ;; uses the fact, that SETF returns the value set
-                 body))))
-
-
-(cl:in-package #:reasonable-utilities.anaphoric/bind)
-(named-readtables:in-readtable rutils-readtable)
-
-(abbr and-bind rutils.anaphoric/let:and-let)
-(abbr cond-bind rutils.anaphoric/let:cond-let)
-(abbr dowhile-bind rutils.anaphoric/let:dowhile-let)
-(abbr if-bind rutils.anaphoric/let:if-let)
-(abbr when-bind rutils.anaphoric/let:when-let)
+(abbr and-bind and-let)
+(abbr cond-bind cond-let)
+(abbr dowhile-bind dowhile-let)
+(abbr if-bind if-let)
+(abbr when-bind when-let)

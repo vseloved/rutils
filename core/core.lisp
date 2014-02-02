@@ -1,8 +1,8 @@
 ;; For license see LICENSE
 
-(cl:in-package #:reasonable-utilities.symbol)
-
-(declaim (optimize (speed 3) (space 1) (debug 0)))
+(cl:in-package #:rutils.core)
+(named-readtables:in-readtable rutils-readtable)
+(declaim #.+default-opts+)
 
 
 (defmacro eval-always (&body body)
@@ -13,8 +13,8 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
 
 (defmacro abbr (short long &optional lambda-list)
-  "Abbreviate LONG macro or function name as SHORT. If LAMBDA-LIST is present,
-also copy appropriate SETF-expander."
+  "Abbreviate LONG macro or function name as SHORT.
+   If LAMBDA-LIST is present, also copy appropriate SETF-expander."
   `(eval-always
     (cond
       ((macro-function ',long)
@@ -50,7 +50,7 @@ also copy appropriate SETF-expander."
 
 (defun make-gensym-list (length &optional (x "G"))
   "Return a list of LENGTH gensyms, using the second (optional,
-defaulting to 'G') argument."
+   defaulting to 'G') argument."
   (let ((g (if (typep x '(integer 0)) x (string x))))
     (loop :repeat length :collect (gensym g))))
 
@@ -62,40 +62,6 @@ defaulting to 'G') argument."
 ) ; end of eval-when
 
 (abbr with-unique-names with-gensyms)
-
-(defmacro once-only (specs &body forms)
-  "Evaluate FORMS with names rebound to temporary variables, ensuring
-that each is evaluated only once.
-
-Each SPEC must be either a NAME, or a (NAME INITFORM), with plain
-NAME using the named variable as initform.
-
-Example:
-CL-USER> (defmacro cons1 (x)
-           (once-only (x)
-            `(cons ,x ,x)))
-CL-USER> (let ((y 0))
-           (cons1 (incf y)))
-\(1 . 1)"
-  (let ((gensyms (make-gensym-list (length specs) "OO"))
-        (names-and-forms (mapcar (lambda (spec)
-                                   (etypecase spec
-                                     (list
-                                      (destructuring-bind (name form) spec
-                                        (cons name form)))
-                                     (symbol
-                                      (cons spec spec))))
-                                 specs)))
-    ;; bind in user-macro
-    `(let ,(mapcar (lambda (g n) (list g `(gensym ,(string (car n)))))
-                   gensyms names-and-forms)
-       ;; bind in final expansion
-       `(let (,,@(mapcar (lambda (g n) ``(,,g ,,(cdr n)))
-                         gensyms names-and-forms))
-          ;; bind in user-macro
-          ,(let ,(mapcar (lambda (n g) (list (car n) g))
-                         names-and-forms gensyms)
-             ,@forms)))))
 
 (defun ensure-symbol (obj &key (format "~a") package)
   "Make a symbol in either PACKAGE or *PACKAGE* from OBJ according to FORMAT."
@@ -110,6 +76,16 @@ CL-USER> (let ((y 0))
   "List all symbols in a PACKAGE."
   (loop :for sym :being :the :present-symbol :of package
      :collect sym))
+
+(defun package-internal-symbols (package)
+  "List all symbols in a PACKAGE that are not imported."
+  (let ((imported-syms (make-hash-table)))
+    (dolist (pkg (package-use-list package))
+      (do-external-symbols (sym pkg)
+        (setf (gethash sym imported-syms) t)))
+    (loop :for sym :being :the :present-symbol :of package
+       :unless (gethash sym imported-syms)
+       :collect sym)))
 
 (defun package-external-symbols (package)
   "List all symbols in a PACKAGE."

@@ -1,11 +1,11 @@
 ;; For license see LICENSE
 
-(cl:in-package #:reasonable-utilities.string)
+(cl:in-package #:rutils.string)
 (named-readtables:in-readtable rutils-readtable)
+(declaim #.+default-opts+)
 
-(declaim (optimize (speed 3) (space 1) (debug 0)))
 
-(declaim (inline white-char-p))
+(declaim (inline white-char-p fmt strjoin blankp))
 
 
 (defun strcat (&rest string-designators)
@@ -76,15 +76,15 @@ negative, which means counting from the end."
 ;;               `(substr ,getter ,start ,end)))))
 
 
-(defun starts-with (prefix string)
+(defun starts-with (prefix string &key (test 'string=))
   "Test, whether STRING starts with PREFIX."
-  (if-it (mismatch prefix string)
+  (if-it (mismatch prefix string :test test)
          (= it (length prefix))
          t))
 
-(defun ends-with (suffix string)
-  "Test, whether STRING ends with SUFFIX."
-  (if-it (mismatch suffix string :from-end t)
+(defun ends-with (suffix string &key (test 'string=))
+  "Test, whether STRING ends with SUFFIX. Accepts TEST."
+  (if-it (mismatch suffix string :from-end t :test test)
          (zerop it)
          t))
 
@@ -113,3 +113,7 @@ negative, which means counting from the end."
   "Return the last character of STRING if it's not empty, otherwise - nil."
   (unless (blankp string)
     (char string (1- (length string)))))
+
+(defun fmt (format-string &rest args)
+  "(FORMAT NIL FORMAT-STRING ARGS)"
+  (apply #'format nil format-string args))

@@ -1,31 +1,70 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:reasonable-utilities.tree)
+(cl:in-package #:rutils.tree)
 (named-readtables:in-readtable rutils-readtable)
+(declaim #.+default-opts+)
 
-(declaim (optimize (speed 3) (space 1) (debug 0)))
 
+(defmacro dotree ((subtree tree &optional result) &body body)
+  "Iterate over each SUBTREE of the TREE in depth-first order.
+   Optionally return RESULT."
+  (with-gensyms (rec child)
+    `(labels ((,rec (,subtree)
+                ,@body
+                (unless (atom ,subtree)
+                  (dolist (,child (cdr ,subtree))
+                    (,rec ,child)))))
+       (when-it ,tree
+         (,rec it))
+       ,result)))
 
-(defmacro dotree ((var tree-form &optional result-form) &body body)
-  "The analog of DOLIST, operating on trees."
-  (with-gensyms (traverser list list-element)
-    `(labels ((,traverser (,list)
-                (dolist (,list-element ,list)
-                  (if (consp ,list-element)
-                      (,traverser ,list-element)
-                      (let ((,var ,list-element))
-                        ,@body)))))
-       (,traverser ,tree-form)
-       ,result-form)))
+(defmacro doleaves ((node tree &optional result) &body body)
+  "Iterate over each leaf NODE of the TREE in depth-first order.
+   Optionally return RESULT."
+  (with-gensyms (rec child)
+    `(labels ((,rec (,node)
+                (unless (atom ,node)
+                  (dolist (,child (cdr ,node))
+                    (if (atom ,child)
+                        (let ((,node ,child))
+                          ,@body)
+                        (,rec ,child))))))
+       (when-it ,tree
+         (,rec it))
+       ,result)))
 
 (defun maptree (fn tree)
+  "Map a one-argument function FN over subtree of the TREE
+   in depth-first order, returning a new tree with the same structure."
   (labels ((rec (node)
-             (if (consp node)
-                 (mapcar #'rec node)
-                 (funcall fn node))))
-    (mapcar #'rec tree)))
+             (if (atom node)
+                 (funcall fn node)
+                 (cons (funcall fn (car node))
+                       (mapcar #'rec (cdr node))))))
+    (when-it tree
+      (rec it))))
+
+(defun mapleaves (fn tree)
+  "Map a one-argument function FN over each leaf node of the TREE
+   in depth-first order, returning a new tree with the same structure."
+  (labels ((rec (node)
+             (if (atom node)
+                 (funcall fn node)
+                 (cons (car node)
+                       (mapcar #'rec (cdr node))))))
+    (when-it tree
+      (rec it))))
 
 (defun tree-size (tree)
-  "Returns the number of nodes (internal & external) in the indicated tree."
-  (when tree
-    (1+ (apply #'+ (mapcar #'tree-size tree)))))
+  "Returns the number of nodes (internal & external) in the indicated TREE."
+  (let ((acc 0))
+    (dotree (_ tree)
+      (incf acc))
+    acc))
+
+(defun tree-depth (tree)
+  "Returns the length of the largest of nodes from the root tree."
+  (cond ((atom tree) 0)
+        ((rest tree)
+         (1+ (reduce #'max (cons 1 (mapcar #'tree-depth (rest tree))))))
+        (t 1)))

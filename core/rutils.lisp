@@ -1,17 +1,24 @@
-(cl:in-package #:rutils)
-(named-readtables:in-readtable rutils-readtable)
-
-(rutils.symbol:eval-always
-  (dolist (p '(#:rutils.symbol #:rutils.readtable #:rutils.misc
-               #:rutils.iter #:rutils.ana/it #:rutils.ana/let
-               #:rutils.list #:rutils.string #:rutils.sequence #:rutils.tree
-               #:rutils.hash-table #:rutils.syntax))
-    (rutils.symbol:re-export-symbols p '#:reasonable-utilities)))
+;;;;; Addition of symbols to RUTILS & RUTIL
+;;;;; see LICENSE file for permissions
 
 
-(cl:in-package #:rutil)
-(named-readtables:in-readtable rutils-readtable)
+(in-package #:rutils)
 
-(rutils.symbol:eval-always
-  (dolist (p '(#:rutils.short #:rutils))
-    (rutils.symbol:re-export-symbols p '#:rutil)))
+(rutils.core:eval-always
+(defparameter *all-packages*
+  '(#:rutils.readtable #:rutils.core #:rutils.misc #:rutils.anaphora
+    #:rutils.list #:rutils.string #:rutils.sequence
+    #:rutils.hash-table #:rutils.tree #:rutils.pair))
+
+(dolist (p *all-packages*)
+  (rutils.core:re-export-symbols p '#:rutils))
+)
+
+
+(in-package #:rutil)
+
+
+(rutils.core:eval-always
+(dolist (p '(#:rutils.abbr #:rutils))
+  (rutils.core:re-export-symbols p '#:rutil))
+)

@@ -1,9 +1,8 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:reasonable-utilities.hash-table)
+(in-package #:rutils.hash-table)
 (named-readtables:in-readtable rutils-readtable)
-
-(declaim (optimize (speed 3) (space 1) (debug 0)))
+(declaim #.+default-opts+)
 
 
 (declaim (inline sethash))
@@ -46,7 +45,7 @@ a shallow copy is returned by default."
         (mapc (lambda (next)
                 (maphash #`(sethash % rez %%)
                          next))
-              hts)
+              (cons ht hts))
         rez)
       ht))
 
@@ -104,7 +103,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
       (pprint-indent :block 2 stream)
       (maphash (lambda (k v)
                  (pprint-newline :mandatory stream)
-                 (when (listp k) (princ #\' stream))
+                 (when (and k (listp k)) (princ #\' stream))
                  (if (typep k 'hash-table)
                      (print-hash-table k stream)
                      (prin1 k stream))
@@ -122,6 +121,32 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
 (defmacro with-keys ((&rest kv-pairs) ht &body body)
   "Like WITH-ACCESSORS but for pairs in hash-table HT."
   (once-only (ht)
-    `(let (,@(mapcar #`(list (car %) `(get# ,(second %) ,ht))
+    `(let (,@(mapcar #`(list (car %) `(gethash ,(second %) ,ht))
                      kv-pairs))
        ,@body)))
+
+(defmacro dotable ((k v table &optional rez) &body body)
+  "Like DOLIST but iterates over key-value pairs (K V) in anything, that can be
+   viewed as a table (hash-table, alist, plist, object).
+   Autodeclares variables named _ as ignored."
+  (with-gensyms (pair)
+    (once-only (table)
+      (let ((_ (find "_" (list k v)
+                     :test 'string=
+                     :key 'symbol-name)))
+        `(block nil
+           (etypecase ,table
+             (hash-table (maphash (lambda (,k ,v)
+                                    ,(when _ `(declare (ignore ,_)))
+                                    ,@body)
+                                  ,table))
+
+             (list (if (rutils.list:alistp ,table)
+                       (dolist (,pair ,table)
+                         (destructuring-bind (,k . ,v) ,pair
+                           ,(when _ `(declare (ignore ,_)))
+                           ,@body))
+                       (error 'simple-type-error
+                              :format-control "Can't iterate over proper list ~
+                                               in DOTABLE: need an alist"))))
+           ,rez)))))

@@ -8,11 +8,10 @@
 ;;; (instead of ITERATE) and only keyword keywords are allowed inside ITER
 ;;; (instead of symbol keywords from ITERATE package).
 
-(cl:in-package #:rutils.iter)
+(cl:in-package #:rutilsx.iter)
 (named-readtables:in-readtable rutils-readtable)
+(declaim #.+default-opts+)
 
-
-(declaim (optimize (speed 3) (space 1) (debug 0)))
 (declaim (declaration declare-variables))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -3455,5 +3454,4 @@ wrap PROGN around. Not copying forms."
          (strcat "Bug in Iterate: " format-string) args))
 
 
-(eval-always
-  (pushnew :iter *features*))
+(eval-always (pushnew :iter *features*))
