@@ -81,24 +81,29 @@ What is included and excluded:
 
 ### Included
 
- - "Modern" readtable with supoort for literal syntax for hash-tables,
-   lambdas and heredoc-strings Basic common contol utilities, like
- - Common macros like WITH-GENSYMS, ONCE-ONLY, EVAL-ALWAYS etc.  Anaphoric utilities ITER
- - macro with keywords support Symbol manipulation utilities List
- - manipulation utilities Sequence manipulation utilities (including
- - SPLIT-SEQUENCE) Hash-table manipulation utilities String
- - manipulation utilities Tree manipulation utilities
+- "Modern" readtable with supoort for literal syntax for hash-tables,
+  lambdas and heredoc-strings Basic common contol utilities, like
+- Common macros like WITH-GENSYMS, ONCE-ONLY, EVAL-ALWAYS etc.
+- Anaphoric utilities
+- ITER macro with keywords support
+- Symbol manipulation utilities
+- List manipulation utilities
+- Sequence manipulation utilities (including SPLIT-SEQUENCE)
+- Hash-table manipulation utilities
+- String manipulation utilities
+- Tree manipulation utilities
 
 ### Excluded
 
 * Support for concurrency.  The reason is not, that we consider this not useful or general-purpose enough, but rather, that it's a whole new paradigm, and the scope of RUTILS is too small to comfortably accomodate it.
-
 Look at:
+
  - PORTABLEAGER-FUTURES2
  - STMX
 
 * Functional features.  As in the above, it's as well a whole other paradigm.  It has a limited, but reasonable support in CL.  Other features should be unified in it's own package, and maybe RUTILS can serve as a model for such package or even accomodate it in the future.
 Look at:
+
  - SERIES
  - CLAZY
  - CL-UNIFICATION
@@ -111,7 +116,7 @@ Look at:
 * MOP.  MOP abstraction layer is a CDR and it is as well an essential part of CL.  It is implemented in CLOSER-MOP, and there are plans to integrate it in the future.
 
 
-=== Additional notes ===
+## Additional notes
 
 See LICENSE for usage permissions.
 See AUTHORS for credits.
