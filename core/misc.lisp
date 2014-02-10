@@ -102,6 +102,10 @@
    Unlike IDENTITY will return T if VAL is not NIL."
   (and val t))
 
+(defmacro 2nd (form)
+  "(NTH-VALUE 1 FORM)"
+  `(nth-value 1 ,form))
+
 (defmacro once-only (specs &body forms)
   "Evaluate FORMS with names rebound to temporary variables, ensuring
    that each is evaluated only once.
