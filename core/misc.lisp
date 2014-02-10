@@ -83,18 +83,6 @@
   `(labels ((,name ,lambda-list ,@body))
      #',name))
 
-(deftype array-index (&optional (length array-dimension-limit))
-  "Type designator for an index into array of LENGTH: an integer between
-   0 (inclusive) and LENGTH (exclusive).
-   LENGTH defaults to ARRAY-DIMENSION-LIMIT."
-  `(integer 0 (,length)))
-
-(deftype array-length (&optional (length array-dimension-limit))
-  "Type designator for a dimension of an array of LENGTH: an integer between
-   0 (inclusive) and LENGTH (inclusive).
-   LENGTH defaults to ARRAY-DIMENSION-LIMIT."
-  `(integer 0 ,length))
-
 (define-modify-macro coercef (type-spec) coerce "Modify-macro for COERCE.")
 
 (defmacro void (place)
@@ -113,10 +101,6 @@
   "The complement to NULL.
    Unlike IDENTITY will return T if VAL is not NIL."
   (and val t))
-
-(defmacro 2nd (form)
-  "(NTH-VALUE 1 FORM)"
-  `(nth-value 1 ,form))
 
 (defmacro once-only (specs &body forms)
   "Evaluate FORMS with names rebound to temporary variables, ensuring

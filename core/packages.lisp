@@ -40,8 +40,6 @@
   (:use :common-lisp #:rutils.readtable #:rutils.core)
   (:export #:2nd
            #:and2
-           #:array-index
-           #:array-length
            #:case-failure
            #:coercef
            #:cswitch
@@ -222,6 +220,14 @@
            #:tree-depth
            #:tree-size))
 
+(defpackage #:rutils.array
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.anaphora)
+  (:documentation "Array utilities.")
+  (:export #:array-index
+           #:array-length
+           #:slice))
+
 
 ;;; special packages
 
@@ -239,6 +245,7 @@
            #:ht-vals
            #:ht->plist
            #:ht->alist
+           #:in#
            #:plist->ht
            #:alist->ht
            #:merge-hts

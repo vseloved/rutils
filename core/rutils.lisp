@@ -8,7 +8,7 @@
 (defparameter *all-packages*
   '(#:rutils.readtable #:rutils.core #:rutils.misc #:rutils.anaphora
     #:rutils.list #:rutils.string #:rutils.sequence
-    #:rutils.hash-table #:rutils.tree #:rutils.pair))
+    #:rutils.hash-table #:rutils.tree #:rutils.pair #:rutils.array))
 
 (dolist (p *all-packages*)
   (rutils.core:re-export-symbols p '#:rutils))

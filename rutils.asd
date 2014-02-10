@@ -3,7 +3,7 @@
 
 (asdf:defsystem #:rutils
   :name "Radical utilities"
-  :version "3.0.0";(:read-file-line "version.txt")
+  :version "3.1.0";(:read-file-line "version.txt")
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
@@ -26,6 +26,7 @@
                          (:file "string")
                          (:file "hash-table")
                          (:file "tree")
+                         (:file "array")
                          (:file "sequence")
                          (:file "pair")
                          (:file "abbr")

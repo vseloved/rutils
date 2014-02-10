@@ -4,7 +4,7 @@
 
 (asdf:defsystem #:rutils-test
   :name "Radical utilities test suite."
-  :version "1.0.0"
+  :version "1.1.0"
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
@@ -22,4 +22,5 @@
                          (:file "hash-table-test" :depends-on ("package"))
                          (:file "sequence-test" :depends-on ("package"))
                          (:file "tree-test" :depends-on ("package"))
-                         (:file "pair-test" :depends-on ("package"))))))
+                         (:file "pair-test" :depends-on ("package"))
+                         (:file "array-test" :depends-on ("package"))))))

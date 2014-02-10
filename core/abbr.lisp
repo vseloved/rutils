@@ -3,6 +3,8 @@
 
 (in-package #:rutils.abbr)
 
+(declaim (inline in#))
+
 
 (abbr defpar defparameter)
 
@@ -13,6 +15,9 @@
 (abbr set# sethash)
 (abbr rem# remhash)
 (abbr take# takehash)
+(defun in# (key hash-table)
+  "Check if KEY is present in HASH-TABLE."
+  (2nd (get# key hash-table)))
 
 (abbr ht-count hash-table-count)
 (abbr ht-keys hash-table-keys)
