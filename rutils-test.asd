@@ -4,7 +4,7 @@
 
 (asdf:defsystem #:rutils-test
   :name "Radical utilities test suite."
-  :version "1.1.0"
+  :version "1.1.1"
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"

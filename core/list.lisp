@@ -206,33 +206,37 @@ argument.")
   "Return a single list whose elements are lists
    of the consecutive elements of LISTS,
    until one of the LISTS ends."
-  (apply #'zip-with #'list lists))
+  (when lists
+    (apply #'zip-with #'list lists)))
 
 (defun zip-with (fn &rest lists)
   "Return a single list whose elements are the results
    of applying FN to groups of the consecutive elements of LISTS,
    until one of the LISTS ends."
-  (let (rez)
-    (do ((tails lists (mapcar #'cdr tails)))
-        ((some #'null tails))
-      (push (apply fn (mapcar #'car tails)) rez))
-    (reverse rez)))
+  (when lists
+    (let (rez)
+      (do ((tails lists (mapcar #'cdr tails)))
+          ((some #'null tails))
+        (push (apply fn (mapcar #'car tails)) rez))
+      (reverse rez))))
 
 (defun zip* (&rest lists)
   "Return a single list whose elements are lists
    of the consecutive elements of LISTS,
    until all of the LISTS end."
-  (apply #'zip*-with #'list lists))
+  (when lists
+    (apply #'zip*-with #'list lists)))
 
 (defun zip*-with (fn &rest lists)
   "Return a single list whose elements are the results
    of applying FN to groups of the consecutive elements of LISTS,
    until all of the LISTS end."
-  (let (rez)
-    (do ((tails lists (mapcar #'cdr tails)))
-        ((every #'null tails))
-      (push (apply fn (mapcar #'car tails)) rez))
-    (reverse rez)))
+  (when lists
+    (let (rez)
+      (do ((tails lists (mapcar #'cdr tails)))
+          ((every #'null tails))
+        (push (apply fn (mapcar #'car tails)) rez))
+      (reverse rez))))
 
 (defun maptimes (times fn)
   "Map FN with number range from 0 to TIMES (exclusive)."

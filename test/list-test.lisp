@@ -162,6 +162,8 @@
           (set-equal '(:foo :bar) '(:foo :bar :baz))))
 
 (deftest zip ()
+  (should be null
+          (zip))
   (should be equal '((:foo :baz) (:bar 42))
           (zip '(:foo :bar) '(:baz 42)))
   (should be equal '((:foo :baz))
@@ -170,10 +172,14 @@
           (zip '(:foo :bar) ())))
 
 (deftest zip-with ()
+  (should be null
+          (zip-with 'identity))
   (should be equal '((:foo . :baz) (:bar . 42))
           (zip-with 'cons '(:foo :bar) '(:baz 42))))
 
 (deftest zip* ()
+  (should be null
+          (zip*))
   (should be equal '((:foo :baz) (:bar 42))
           (zip* '(:foo :bar) '(:baz 42)))
   (should be equal '((:foo :baz) (:bar nil))
@@ -182,6 +188,8 @@
           (zip* '(:foo :bar) ())))
 
 (deftest zip*-with ()
+  (should be null
+          (zip*-with 'identity))
   (should be equal '((:foo . 41) (:bar . 42) (:baz))
           (zip*-with 'cons '(:foo :bar :baz) '(41 42))))
 
