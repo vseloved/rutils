@@ -48,3 +48,18 @@
 (abbr split split-sequence)
 (abbr split-if split-sequence-if)
 (abbr split-if-not split-sequence-if-not)
+
+
+(cl:in-package #:rutils.anaphora)
+
+(abbr aand and-it)
+(abbr acond cond-it)
+(abbr adowhile dowhile-it)
+(abbr aif if-it)
+(abbr awhen when-it)
+
+(abbr and-bind and-let)
+(abbr cond-bind cond-let)
+(abbr dowhile-bind dowhile-let)
+(abbr if-bind if-let)
+(abbr when-bind when-let)
