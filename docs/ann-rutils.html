@@ -1,0 +1,250 @@
+
+
+<h1>Announcing RADICAL-UTILS (a.k.a RUTILS 3.0)</h1>
+
+<h2>TL;DR</h2>
+
+<p><code>RUTILS</code> is to my knowledge the most comprehensive and all-encompassing
+suite of syntactic utilities to support modern day-to-day <code>Common Lisp</code> development.
+It aims to simplify the experience of both serious system-level development
+and rapid experimentation in the REPL.</p>
+
+<p>The library has stabilized over more than 3 years of evolution,
+it introduces some substantial improvements not available elsewhere,
+has a thorough documentation and a good test suite.
+The only thing it lacks is, probably, a manual, yet example usage can be found
+in my other libraries (notably, <a href="https://github.com/vseloved/cl-redis" >CL-REDIS</a>
+and <a href="https://github.com/vseloved/should-test" >SHOULD-TEST</a>).</p>
+
+<h2>A short history</h2>
+
+<p>According to git history I've started the project <code>RUTILS</code>
+(originally, <code>REASONABLE-UTILITIES</code>) on Saturday, Sep 12 2009, almost 4,5 years ago.
+Yet, I've never done any serious announcement of it.
+One of the reasons was that it's kind of controversial
+to release &quot;yet another&quot;™ utilities library for Common Lisp,
+so I wanted to see if it would stick without any promotion.
+And it hasn't - i.e. it hasn't gotten any serious adoption in the CL crowd
+(e.g. only one of the authors of libraries in Quicklisp has used it,
+and only once there was a serious external interest to contribute).
+Yet, it did stick very well with me and has grown quite well over the years.</p>
+
+<p>And now it has reached version 3 by finally getting a proper test suite,
+and I've also come to the conclusion that it makes sense to rename the project
+to <code>RADICAL-UTILITIES</code> - just to add a bit of self-irony
+that should be an essential component of any grown-up open source project. ;)</p>
+
+<h2>So, why <code>RUTILS</code>?</h2>
+
+<p>Initially, the concept of the library was expressed in its
+<a href="https://github.com/vseloved/rutils/blob/master/docs/reasonable-utilities.md" >manifesto</a>.
+Here are the three main points:</p>
+
+<ul>
+<li><p>Become an extension to Common Lisp standard by adding the missing pieces
+  that were proposed by notable members of the community in the past
+  or have been proven useful in other languages.
+  This aim included support of as many <a href="http://cdr.eurolisp.org/" >CDR</a>s, as possible.</p></li>
+<li><p>Accumulate all the useful syntactic utilities in one suite.
+  Contrary to <a href="http://common-lisp.net/project/alexandria" >ALEXANDRIA</a>), the most widely-used Lisp utilities library,
+  that proclaims the concept of a &quot;good citizen&quot; (i.e it doesn't include such libraries
+  as <a href="https://github.com/sharplispers/split-sequence" >SPLIT-SEQUENCE</a>, <a href="http://common-lisp.net/project/anaphora/" >ANAPHORA</a>,
+  or <a href="http://common-lisp.net/project/iterate/" >ITERATE</a>),
+  <code>RUTILS</code> aims to include all the needed pieces, regardless of their origin
+  and presence in other libraries.</p></li>
+<li><p>Introduce fine-grained modularity - one of the common complaints about the
+  standard is lack of this property. So, as <code>RUTILS</code> is intended
+  as an extension of the standard, it makes sense to address the complaint
+  This point, actually, arouse interest from the folks at
+  <a href="https://github.com/mathematical-systems" >Mathematical Systems Institute</a>,
+  who proposed to co-develop the library, and that prompted the appearance of version 2.0.
+  Yet, their plans had changed, and this collaboration hadn't worked out.
+  However, it pushed me to the understanding of what should be done
+  to make the library production-ready and generally useful.</p></li>
+</ul>
+
+<p><code>REASONABLE-UTILITIES</code> has failed in several aspects.
+First of all, there was not enough effort put into documentation and testing.
+Also, <code>CDR</code> support didn't prove very useful in practice.
+Finally, the modularity aspect, regardless of its theoretical appeal,
+doesn't seem to make a difference as well:
+<code>:shadow</code> is just enough to deal with modularity at this level :)</p>
+
+<p>However, all that was not critical, because the benefits for me personally
+were always substantial.</p>
+
+<h2>Version 3.0. Radical?</h2>
+
+<p>So, <code>RUTILS</code> has gradually solidified. In 2011 I had found the time to document everything,
+and last year I had finally added a good test suite
+(after, also finally finding a comfortable way to write tests with <a href="https://github.com/vseloved/should-test" >SHOULD-TEST</a>).</p>
+
+<p>So, here are the main benefits of <code>RUTILS</code>:</p>
+
+<ul>
+<li><p>Adding a big set of list, hash-table, string, sequence, tree, array
+  and other general-purpose utilities.</p></li>
+<li><p>Providing a readtable with support for short lambdas (similar to Clojure's),
+  literal hash-tables and vectors, and heredoc strings.
+  This is the first &quot;radical&quot; step, as it radically cracks on boilerplate,
+  and is a good use of the standard reader facilities (as well, as the excellent
+  <a href="http://common-lisp.net/projects/named-readtables/" >NAMED-READTABLES</a> library).
+  In general, I would say that support making hash-tables a first-class citizen
+  is the main achievement of <code>RUTILS</code>.</p></li>
+<li><p>And the second &quot;radical&quot; step - adding shortcuts for many standard Common Lisp operators
+  and some of <code>RUTILS</code> utilities as well. This serves three purposes: simplifies
+  introduction of many operations to beginners, reduces typing in the
+  REPL, and saves on horizontal line space (I adhere to 80-characters rule).
+  This is a debatable decision, yet the stance of <code>RUTILS</code> is to provide the choice,
+  but not enforce it.</p></li>
+<li><p>Adding a <code>pair</code> structure instead of cons-pair. Frankly, there's nothing very
+  wrong with cons-pair, except for the ugly middle-dot syntax for it,
+  but it's, I believe, a general agreement in the CL community, that cons-pair
+  is legacy and should be deprecated. Getting rid of it also allows to retire
+  <code>car</code> and <code>cdr</code> - which is a necessary step despite a strong affection to them
+  with many seasoned lispers (myself included, although I'm not very seasoned :)</p></li>
+</ul>
+
+<p>Some more radicality may be found in the system <code>RUTILSX</code>, which is treated as <code>contrib</code>.
+Here I plan to place the stuff which value may not really be well-proven.
+Currently, it includes <code>iterate</code> with keywords from <code>keyword</code> package
+(this solves naming conflicts and allows to use arbitrary clause keywords),
+my own version of a generic <code>bind</code> (I had a couple of attempts at it),
+and, perhaps, the most radical of all - the addition of <code>~</code> operator
+for generic access to elements of arbitrary structures. Think:</p>
+
+<pre><code>(~ #{:foo '(1 2 3}} :foo 1) =&gt; 2  ;; #{} is a literal hash-table syntax
+</code></pre>
+
+<p>Finally, as mentioned earlier, <code>RUTILS</code> also includes a comprehensive test suite
+that covers all, but the most basic and straightforward functions and macros.
+Most other utility libraries don't.</p>
+
+<h2>FAQ (imaginary)</h2>
+
+<p><a href="http://common-lisp.net/project/alexandria" >ALEXANDRIA</a> is the most widely used CL utilities library,
+and, actually, CL library in general. Why not use it?</p>
+
+<blockquote>
+<p>I don't have anything against it, as it's just useful.
+Yet, if I was using it, I'd still need to depend on several other libraries
+(which is not a problem now with [quicklisp]).
+Still, I'd also have to include my own stuff in each project,
+as no external library provides reader macros for hash-tables and lambdas,
+as well as many other small things provided by <code>RUTILS</code>.</p>
+</blockquote>
+
+<p>What about <a href="http://quickutil.org/" >quickutil</a>?</p>
+
+<blockquote>
+<p>I think, it solves the wrong problem. The main problem is utilities' raw utility :)
+Lack of modularity is often mentioned as a drawback of the Lisp standard,
+but practice shows that it's just a perception issue, not a real-world one.
+I believe, that the level of modularity provided by <code>RUTILS</code> is just good enough,
+and even it isn't utilized so far (but, maybe, in the future it will be to some extent).
+The <code>QUICKUTIL</code> approach just adds unnecessary bookkeeping
+and introduces another import mechanism, while sticking with the standard package
+import also would work and doesn't create additional mental tax and confusion.</p>
+
+<p>Also, I've come to the conclusion that Lisp's flat namespaces are, actually,
+a win over most implementations of hierarchical namespaces,
+but that's a subject of another rant.</p>
+</blockquote>
+
+<p>What about other individuals' utility suits (<code>metatilities</code>, <code>arnesi</code>,
+<code>fare-utils</code>, ...) - I remember, that <a href="http://twitter.com/xach" >Xach</a>
+has counted around 13?</p>
+
+<blockquote>
+<p>Most of them are not supported. They also are usually a random
+collection of stuff without a vision. Yet, sometimes it makes sense to use them as well:
+for instance, I've used <a href="http://common-lisp.net/project/bese/arnesi.html" >ARNESI</a>
+for its delimited continuations facility and had even put it a fork on my
+<a href="https://github.com/vseloved/arnesi" >github</a> to fix some bugs.
+Although, as discussed below, a finer-grained approach is better -
+see <a href="http://common-lisp.net/projects/cl-cont/" >CL-CONT</a>.</p>
+</blockquote>
+
+<p>Have you heard of <a href="http://www.reddit.com/r/lisp/comments/1vtueu/cl21_common_lisp_in_the_21st_century/" >cl21</a>?
+How does it compare with <code>RUTILS</code>?</p>
+
+<blockquote>
+<p>Surely. It is a similar effort to <code>RUTILS</code>, but with a much bolder aim.
+I, personally, doubt that it will succeed in it, because Lisp's culture is quite conservative
+and you need to get a buy-in from the community in order to make such radical moves.
+The problem with this is that no one has enough motivation,
+given that Lisp is already good enough and
+there's no central authority to steward the evolution process.</p>
+
+<p>So, the way to go, as for me, is to make small incremental improvements and get them adopted.
+This has always worked in the past, and there are many good examples:
+<a href="http://common-lisp.net/projects/closer/closer-mop.html" >CLOSER-MOP</a>,
+<a href="http://weitz.de/cl-ppcre/" >CL-PPCRE</a>, <a href="http://common-lisp.net/projects/named-readtables/" >NAMED-READTABLES</a>,
+<a href="http://within-parens.blogspot.com/" >Marco Antoniotti's libraries</a>,
+<a href="http://common-lisp.net/projects/cl-cont/" >CL-CONT</a>, <a href="https://github.com/m2ym/optima" >OPTIMA</a>, etc.</p>
+
+<p>The main improvements, proposed by <code>cl21</code> can or are already addressed by such libraries,
+including <code>RUTILS</code>. For instance, <code>cl21</code> proposes the same literal syntax for hash-tables.
+Another utility already present in <code>RUTILS</code> is a generic sequence iteration loop:
+<code>doeach</code> in <code>cl21</code> and <code>doseq</code> in <code>RUTILSX</code>.</p>
+
+<p>The only thing that, IMHO, may make sense to explicitly modernize in Lisp is the reader,
+as it has 2 hard-coded cases for handling <code>.</code> and <code>:</code>. I'm thinking
+in the lines of providing access to the previously read item and thus allowing
+for definition of arbitrary infix syntaxes. But this needs much more research...</p>
+</blockquote>
+
+<p>What about speed and performance?</p>
+
+<blockquote>
+<p>Lisp is a dynamic language with good performance characteristics.
+One of the reasons for that is the standard library engineered with performance in mind.
+It is manifested in the presence of various specific functions
+for working with different data structures (like <code>nth</code>, <code>svref</code>, <code>aref</code>, <code>char</code> accessors).
+This prompts a valid criticism as being unfriendly to newcomers.
+The solution, in my opinion, is to build on top of that generic versions
+using capabilities provided by CLOS. The sequence-manipulation part of the standard
+sets such an example with the likes of <code>elt</code>.
+<code>RUTILS</code> continues alone this track. But there's an obvious drawback of loosing
+the performance benefit. I think that the Lisp approach here is balanced,
+as it's always possible to fall back to the &quot;low-level&quot; specific functions
+(that should always be provided), and at the same time to use the easy approach
+in 95% of the case when performance isn't critical.</p>
+</blockquote>
+
+<p>In <code>RUTILS</code> there's very little support for functional programming. Why is it missing?</p>
+
+<blockquote>
+<p>There are several aspects of functional programming that are not present in CL standard.
+One that is usually addressed by utilities is function composition and currying.
+It is also addressed by <code>RUTILS</code> but in an uncommon way - with sharp-backquote reader macro.
+In my opinion it's a more concise, yet easier to understand approach.
+Here are a couple of examples taken from <a href="http://www.reddit.com/r/lisp/comments/1vtueu/cl21_common_lisp_in_the_21st_century/" >cl21</a> docs and elswhere:</p>
+
+<pre><code> #`(member % '(&quot;foo&quot; &quot;bar&quot;) :test 'string=) is a generalized approach to currying
+ #`(sin (1+ %)) is the equivalent of (compose #'sin #'1+) in cl21
+ #`(and (integerp %) (evenp %)) is the equivalent of (conjoin #'integerp #'evenp) in cl21
+ #`(or (oddp %) (zerop %)) is the equivalent of (disjoin #'oddp #'zerop) in cl21
+</code></pre>
+
+<p>The benefit of this approach is that it is the same for any kinds of composition,
+while you need to define your own functions to accommodate them with the &quot;functional&quot; style:
+for example, how do you join on <code>xor</code>? (btw, <code>xor</code> is also provided by <code>RUTILS</code>)</p>
+
+<p>Other functional features, like lazy evaluation, pattern matching,
+or functional data-structures, are much more specific in use
+(for example, I use rarely use them if at all), and they have dedicated support elsewhere.
+See <a href="http://common-lisp.net/projects/clazy/" >CLAZY</a>, <a href="https://github.com/m2ym/optima" >OPTIMA</a>,
+and <a href="http://common-lisp.net/project/fset/Site/index.html" >FSet</a> for examples.</p>
+</blockquote>
+
+<p>Where's the documentation you're mentioning?</p>
+
+<blockquote>
+<p>It's in the docstrings and subsequently in the excellent
+<a href="http://quickdocs.org/rutils/api" >quickdocs</a>. With its appearance I
+can only recommend everyone not to waste time on creating a function
+documentation for your library, and focus on manual and use cases
+instead. Though, we need to wait for the update of the project to the
+most recent quicklisp.</p>
+</blockquote>
