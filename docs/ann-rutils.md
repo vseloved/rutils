@@ -224,7 +224,7 @@ In `RUTILS`, there's very little support for functional programming. Why is it m
 
 > Other functional features, like lazy evaluation, pattern matching,
 > or functional data-structures, are much more specific in use
-> (for example, I use rarely use them if at all), and they have dedicated support elsewhere.
+> (for example, I rarely use them if at all), and they have dedicated support elsewhere.
 > See [CLAZY](http://common-lisp.net/projects/clazy/), [OPTIMA][optima],
 > and [FSet](http://common-lisp.net/project/fset/Site/index.html) for examples.
 
