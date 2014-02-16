@@ -5,7 +5,7 @@ both in the REPL and in large system development)
 
 RUTILS stands for RADICAL-UTILITIES :)
 
-See the [announcement](docs/ann-ruitls.md).
+See the [announcement](docs/ann-rutils.md).
 
 
 ## Short history
