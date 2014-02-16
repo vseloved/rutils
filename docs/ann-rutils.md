@@ -48,14 +48,14 @@ Here are the three main points:
 
 - Accumulate all the useful syntactic utilities in one suite.
   Contrary to [ALEXANDRIA][alexandria]), the most widely-used Lisp utilities library,
-  that proclaims the concept of a "good citizen" (i.e it doesn't include such libraries
+  that proclaims the concept of a "good citizen" (i.e. it doesn't include such libraries
   as [SPLIT-SEQUENCE][split-sequence], [ANAPHORA](http://common-lisp.net/project/anaphora/),
   or [ITERATE](http://common-lisp.net/project/iterate/)),
   `RUTILS` aims to include all the needed pieces, regardless of their origin
   and presence in other libraries.
 
 - Introduce fine-grained modularity - one of the common complaints about the
-  standard is lack of this property. So, as `RUTILS` is intended
+  standard is the lack of this property. So, as `RUTILS` is intended
   as an extension of the standard, it makes sense to address the complaint
   This point, actually, arouse interest from the folks at
   [Mathematical Systems Institute](https://github.com/mathematical-systems),
@@ -77,7 +77,7 @@ were always substantial.
 
 ## Version 3.0. Radical?
 
-So, `RUTILS` has gradually solidified. In 2011 I had found the time to document everything,
+So, `RUTILS` has gradually solidified. In 2011, I had found the time to document everything,
 and last year I had finally added a good test suite
 (after, also finally finding a comfortable way to write tests with [SHOULD-TEST][should-test]).
 
@@ -95,7 +95,7 @@ So, here are the main benefits of `RUTILS`:
   is the main achievement of `RUTILS`.
 
 - And the second "radical" step - adding shortcuts for many standard Common Lisp operators
-  and some of `RUTILS` utilities as well. This serves three purposes: simplifies
+  and some of `RUTILS` utilities, as well. This serves three purposes: simplifies
   introduction of many operations to beginners, reduces typing in the
   REPL, and saves on horizontal line space (I adhere to 80-characters rule).
   This is a debatable decision, yet the stance of `RUTILS` is to provide the choice,
@@ -140,7 +140,7 @@ What about [quickutil](http://quickutil.org/)?
 > I think, it solves the wrong problem. The main problem is utilities' raw utility :)
 > Lack of modularity is often mentioned as a drawback of the Lisp standard,
 > but practice shows that it's just a perception issue, not a real-world one.
-> I believe, that the level of modularity provided by `RUTILS` is just good enough,
+> I believe that the level of modularity provided by `RUTILS` is just good enough,
 > and even it isn't utilized so far (but, maybe, in the future it will be to some extent).
 > The `QUICKUTIL` approach just adds unnecessary bookkeeping
 > and introduces another import mechanism, while sticking with the standard package
@@ -166,11 +166,11 @@ Have you heard of [cl21][cl21]?
 How does it compare with `RUTILS`?
 
 > Surely. It is a similar effort to `RUTILS`, but with a much bolder aim.
-> I, personally, doubt that it will succeed in it, because Lisp's culture is quite conservative
+> I, personally, doubt that it will succeed in it, because Lisp's culture is quite conservative,
 > and you need to get a buy-in from the community in order to make such radical moves.
 > The problem with this is that no one has enough motivation,
-> given that Lisp is already good enough and
-> there's no central authority to steward the evolution process.
+> given that Lisp is already good enough,
+> and there's no central authority to steward the evolution process.
 
 > So, the way to go, as for me, is to make small incremental improvements and get them adopted.
 > This has always worked in the past, and there are many good examples:
@@ -199,19 +199,19 @@ What about speed and performance?
 > The solution, in my opinion, is to build on top of that generic versions
 > using capabilities provided by CLOS. The sequence-manipulation part of the standard
 > sets such an example with the likes of `elt`.
-> `RUTILS` continues alone this track. But there's an obvious drawback of loosing
+> `RUTILS` continues along this track. But there's an obvious drawback of loosing
 > the performance benefit. I think that the Lisp approach here is balanced,
 > as it's always possible to fall back to the "low-level" specific functions
 > (that should always be provided), and at the same time to use the easy approach
 > in 95% of the case when performance isn't critical.
 
-In `RUTILS` there's very little support for functional programming. Why is it missing?
+In `RUTILS`, there's very little support for functional programming. Why is it missing?
 
 > There are several aspects of functional programming that are not present in CL standard.
 > One that is usually addressed by utilities is function composition and currying.
 > It is also addressed by `RUTILS` but in an uncommon way - with sharp-backquote reader macro.
 > In my opinion it's a more concise, yet easier to understand approach.
-> Here are a couple of examples taken from [cl21][cl21] docs and elswhere:
+> Here are a couple of examples taken from [cl21][cl21] docs and elsewhere:
 
 >      #`(member % '("foo" "bar") :test 'string=) is a generalized approach to currying
 >      #`(sin (1+ %)) is the equivalent of (compose #'sin #'1+) in cl21
@@ -231,8 +231,8 @@ In `RUTILS` there's very little support for functional programming. Why is it mi
 Where's the documentation you're mentioning?
 
 > It's in the docstrings and subsequently in the excellent
-> [quickdocs](http://quickdocs.org/rutils/api). With its appearance I
-> can only recommend everyone not to waste time on creating a function
+> [quickdocs](http://quickdocs.org/rutils/api). With its appearance,
+> I can only recommend everyone not to waste time on creating a function
 > documentation for your library, and focus on manual and use cases
 > instead. Though, we need to wait for the update of the project to the
 > most recent quicklisp.
