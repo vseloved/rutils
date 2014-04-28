@@ -238,9 +238,6 @@ Where's the documentation you're mentioning?
 > most recent quicklisp.
 
 
-
-
-
   [alexandria]: http://common-lisp.net/project/alexandria
   [split-sequence]: https://github.com/sharplispers/split-sequence
   [should-test]: https://github.com/vseloved/should-test

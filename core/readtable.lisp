@@ -85,17 +85,27 @@
    - #`(+ % %%) => (lambda (&optional x y) (+ x y))
   "
   (declare (ignore char arg))
-  (let ((sexp (read stream t nil t))
-        (x (gensym "X"))
+  `(trivial-positional-lambda ,@(read stream t nil)))
+
+(defmacro trivial-positional-lambda (&environment env &body body)
+  (let ((x (gensym "X"))
         (y (gensym "Y")))
     `(lambda (&optional ,x ,y)
        (declare (ignorable ,x)
                 (ignorable ,y))
+       #-sbcl
        ,@(subst y '%%
                 (subst x '%
-                       (if (listp (car sexp))
-                           sexp
-                           (list sexp)))))))
+                       (if (listp (car body)) body (list sexp))))
+       #+sbcl
+       ,(sb-walker:walk-form
+         body env
+         (lambda (subform context env)
+           (declare (ignore context env))
+           (case subform
+             (%  x)
+             (%% y)
+             (t subform)))))))
 
 (defun |#/-reader| (stream char arg)
   "Literal syntax for raw strings (which don't need escapin of control chars).
