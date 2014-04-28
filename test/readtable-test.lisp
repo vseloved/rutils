@@ -45,7 +45,9 @@
 
 (deftest |#`-reader| ()
   (should be = 4
-          (funcall (eval (read-from-string "#`(+ % %%)")) 2 2)))
+          (funcall (eval (read-from-string "#`(+ % %%)")) 2 2))
+  (should be = 4
+          (funcall (eval (read-from-string "#`((+ % %%) (+ %% %))")) 2 2)))
 
 (deftest |#/-reader| ()
   (should be string= "foo \"bar\""
