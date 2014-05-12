@@ -277,9 +277,7 @@
 
 (defun generate-switch-body (whole object clauses test key &optional default)
   (with-gensyms (value)
-    (setf test (extract-function-name test))
-    (setf key (extract-function-name key))
-    `(let ((,value (,key ,object)))
+    `(let ((,value (funcall ,key ,object)))
       (cond ,@(mapcar (lambda (clause)
                         (if (member (first clause) '(t otherwise))
                             (progn
@@ -290,18 +288,18 @@
                               (setf default `(progn ,@(rest clause)))
                               '(()))
                             (destructuring-bind (key-form &body forms) clause
-                              `((,test ,value ,key-form)
+                              `((funcall ,test ,value ,key-form)
                                 ,@forms))))
                       clauses)
             (t ,default)))))
 
-(defmacro switch (&whole whole (object &key (test 'eql) (key 'identity))
+(defmacro switch (&whole whole (object &key (test ''eql) (key ''identity))
                          &body clauses)
   "Evaluate first matching clause, returning its values, or evaluates and
    returns the values of DEFAULT if no keys match."
   (generate-switch-body whole object clauses test key))
 
-(defmacro cswitch (&whole whole (object &key (test 'eql) (key 'identity))
+(defmacro cswitch (&whole whole (object &key (test ''eql) (key ''identity))
                           &body clauses)
   "Like SWITCH, but signals a continuable error if no key matches."
   (generate-switch-body whole object clauses test key
@@ -310,7 +308,7 @@
                                  :possibilities ',(mapcar #'first clauses)
                                  :name 'cswitch)))
 
-(defmacro eswitch (&whole whole (object &key (test 'eql) (key 'identity))
+(defmacro eswitch (&whole whole (object &key (test ''eql) (key ''identity))
                           &body clauses)
   "Like SWITCH, but signals an error if no key matches."
   (generate-switch-body whole object clauses test key

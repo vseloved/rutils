@@ -177,12 +177,24 @@
           (switch ("foo" :key 'mkeyw)
             (:foo :ok)
             (t t)))
+  (should be eql :ok
+          (switch ("foo" :key (lambda (x) (mkeyw x)))
+            (:foo :ok)
+            (t t)))
   (should be true
           (switch ("foo")
             ("foo" :ok)
             (otherwise t)))
   (should be eql :ok
           (switch ("foo" :test 'string=)
+            ("foo" :ok)
+            (otherwise t)))
+  (should be eql :ok
+          (switch ("foobar" :test #`(starts-with %% %))
+            ("foo" :ok)
+            (otherwise t)))
+  (should be eql :ok
+          (switch ("foobar" :test #`(starts-with %% %) :key #`(slice % 0 3))
             ("foo" :ok)
             (otherwise t))))
 
