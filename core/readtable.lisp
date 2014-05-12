@@ -86,11 +86,11 @@
   "
   (declare (ignore char arg))
   (let ((sexp (read stream t nil t)))
-    `(trivial-positional-lambda ,@(if (listp (car sexp))
-                                      (cons 'progn sexp)
-                                      (list sexp)))))
+    `(trivial-positional-lambda ,(if (and (listp sexp) (listp (car sexp)))
+                                     (cons 'progn sexp)
+                                     sexp))))
 
-(defmacro trivial-positional-lambda (&environment env &body body)
+(defmacro trivial-positional-lambda (&environment env body)
   (declare (ignorable env))
   (let ((x (gensym "X"))
         (y (gensym "Y")))

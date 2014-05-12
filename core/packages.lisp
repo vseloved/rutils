@@ -177,9 +177,17 @@
            #:takehash
            #:with-keys))
 
+(defpackage #:rutils.array
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.anaphora)
+  (:documentation "Array utilities.")
+  (:export #:array-index
+           #:array-length
+           #:slice))
+
 (defpackage #:rutils.sequence
   (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
-        #:rutils.list #:rutils.hash-table)
+        #:rutils.list #:rutils.hash-table #:rutils.array)
   (:documentation "Sequence utilities, including SPLIT-SEQUENCE.")
   (:export #:deletef
            #:doindex
@@ -219,14 +227,6 @@
            #:maptree
            #:tree-depth
            #:tree-size))
-
-(defpackage #:rutils.array
-  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
-        #:rutils.anaphora)
-  (:documentation "Array utilities.")
-  (:export #:array-index
-           #:array-length
-           #:slice))
 
 
 ;;; special packages

@@ -45,6 +45,6 @@
     (listcase list
       (alist (mapcar #`(pair (car %) (cdr %))
                      list))
-      (dlist (mapcar #`(pair % %%)
+      (dlist (mapcar #'pair
                      (car list) (cdr list)))
-      (t (mapindex #`(pair % %%) list)))))
+      (t (mapindex #'pair list)))))

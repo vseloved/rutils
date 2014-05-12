@@ -3,7 +3,7 @@
 
 (asdf:defsystem #:rutils
   :name "Radical utilities"
-  :version "3.1.4";(:read-file-line "version.txt")
+  :version "3.1.5";(:read-file-line "version.txt")
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
