@@ -17,6 +17,7 @@
                          (:file "generic")
                          (:file "bind")
                          (:file "iter")
+                         (:file "threading")
                          (:file "rutilsx")))))
 
 
