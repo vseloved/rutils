@@ -16,4 +16,5 @@
             :components ((:file "packagex")
                          (:file "generic-test" :depends-on ("packagex"))
                          (:file "bind-test" :depends-on ("packagex"))
-                         (:file "iter-test" :depends-on ("packagex"))))))
+                         (:file "iter-test" :depends-on ("packagex"))
+                         (:file "threading-test" :depends-on ("packagex"))))))
