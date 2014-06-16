@@ -37,6 +37,12 @@
   (:export #:bind
            #:bind-dispatch))
 
+(defpackage #:rutilsx.threading
+  (:documentation "Clojure-like threading macros.")
+  (:use :common-lisp #:rutil)
+  (:export #:->
+           #:->>))
+
 (defpackage #:rutilsx
   (:documentation "The whole set of utilities in one package.")
   (:use :common-lisp))
