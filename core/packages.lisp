@@ -279,6 +279,6 @@
 (in-package #:rutils.readtable)
 
 (defvar +default-opts+
-  #-rutils-dev '(optimize (speed 3) (space 1) (debug 0))
+  #-rutils-dev '(optimize (speed 3) (space 1))
   #+rutils-dev '(optimize (debug 3))
   "Default optimization settings for RUTILS.")
