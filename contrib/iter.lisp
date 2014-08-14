@@ -643,7 +643,7 @@ it will not be seen."
   "Walk a special form, defined in *SPECIAL-FORM-ALIST*."
   (let ((*clause* form)
         (func (cdr (assoc (if (keywordp (car form))
-                              (find-symbol (string (car form)) 'rutils.iter)
+                              (find-symbol (string (car form)) 'rutilsx.iter)
                               (car form))
                           *special-form-alist*))))
     (if func (apply func form)
@@ -900,7 +900,7 @@ it will not be seen."
 (defun apply-clause-function (func args)
   "Apply a function, defined for ITERATE clause FUNC to ARGS."
   (when (keywordp func)
-    (setf func (find-symbol (string func) 'rutils.iter)))
+    (setf func (find-symbol (string func) 'rutilsx.iter)))
   (let ((*initial* nil)
         (*decls* nil)
         (*step* nil)
