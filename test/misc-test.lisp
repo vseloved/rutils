@@ -147,7 +147,7 @@
           (dccase-test '(:alt1 1)))
   (should be equal 2
           (dccase-test '(:alt2 2)))
-  (should signal case-failure
+  (should signal #+sbcl case-failure #-sbcl type-error
           (dccase-test '(:baz 1 2 3))))
 
 (defun decase-test (x)
@@ -165,7 +165,7 @@
           (decase-test '(:alt1 1)))
   (should be equal 2
           (decase-test '(:alt2 2)))
-  (should signal case-failure
+  (should signal #+sbcl case-failure #-sbcl type-error
           (decase-test '(:baz 1 2 3))))
 
 (deftest switch ()

@@ -7,15 +7,19 @@
 
 
 (deftest donext ()
-  (should print-to *standard-output* (format nil "1~%2~%")
-          (donext (n '(1 2))
-            (print n)))
-  (should print-to *standard-output* (format nil "1~%2~%")
-          (donext (n #(1 2))
-            (print n)))
-  (should print-to *standard-output* (format nil "1~%2~%")
-          (donext (n #h(:foo 1 :bar 2))
-            (print n))))
+  (should be equal '(1 2)
+          (iter (donext (n '(1 2))
+                  (:collect n))
+                (:finish)))
+  (should be equal '(1 2)
+          (iter (donext (n #(1 2))
+                  (:collect n))
+                (:finish)))
+  #-ccl
+  (should be equal '(1 2)
+          (iter (donext (n #h(:foo 1 :bar 2))
+                  (:collect n))
+                (:finish))))
 
 (deftest maptab ()
   (should be equalp #h()
@@ -27,4 +31,4 @@
 
 (deftest seq ()
   (should be = 0 (2nd (seq '(1 2 3))))
-  (should be = 2 (seq '(1 2 3) 1)))
+  (should be = 2 (funcall (nth-value 2 (seq '(1 2 3) 1)))))
