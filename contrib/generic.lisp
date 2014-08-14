@@ -54,28 +54,29 @@
             (lambda () (seq (rest seq) (1+ key))))))
 
 (defmethod seq ((seq vector) &optional (key 0))
-  (when (< key (1- (length seq)))
+  (when (< key (length seq))
     (values (elt seq key)
             key
             (lambda () (seq seq (1+ key))))))
 
 (defmethod seq ((seq hash-table)
-                &optional (gen-fn
-                           (with-hash-table-iterator (gen-fn seq) gen-fn)))
-  (mv-bind (valid key val) (gen-fn)
+                &optional (gen-fn (with-hash-table-iterator (gen-fn seq)
+                                    (lambda () (gen-fn)))))
+  (mv-bind (valid key val) (funcall gen-fn)
     (when valid
       (values val
               key
               (lambda () (seq seq gen-fn))))))
 
 (defmacro donext ((elt seq &optional result) &body body)
-  (with-gensyms (val key next)
-    `(loop (mv-bind (,val ,key ,next) (funcall (if (boundp ',next)
-                                                   ,next
-                                                   (lambda () (seq ,seq))))
-             (unless ,next (return ,result))
-             (ds-bind ,(mklist elt) ,val
-               ,@body)))))
+  (with-gensyms (val key next new-next)
+    `(let ((,next (lambda () (seq ,seq))))
+       (loop (mv-bind (,val ,key ,new-next) (funcall ,next)
+               (declare (ignore ,key))
+               (unless ,new-next (return ,result))
+               (setf ,next ,new-next)
+               (let ((,elt ,val))
+                 ,@body))))))
 
 
 ;;; Generic table access and iteration protocol
