@@ -15,6 +15,7 @@
           (iter (donext (n #(1 2))
                   (:collect n))
                 (:finish)))
+  #-ccl
   (should be equal '(1 2)
           (iter (donext (n #h(:foo 1 :bar 2))
                   (:collect n))

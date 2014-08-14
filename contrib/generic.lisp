@@ -59,9 +59,12 @@
             key
             (lambda () (seq seq (1+ key))))))
 
+#-ccl
 (defmethod seq ((seq hash-table)
                 &optional (gen-fn (with-hash-table-iterator (gen-fn seq)
                                     (lambda () (gen-fn)))))
+  ;; This SEQ for hash tables is unportable due to undefined behaviour of GEN-FN
+  ;; outside with-hash-table-iterator.  Works in SBCL, fails in CCL.
   (mv-bind (valid key val) (funcall gen-fn)
     (when valid
       (values val
