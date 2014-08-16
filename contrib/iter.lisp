@@ -46,7 +46,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Constants
 
-(defparameter iterate-version "1.4.3"
+(defparameter iter-version "1.4.3"
   "Current version of Iterate.")
 
 (defparameter +fill-col+ 77)
@@ -363,7 +363,7 @@ This is so we don't get a warning from compilers that check for unused tags.")
   "Jonathan Amsterdam's powerful and extensible iteration facility,
 providing multiple accumulation, generators, memory of previous
 iterations, over 50 clauses to start with and a Lisp-like syntax.
-Evaluate (iter:display-iterate-clauses) for an overview of clauses."
+Evaluate (iter:display-iter-clauses) for an overview of clauses."
   (let* ((*env* env)
          (*result-var* (genvar 'result))
          (*type-alist* nil)
@@ -546,7 +546,7 @@ it will not be seen."
   (let ((*top-level?* nil))
     (walk-list-nconcing args #'walk
                         (lambda (form body)
-                          (if (is-iterate-clause? form)
+                          (if (is-iter-clause? form)
                               (list (progn-wrap body))
                               body)))))
 
@@ -643,7 +643,7 @@ it will not be seen."
   "Walk a special form, defined in *SPECIAL-FORM-ALIST*."
   (let ((*clause* form)
         (func (cdr (assoc (if (keywordp (car form))
-                              (find-symbol (string (car form)) 'rutils.iter)
+                              (find-symbol (string (car form)) 'rutilsx.iter)
                               (car form))
                           *special-form-alist*))))
     (if func (apply func form)
@@ -895,12 +895,12 @@ it will not be seen."
                            (apply-clause-function func args))))
               (clause-error "No iterate function for this clause; do (~S) ~
                              to see the existing clauses."
-                            'display-iterate-clauses))))))
+                            'display-iter-clauses))))))
 
 (defun apply-clause-function (func args)
   "Apply a function, defined for ITERATE clause FUNC to ARGS."
   (when (keywordp func)
-    (setf func (find-symbol (string func) 'rutils.iter)))
+    (setf func (find-symbol (string func) 'rutilsx.iter)))
   (let ((*initial* nil)
         (*decls* nil)
         (*step* nil)
@@ -969,7 +969,7 @@ it will not be seen."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Displaying clauses
 
-(defun display-iterate-clauses (&optional clause-spec)
+(defun display-iter-clauses (&optional clause-spec)
   "Display ITERATE clause."
   (fresh-line)
   (cond
@@ -1061,7 +1061,7 @@ it will not be seen."
         entry)))
 
 
-(defun is-iterate-clause? (form)
+(defun is-iter-clause? (form)
   "Test wheather a CAR of FORM is defined as ITERATE clause."
   (and (consp form)
        (symbolp (car form))
