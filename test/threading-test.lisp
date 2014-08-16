@@ -2,7 +2,7 @@
 ;;;;; see LICENSE file for permissions
 
 
-(cl:in-package #:rutilsx.test)
+(cl:in-package #:rutils.test)
 (named-readtables:in-readtable rutils-readtable)
 
 
