@@ -30,7 +30,7 @@
   (if (first forms)
       (let* ((form (first forms))
              (threaded (if (member '% form)
-                           (if (lambda-form-p form)
+                           (if (member '% form)
                                `(funcall (macroexpand #`(,form)) ,x)
                                `(,(first form) ,@(rest form) ,x))
                            `(,form ,x))))
