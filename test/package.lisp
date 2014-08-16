@@ -12,5 +12,6 @@
 (cl:in-package #:rutils.test)
 
 (defun run-tests ()
-  (dolist (p rutils::*all-packages*)
-    (st:test :package p)))
+  (with-standard-io-syntax
+    (dolist (p rutils::*all-packages*)
+      (st:test :package p))))
