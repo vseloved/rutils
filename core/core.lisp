@@ -24,7 +24,7 @@
       ((fboundp ',long)
        (setf (fdefinition ',short) (fdefinition ',long))
        ,(when lambda-list
-          `(define-setf-expander ,short ,(append lambda-list)
+          `(define-setf-expander ,short ,lambda-list
              (values ,@(multiple-value-bind
                         (dummies vals store store-form access-form)
                         (get-setf-expansion

@@ -48,15 +48,12 @@
                                      :remove-empty-subseqs t))
 
 (defun substr (string start &optional end)
-  "Efficient substring of STRING from START to END (optional), where both can be
-negative, which means counting from the end."
-  (let (len)
-    (when (minusp start)
-      (setf len (length string)
-            start (+ len start)))
-    (when (and end (minusp end))
-      (setf end (+ (or len (length string)) end)))
-    (subseq string start end)))
+  "Efficient substring of STRING from START to END (optional),
+   where both can be negative, which means counting from the end."
+  (let ((len (length string)))
+    (subseq string
+            (if (minusp start) (+ len start) start)
+            (if (and end (minusp end)) (+ len end) end))))
 
 ;; (define-setf-expander substr (string start &optional end &environment env)
 ;;   "Like (SETF SUBSEQ), but for SUBSTR."

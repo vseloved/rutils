@@ -48,3 +48,9 @@
       (dlist (mapcar #'pair
                      (car list) (cdr list)))
       (t (mapindex #'pair list)))))
+
+(defmacro with-pair ((lt rt) pair &body body)
+  "Bind LT and RT to PAIR's slots and execute BODY inside."
+  `(let ((,lt (lt ,pair))
+         (,rt (rt ,pair)))
+     ,@body))
