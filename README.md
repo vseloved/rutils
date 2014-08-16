@@ -23,7 +23,7 @@ of CL development. Namely:
 But, what's more important, they aim to radically simplify Lisp programming
 in the small (with a special accent on simplifying REPL-driven development).
 
-See the [original rationale](docs/reasonable-utilities.md) for [REASONABLE-UTILITIES].
+See the [original rationale](docs/reasonable-utilities.md) for `REASONABLE-UTILITIES`.
 
 
 ## Brief description
@@ -39,7 +39,7 @@ Basic common contol utilities, like
 - Basic anaphoric macros
 - Symbol manipulation utilities
 - List manipulation utilities
-- Sequence manipulation utilities (including `SPLIT-SEQUENCE`, or rather simply `SPLIT`)
+- Sequence manipulation utilities (including `SPLIT-SEQUENCE`, or rather, simply `SPLIT`)
 - Hash-table manipulation utilities
 - String manipulation utilities
 - Tree manipulation utilities
