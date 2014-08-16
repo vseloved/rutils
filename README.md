@@ -47,7 +47,7 @@ Basic common contol utilities, like
 
 ### Included in contrib (RUTILSX)
 
-- generic access to elements of any data structure: `generic-elt`/`~`,
+- generic access to elements of any data structure: `generic-elt`/`?`,
   generic sequence and key-value iteration protocols
 - `ITER` macro with keywords support
 - generic `BIND`
@@ -91,4 +91,3 @@ The following symbols are added to `*FEATURES*`:
 
 See LICENSE for usage permissions.
 See AUTHORS for credits.
-
