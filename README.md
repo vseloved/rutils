@@ -51,6 +51,7 @@ Basic common contol utilities, like
   generic sequence and key-value iteration protocols
 - `ITER` macro with keywords support
 - generic `BIND`
+- Clojure-style threading macros `->` and `->>`
 
 ### Explicitly not supported
 
