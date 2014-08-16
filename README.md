@@ -58,7 +58,7 @@ The following broad topics are not supported by design:
 
 * Concurrency.
 
-  The reason is not, that we consider this not useful or general-purpose enough,
+  The reason is not, that I consider this not useful or general-purpose enough,
   but rather, that it's a whole new paradigm, and the scope of `RUTILS`
   is too small to comfortably accomodate it.
 
@@ -67,7 +67,8 @@ The following broad topics are not supported by design:
   As in the above, it's as well a whole other paradigm.
   It has a limited, but reasonable support in CL.
   Other features should be unified in it's own package,
-  and maybe RUTILS can serve as a model for such package or even accomodate it in the future.
+  and maybe `RUTILS` can serve as a model for such package
+  or even accomodate it in the future.
 
 * Advanced collections are as well a separate area in CS,
   so it requires a lot of effort to maintain and develop a comprehensive package in it.
@@ -77,7 +78,11 @@ The following broad topics are not supported by design:
 * MOP.  MOP abstraction layer is a CDR and it is as well an essential part of CL.
   It is implemented and well supported by `CLOSER-MOP`.
 
-### Features
+### Dependencies
+
+- [NAMED-READTABLES](http://common-lisp.net/project/named-readtables/)
+
+### Exported features
 
 The following symbols are added to `*FEATURES*`:
 
