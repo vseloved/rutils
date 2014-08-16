@@ -25,7 +25,7 @@
 
 (defmethod generic-elt ((obj vector) key &rest keys)
   (declare (ignore keys))
-  (svref obj key))
+  (aref obj key))
 
 (defmethod generic-elt ((obj sequence) key &rest keys)
   (declare (ignore keys))
@@ -35,47 +35,49 @@
   (declare (ignore keys))
   (get# key obj))
 
-(abbr ~ generic-elt)
+(defmethod generic-elt ((obj (eql nil)) key &rest keys)
+  (declare (ignore key keys))
+  (error "Can't access NIL with generic-elt!"))
+
+(defgeneric generic-setf (obj key &rest keys-and-val)
+  (:documentation
+   "Generic element access in OBJ by KEY.
+    Supports chaining with KEYS.")
+  (:method :around (obj key &rest keys-and-val)
+   (if (single keys-and-val)
+       (call-next-method)
+       (mv-bind (prev-keys kv) (butlast2 keys-and-val 2)
+         (apply #'generic-setf
+                (apply #'generic-elt obj key prev-keys)
+                kv)))))
+
+(defmethod generic-setf ((obj (eql nil)) key &rest keys)
+  (declare (ignore key keys))
+  (error "Can't access NIL with generic-setf!"))
+
+(defmethod generic-setf ((obj list) key &rest keys-and-val)
+  (listcase obj
+    ;; (alist (setf (assoc key obj :test 'equal)
+    ;;              keys-and-val))
+    (dlist (setf (nth (position key (car obj) :test 'equal) (cdr obj))
+                 (atomize keys-and-val)))
+    (t (setf (nth key obj) (atomize keys-and-val)))))
+
+(defmethod generic-setf ((obj vector) key &rest keys-and-val)
+  (setf (aref obj key) (atomize keys-and-val)))
+
+(defmethod generic-setf ((obj sequence) key &rest keys-and-val)
+  (setf (elt obj key) (atomize keys-and-val)))
+
+(defmethod generic-setf ((obj hash-table) key &rest keys-and-val)
+  (set# key obj (atomize keys-and-val)))
+
+(defsetf generic-elt generic-setf)
+(defsetf ? generic-setf)
+
+(abbr ? generic-elt)
 
 ) ; end of eval-always
-
-
-;;; Generic sequence iteration protocol
-
-(defgeneric seq (seq &optional key)
-  (:documentation
-   "Return as multiple values current element in SEQ, it's key,
-    and a function to access the next element."))
-
-(defmethod seq ((seq list) &optional (key 0))
-  (when seq
-    (values (first seq)
-            key
-            (lambda () (seq (rest seq) (1+ key))))))
-
-(defmethod seq ((seq vector) &optional (key 0))
-  (when (< key (1- (length seq)))
-    (values (elt seq key)
-            key
-            (lambda () (seq seq (1+ key))))))
-
-(defmethod seq ((seq hash-table)
-                &optional (gen-fn
-                           (with-hash-table-iterator (gen-fn seq) gen-fn)))
-  (mv-bind (valid key val) (gen-fn)
-    (when valid
-      (values val
-              key
-              (lambda () (seq seq gen-fn))))))
-
-(defmacro donext ((elt seq &optional result) &body body)
-  (with-gensyms (val key next)
-    `(loop (mv-bind (,val ,key ,next) (funcall (if (boundp ',next)
-                                                   ,next
-                                                   (lambda () (seq ,seq))))
-             (unless ,next (return ,result))
-             (ds-bind ,(mklist elt) ,val
-               ,@body)))))
 
 
 ;;; Generic table access and iteration protocol

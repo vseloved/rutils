@@ -8,15 +8,13 @@
   (:use :common-lisp #:rutil)
   (:documentation "Generic access to pairs, sequences and tables.")
   (:export #:eq-test
-           #:donext
            #:generic-elt
            #:keys
            #:kvs
            #:maptab
            #:pairs
-           #:seq
            #:vals
-           #:~))
+           #:?))
 
 (defpackage #:rutilsx.iter
   (:documentation "Iterate macro with keywords for clauses.")
