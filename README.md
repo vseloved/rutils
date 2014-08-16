@@ -39,7 +39,7 @@ Basic common contol utilities, like
 - Basic anaphoric macros
 - Symbol manipulation utilities
 - List manipulation utilities
-- Sequence manipulation utilities (including `SPLIT-SEQUENCE`)
+- Sequence manipulation utilities (including `SPLIT-SEQUENCE`, or rather simply `SPLIT`)
 - Hash-table manipulation utilities
 - String manipulation utilities
 - Tree manipulation utilities
@@ -47,8 +47,7 @@ Basic common contol utilities, like
 
 ### Included in contrib (RUTILSX)
 
-- generic access to elements of any data structure: `generic-elt`/`?`,
-  generic sequence and key-value iteration protocols
+- generic access to elements of any data structure: `GENERIC-ELT`/`?`
 - `ITER` macro with keywords support
 - generic `BIND`
 - Clojure-style threading macros `->` and `->>`
