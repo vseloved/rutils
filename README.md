@@ -78,6 +78,9 @@ The following broad topics are not supported by design:
 * MOP.  MOP abstraction layer is a CDR and it is as well an essential part of CL.
   It is implemented and well supported by `CLOSER-MOP`.
 
+
+## Technical notes
+
 ### Dependencies
 
 - [NAMED-READTABLES](http://common-lisp.net/project/named-readtables/)

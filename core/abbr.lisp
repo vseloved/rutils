@@ -49,6 +49,10 @@
 (abbr split-if split-sequence-if)
 (abbr split-if-not split-sequence-if-not)
 
+(abbr := setf)
+(abbr :+ incf)
+(abbr :- decf)
+
 
 (cl:in-package #:rutils.anaphora)
 

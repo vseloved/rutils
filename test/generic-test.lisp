@@ -13,3 +13,13 @@
           (maptab #`(1+ %%) #h(1 2 3 4)))
   (should be equal '((1 . 3) (3 . 5))
           (maptab #`(1+ %%) '((1 . 2) (3 . 4)))))
+
+(deftest ? ()
+  (should be equalp #h(1 #h(2 4))
+          (let ((ht #h(1 #h(2 3))))
+            (:= (? ht 1 2) 4)
+            ht))
+  (should be equalp #h(1 #(2 4))
+          (let ((ht #h(1 #(2 3))))
+            (:= (? ht 1 1) 4)
+            ht)))
