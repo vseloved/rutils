@@ -16,6 +16,7 @@
   "Abbreviate LONG macro or function name as SHORT.
    If LAMBDA-LIST is present, also copy appropriate SETF-expander."
   `(eval-always
+    (#+lispworks handler-bind #+lispworks ((error (lambda (c) (continue)))) #-lispworks progn
     (cond
       ((macro-function ',long)
        (setf (macro-function ',short) (macro-function ',long)))
@@ -43,7 +44,7 @@
       (t
        (error "Can't abbreviate ~a" ',long)))
     (setf (documentation ',short 'function) (documentation ',long 'function))
-    ',short))
+    ',short)))
 
 
 ;; symbols
