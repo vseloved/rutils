@@ -32,6 +32,7 @@
            #:package-internal-symbols
            #:package-external-symbols
            #:re-export-symbols
+           #:rutils-style-warning
            #:with-gensyms
            #:with-unique-names))
 
