@@ -30,10 +30,10 @@ See the [original rationale](docs/reasonable-utilities.md) for `REASONABLE-UTILI
 
 ### Included in core
 
-- "Modern" readtable with supoort for literal syntax for hash-tables,
+- "Modern" readtable with support for literal syntax for hash-tables,
   lambdas and heredoc-strings
 
-Basic common contol utilities, like
+Basic common control utilities, like
 
 - Common macros like `WITH-GENSYMS`, `ONCE-ONLY`, `EVAL-ALWAYS` etc.
 - Basic anaphoric macros
@@ -60,7 +60,7 @@ The following broad topics are not supported by design:
 
   The reason is not, that I consider this not useful or general-purpose enough,
   but rather, that it's a whole new paradigm, and the scope of `RUTILS`
-  is too small to comfortably accomodate it.
+  is too small to comfortably accommodate it.
 
 * Functional paradigm.
 
@@ -68,7 +68,7 @@ The following broad topics are not supported by design:
   It has a limited, but reasonable support in CL.
   Other features should be unified in it's own package,
   and maybe `RUTILS` can serve as a model for such package
-  or even accomodate it in the future.
+  or even accommodate it in the future.
 
 * Advanced collections are as well a separate area in CS,
   so it requires a lot of effort to maintain and develop a comprehensive package in it.
