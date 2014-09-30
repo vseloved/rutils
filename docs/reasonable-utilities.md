@@ -6,7 +6,7 @@ of utilities).  But the existing utility packages are not enough
 visible and widespread either due to: not enough utility, poor names,
 or lack of community involvement.  The best and, probably,
 quite usable package is, in my opinion, `ALEXANDRIA`, which has a great
-team of developers, but suffers from a shortcomming of the idea to be
+team of developers, but suffers from a shortcoming of the idea to be
 a "good citizen" in the CL world and not include code from other
 well-established, but specific utilities packages (`SPLIT-SEQUENCE`,
 `ITERATE`, `ANAPHORA`, ...) But the utility package should be as much
@@ -21,7 +21,7 @@ it should be a much more reasonable choice to depend on them.
 2. Yet the reverse of the coin of all-encompassing utilities' package is
 bloat.  It is a common complaint about the CL standard, that it lacks
 modularity, and the utilities' package can as well suffer from the
-same problem.  But the solution to it is found and implementated using
+same problem.  But the solution to it is found and implemented using
 the CL package mechanism: every part of functionality (like list or
 hash-table handling) is segmented into it's own package.
 Every package name is formed according to the following template:
