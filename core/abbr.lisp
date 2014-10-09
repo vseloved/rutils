@@ -49,7 +49,7 @@
 (abbr split-if split-sequence-if)
 (abbr split-if-not split-sequence-if-not)
 
-(abbr := setf)
+(abbr := psetf)
 (abbr :+ incf)
 (abbr :- decf)
 
