@@ -114,6 +114,7 @@
            #:flatten
            #:group
            #:interleave
+           #:interpose
            #:last1
            #:listcase
            #:remove-idx
