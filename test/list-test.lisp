@@ -83,6 +83,20 @@
   (should be equal '(:foo :bar)
           (interleave '(:foo :baz) '(:bar))))
 
+(deftest interpose ()
+  (should be null
+          (interpose () ()))
+  (should be null
+          (interpose 1 ()))
+  (should be equal '()
+          (interpose '(:foo) ()))
+  (should be equal '(:foo :baz :bar)
+          (interpose :baz '(:foo :bar)))
+  (should be equal '(:foo (:baz) :bar)
+          (interpose '(:baz) '(:foo :bar)))
+  (should be equal '(:foo :baz :bar :baz :qux)
+          (interpose :baz '(:foo :bar :qux))))
+
 (deftest take ()
   (should be null
           (take 1 ()))

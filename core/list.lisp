@@ -79,6 +79,15 @@
                     els)
          list lists))
 
+(defun interpose (separator list)
+  "Returns a sequence of the elements of SEQUENCE separated by SEPARATOR."
+  (labels ((rec (s acc)
+             (if s
+                 (rec (cdr s) (nconc acc
+                                     (list separator (car s))))
+                 acc)))
+    (cdr (rec list nil))))
+
 (defun take (n list &optional (step 1))
   "Return a list with N elements, which are taken from LIST by this formula:
    INDEX of ELEMENT = I * STEP for I from 0"
