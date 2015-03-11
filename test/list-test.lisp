@@ -198,7 +198,7 @@
           (zip* '(:foo :bar) '(:baz 42)))
   (should be equal '((:foo :baz) (:bar nil))
           (zip* '(:foo :bar) '(:baz)))
-  (should be '((:foo) (:bar))
+  (should be equal '((:foo nil) (:bar nil))
           (zip* '(:foo :bar) ())))
 
 (deftest zip*-with ()
