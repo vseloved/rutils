@@ -329,6 +329,9 @@
    is not a sequence."
   (etypecase sequence
     (list (null sequence))
+    (string (rutils.string:blankp sequence))
+    (vector (and (vectorp sequence)
+                 (equalp sequence #())))
     (sequence (zerop (length sequence)))))
 
 (defun equal-lengths (&rest sequences)
