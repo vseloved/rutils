@@ -6,7 +6,7 @@
 
 
 (declaim (inline last1 single dyadic tryadic append1 conc1 ensure-list
-                 dcons dlistp range))
+                 dcons dlistp range concat))
 
 
 (defun last1 (list &optional (n 1))
@@ -304,6 +304,9 @@ incremented by STEP (default 1)."
   (loop :for i :from start :to (1- limit) :by step
      :collect i))
 
+(defun concat (&rest lists)
+  "CONCATENATE all the LISTS into a single list."
+  (apply #'concatenate 'list lists))
 
 ;; D-Lists (see https://groups.google.com/forum/#!msg/comp.lang.lisp/pE-4JL9lnAA/7hiQSBexGLgJ)
 
