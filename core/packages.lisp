@@ -146,6 +146,7 @@
         #:rutils.anaphora #:rutils.list)
   (:documentation "String utilities.")
   (:export #:blankp
+           #:cutsym
            #:dolines
            #:ends-with
            #:fmt
@@ -157,6 +158,8 @@
            #:strcat
            #:strjoin
            #:string-designator
+           #:symbol-ends-with
+           #:symbol-starts-with
            #:substr
            #:with-out-file
            #:white-char-p))
