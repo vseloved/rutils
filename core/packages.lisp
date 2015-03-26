@@ -104,6 +104,7 @@
            #:assoc1
            #:atomize
            #:butlast2
+           #:concat
            #:dcons
            #:delete-from-plist
            #:dlist
