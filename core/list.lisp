@@ -51,19 +51,6 @@
        (progn ,@body))
      (nreverse ,out)))
 
-(defun group (n list)
-  "Split LIST into a list of lists of length N."
-  (declare (integer n))
-  (when (zerop n)
-    (error "Group length N shouldn't be zero."))
-  (labels ((rec (src acc)
-             (let ((rest (nthcdr n src)))
-               (if (consp rest)
-                   (rec rest (cons (subseq src 0 n) acc))
-                   (nreverse (cons src acc))))))
-    (when list
-      (rec list nil))))
-
 (defun flatten (list)
   "Flatten possibly nested LIST."
   (labels ((rec (x acc)

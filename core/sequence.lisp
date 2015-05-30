@@ -424,5 +424,26 @@
            :datum sequence
            :expected-type '(and proper-sequence (not (satisfies emptyp))))))
 
+(defun group (n sequence)
+  "Split SEQUENCE into a list of sequences of length N."
+  (declare (integer n))
+  (when (zerop n)
+    (error "Group length N shouldn't be zero."))
+  (labels ((rec (src acc)
+              (let ((rest (nthcdr n src)))
+                (if (consp rest)
+                    (rec rest (cons (subseq src 0 n) acc))
+                    (nreverse (cons src acc))))))
+    (etypecase sequence
+      (list (rec sequence nil))
+      (null nil)
+      (sequence
+       (do ((i 0 (+ i n))
+            (len (length sequence))
+            (acc nil))
+           ((>= (+ i n) len)
+            (nreverse (push (subseq sequence i) acc)))
+
+         (push (subseq sequence i (+ i n)) acc))))))
 
 (eval-always (pushnew :split-sequence *features*))
