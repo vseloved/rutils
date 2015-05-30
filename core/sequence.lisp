@@ -434,16 +434,16 @@
                 (if (consp rest)
                     (rec rest (cons (subseq src 0 n) acc))
                     (nreverse (cons src acc))))))
-    (etypecase sequence
-      (list (rec sequence nil))
-      (null nil)
-      (sequence
-       (do ((i 0 (+ i n))
-            (len (length sequence))
-            (acc nil))
-           ((>= (+ i n) len)
-            (nreverse (push (subseq sequence i) acc)))
+    (when sequence
+     (etypecase sequence
+       (list (rec sequence nil))
+       (sequence
+        (do ((i 0 (+ i n))
+             (len (length sequence))
+             (acc nil))
+            ((>= (+ i n) len)
+             (nreverse (push (subseq sequence i) acc)))
 
-         (push (subseq sequence i (+ i n)) acc))))))
+          (push (subseq sequence i (+ i n)) acc)))))))
 
 (eval-always (pushnew :split-sequence *features*))
