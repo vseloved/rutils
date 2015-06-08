@@ -267,6 +267,12 @@ argument.")
     (mapcan #`(funcall fn (incf i) %)
             list)))
 
+(defun mappend (function &rest lists)
+  "Apply FUNCTION to respective elements of each LIST, appending all the
+result lists to a single list. FUNCTION must return a list."
+  (loop :for results :in (apply #'mapcar function lists)
+     :append results))
+
 (defun remove-idx (idx list)
   "Return a copy of the list without IDX-th element."
   (loop :for i :from 0
@@ -320,4 +326,5 @@ incremented by STEP (default 1)."
    i.e. a list-structure of the form: ((keys) vals)."
   (and (listp list)
        (consp (first list))
+       (second list)
        (not (consp (second list)))))

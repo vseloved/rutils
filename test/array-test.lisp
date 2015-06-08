@@ -14,4 +14,4 @@
   (should be string= "f"
           (slice "foo" 0 1))
   (should be blankp
-          (slice "foo" 2 3)))
+          (slice "foo" 3 3)))

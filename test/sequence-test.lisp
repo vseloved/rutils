@@ -156,7 +156,7 @@
           (equal-lengths 1 '(:foo)))
   (should be null
           (equal-lengths 1 '(:foo) '(:bar :baz)))
-  (should be true
+  (should be null
           (equal-lengths '(:foo) #(:bar) 1 "baz")))
 
 (deftest length= ()

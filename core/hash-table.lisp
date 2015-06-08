@@ -16,6 +16,14 @@
   (prog1 (gethash key ht)
     (remhash key ht)))
 
+(defmacro getsethash (key table value)
+  "Either get the value from TABLE by KEY or set a new calculated VALUE there
+   and return it.
+   It's similar to GETHASH called with 3 parameteres, but functions lazily."
+  (once-only (key table)
+    `(or (gethash ,key ,table)
+         (sethash ,key ,table ,value))))
+
 (defun copy-hash-table (ht &key key test size
                                 rehash-size rehash-threshold)
   "Returns a copy of hash table HT, with the same keys and values.

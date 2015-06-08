@@ -116,7 +116,7 @@
           (plistp '(:foo :bar))))
 
 (deftest alistp ()
-  (should be null
+  (should be true
           (alistp ()))
   (should be null
           (alistp '(:foo)))
@@ -224,6 +224,13 @@
           (mapcanindex #'+ ()))
   (should be equal '(0 0 1 1 2 2)
           (mapcanindex #'list '(0 1 2))))
+
+(deftest mappend ()
+  (should be null
+          (mappend #'list ()))
+  (should be equal '((1 2) (3 4) (5 6))
+          (mappend #`(group 2 %)
+                   '((1 2 3 4) (5 6)))))
 
 (defun set-equal-with-equal (s1 s2)
   (set-equal s1 s2 :test 'equal))

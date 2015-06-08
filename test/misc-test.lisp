@@ -31,9 +31,9 @@
           (less 1 0)))
 
 (deftest not-less ()
-  (should be true
-          (not-less nil 0))
   (should be null
+          (not-less nil 0))
+  (should be true
           (not-less 0 nil))
   (should be true
           (not-less 0 0))
@@ -67,10 +67,10 @@
           (not-more 1 0)))
 
 (deftest named-lambda ()
-  (should be fboundp
-          (unwind-protect (progn (named-lambda foo ())
-                                 'foo)
-            (fmakunbound 'foo))))
+  (unwind-protect
+       (should be functionp
+               (named-lambda foo ()))
+    (fmakunbound 'foo)))
 
 (deftest re-setf ()
   (should be eql :bar

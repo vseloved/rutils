@@ -24,7 +24,7 @@ depending on the type of the first argument."
         `(multiple-value-bind (,arg ,@(butlast args)) ,(car (last args)))
         `(let ((,arg ,(car args))))))
   (:method ((arg list) &rest args)
-    `(destructuring-bind ,arg ,args))
+    `(destructuring-bind ,arg ,@args))
   (:method ((arg hash-table) &rest args)
     `(let (,@(let (bindings)
                (dotable (k v arg (reverse bindings))

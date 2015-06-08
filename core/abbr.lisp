@@ -13,6 +13,7 @@
 
 (abbr get# gethash (key hashtable &optional default))
 (abbr set# sethash)
+(abbr getset# getsethash)
 (abbr rem# remhash)
 (abbr take# takehash)
 (defun in# (key hash-table)

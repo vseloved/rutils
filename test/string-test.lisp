@@ -7,7 +7,7 @@
 
 
 (deftest strcat ()
-  (should be null
+  (should be blankp
           (strcat ()))
   (should be string= "foo"
           (strcat "foo"))
@@ -15,7 +15,7 @@
           (strcat "foo" "bar")))
 
 (deftest strjoin ()
-  (should be null
+  (should be blankp
           (strjoin #\Space ()))
   (should be string= "foo bar"
           (strjoin #\Space '("foo" "bar")))

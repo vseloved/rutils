@@ -19,7 +19,7 @@
           (when-it nil 3)))
 
 (deftest and-it ()
-  (should be null
+  (should be true
           (and-it))
   (should be equal 3
           (and-it (+ 1 2)))

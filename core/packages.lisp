@@ -122,6 +122,7 @@
            #:mapindex
            #:mapcanindex
            #:maptimes
+           #:mappend
            #:nconcf
            #:nreversef
            #:nunionf
@@ -168,6 +169,7 @@
   (:documentation "Hash-table utilities.")
   (:export #:copy-hash-table
            #:dotable
+           #:getsethash
            #:hash-table-keys
            #:hash-table-vals
            #:merge-hash-tables
@@ -244,6 +246,7 @@
            #:filter
            #:fn
            #:get#
+           #:getset#
            #:ht-count
            #:ht-keys
            #:ht-vals
