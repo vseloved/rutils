@@ -172,3 +172,23 @@
           (last-elt '(:foo :bar :baz)))
   (should be char= #\z
           (last-elt "foo bar baz")))
+
+(deftest group ()
+  (should be null
+          (group 1 ()))
+  (should be equal '((:foo) (:bar))
+          (group 1 '(:foo :bar)))
+  (should be equal '((:foo :bar))
+          (group 2 '(:foo :bar)))
+  (should be equal '((:foo :bar) (:baz))
+          (group 2 '(:foo :bar :baz)))
+  (should be equal '((:foo :bar) (:baz :foo))
+          (group 2 '(:foo :bar :baz :foo)))
+  (should be equal '("")
+          (group 3 ""))
+  (should be equal '("a" "b" "c" "d" "e")
+          (group 1 "abcde"))
+  (should be equal '("foo" "bar" "baz" "quu" "x")
+          (group 3 "foobarbazquux"))
+  (should be equal '("foo" "bar" "baz" "qux")
+          (group 3 "foobarbazqux")))

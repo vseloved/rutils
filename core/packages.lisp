@@ -113,7 +113,6 @@
            #:dyadic
            #:ensure-list
            #:flatten
-           #:group
            #:interleave
            #:interpose
            #:last1
@@ -198,6 +197,7 @@
            #:doindex
            #:emptyp
            #:equal-lengths
+           #:group
            #:last-elt
            #:length=
            #:nshuffle

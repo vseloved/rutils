@@ -45,18 +45,6 @@
             (push :foo out)
             (push :bar out))))
 
-(deftest group ()
-  (should be null
-          (group 1 ()))
-  (should be equal '((:foo) (:bar))
-          (group 1 '(:foo :bar)))
-  (should be equal '((:foo :bar))
-          (group 2 '(:foo :bar)))
-  (should be equal '((:foo :bar) (:baz))
-          (group 2 '(:foo :bar :baz)))
-  (should be equal '((:foo :bar) (:baz :foo))
-          (group 2 '(:foo :bar :baz :foo))))
-
 (deftest flatten ()
   (should be null
           (flatten ()))
