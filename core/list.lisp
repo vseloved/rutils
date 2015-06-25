@@ -64,13 +64,16 @@
     (when list
       (rec list nil))))
 
-(defun flatten (list)
-  "Flatten possibly nested LIST."
-  (labels ((rec (x acc)
+(defun flatten (list &optional level)
+  "Flatten possibly nested LIST a given number of LEVELs (or to the end)."
+  (labels ((rec (x acc depth)
              (cond ((null x) acc)
                    ((atom x) (cons x acc))
-                   (t (rec (car x) (rec (cdr x) acc))))))
-    (rec list nil)))
+                   ((and depth (zerop depth)) (append x acc))
+                   (t (rec (car x)
+                           (rec (cdr x) acc depth)
+                           (when depth (1- depth)))))))
+    (rec list nil level)))
 
 (defun interleave (list &rest lists)
   "Return a list whose elements are taken from LIST and each of LISTS like this:

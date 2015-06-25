@@ -24,3 +24,11 @@
     (apply #'make-array size :element-type (array-element-type vec)
            (unless (zerop size)
              (list :displaced-to vec :displaced-index-offset beg)))))
+
+(defmacro dovec ((var vec &optional result-form) &body body)
+  "Iterates over a vector (like in DOLIST)."
+  (let ((index-var (gensym "INDEX")))
+    (once-only (vec)
+      `(dotimes (,index-var (length ,vec) ,result-form)
+         (let ((,var (svref ,vec ,index-var)))
+           ,@body)))))

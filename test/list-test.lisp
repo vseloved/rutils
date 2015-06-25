@@ -69,7 +69,15 @@
   (should be equal '(:foo :bar :baz)
           (flatten '(:foo (:bar :baz))))
   (should be equal '(:foo :bar :baz)
-          (flatten '(:foo (:bar (:baz))))))
+          (flatten '(:foo (:bar (:baz)))))
+  (should be equal '(:foo (:bar (:baz)))
+          (flatten '(:foo (:bar (:baz))) 0))
+  (should be equal '(:foo :bar (:baz))
+          (flatten '(:foo (:bar (:baz))) 1))
+  (should be equal '(:foo :bar :baz)
+          (flatten '(:foo (:bar (:baz))) 2))
+  (should be equal '(:foo :bar :baz (:bad))
+          (flatten '((:foo) (:bar) nil (:baz (:bad))) 1)))
 
 (deftest interleave ()
   (should be null

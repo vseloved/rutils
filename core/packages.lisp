@@ -188,6 +188,7 @@
   (:documentation "Array utilities.")
   (:export #:array-index
            #:array-length
+           #:dovec
            #:slice))
 
 (defpackage #:rutils.sequence
@@ -244,6 +245,7 @@
   (:export #:defpar
            #:ds-bind
            #:filter
+           #:flat-map
            #:fn
            #:get#
            #:getset#
@@ -259,6 +261,7 @@
            #:print-ht
            #:m1
            #:make
+           #:mapcat
            #:mkeyw
            #:mklist
            #:mksym

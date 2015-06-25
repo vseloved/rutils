@@ -54,6 +54,8 @@
 (abbr :+ incf)
 (abbr :- decf)
 
+(abbr flat-map mappend)
+(abbr mapcat mappend)
 
 (cl:in-package #:rutils.anaphora)
 
