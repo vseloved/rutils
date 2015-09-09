@@ -31,11 +31,13 @@
                                  (invoke-restart r))))))
        (cond
          ((macro-function ',long)
-          (setf (macro-function ',short) (macro-function ',long)))
+          (setf (macro-function ',short) (macro-function ',long)
+                (arglist ',short) (arglist ',long)))
          ((special-operator-p ',long)
           (error "Can't abbreviate a special-operator ~a" ',long))
          ((fboundp ',long)
-          (setf (fdefinition ',short) (fdefinition ',long))
+          (setf (fdefinition ',short) (fdefinition ',long)
+                (arglist ',short) (arglist ',long))
           ,(when lambda-list
             `(define-setf-expander ,short ,lambda-list
                (values ,@(multiple-value-bind
