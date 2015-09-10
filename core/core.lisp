@@ -60,7 +60,6 @@
        (setf (documentation ',short 'function) (documentation ',long 'function))
        ',short)))
 
-) ; end of symbol-macrolet
 
 ;; symbols
 
