@@ -3,7 +3,7 @@
 
 (asdf:defsystem #:rutilsx
   :name "More radical utilities"
-  :version "1.3.1";(:read-file-line "version.txt" 2)
+  :version "1.4.0";(:read-file-line "version.txt" 2)
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
@@ -12,13 +12,13 @@
   :depends-on (#:named-readtables #:rutils)
   :components
   ((:module #:contrib
-            :serial t
             :components ((:file "packages")
-                         (:file "generic")
-                         (:file "bind")
-                         (:file "iter")
-                         (:file "threading")
-                         (:file "rutilsx")))))
+                         (:file "generic" :depends-on ("packages"))
+                         (:file "bind" :depends-on ("packages"))
+                         (:file "iter" :depends-on ("packages"))
+                         (:file "threading" :depends-on ("packages"))
+                         (:file "generators" :depends-on ("packages"))
+                         (:file "rutilsx" :depends-on ("packages"))))))
 
 
 (defmethod perform ((o asdf:test-op)

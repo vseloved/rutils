@@ -6,7 +6,8 @@
 
 (rutils.core:eval-always
 (defparameter *all-packages*
-  '(#:rutilsx.generic #:rutilsx.bind #:rutilsx.iter #:rutilsx.threading))
+  '(#:rutilsx.generic #:rutilsx.bind #:rutilsx.iter #:rutilsx.threading
+    #:rutilsx.generators))
 
 (dolist (p (cons '#:rutil *all-packages*))
   (rutils.core:re-export-symbols p '#:rutilsx))

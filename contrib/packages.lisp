@@ -41,6 +41,15 @@
   (:export #:->
            #:->>))
 
+(defpackage #:rutilsx.generators
+  (:documentation "Python-like generators (yield) support.")
+  (:use :common-lisp #:rutil)
+  (:export #:doing
+           #:force
+           #:generated
+           #:generated-item
+           #:yield))
+
 (defpackage #:rutilsx
   (:documentation "The whole set of utilities in one package.")
   (:use :common-lisp))
