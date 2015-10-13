@@ -14,6 +14,8 @@
   (should be equal '((1 . 3) (3 . 5))
           (maptab #`(1+ %%) '((1 . 2) (3 . 4)))))
 
+(defstruct foo-struct bar)
+
 (deftest ? ()
   (should be equalp #h(1 #h(2 4))
           (let ((ht #h(1 #h(2 3))))
@@ -22,4 +24,6 @@
   (should be equalp #h(1 #(2 4))
           (let ((ht #h(1 #(2 3))))
             (:= (? ht 1 1) 4)
-            ht)))
+            ht))
+  (should be eql :baz
+          (? (make-foo-struct :bar :baz) :bar)))

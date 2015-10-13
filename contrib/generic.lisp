@@ -35,6 +35,14 @@
   (declare (ignore keys))
   (get# key obj))
 
+(defmethod generic-elt ((obj structure-object) key &rest keys)
+  (declare (ignore keys))
+  (slot-value obj key))
+
+(defmethod generic-elt ((obj standard-object) key &rest keys)
+  (declare (ignore keys))
+  (slot-value obj key))
+
 (defmethod generic-elt ((obj (eql nil)) key &rest keys)
   (declare (ignore key keys))
   (error "Can't access NIL with generic-elt!"))
@@ -71,6 +79,12 @@
 
 (defmethod generic-setf ((obj hash-table) key &rest keys-and-val)
   (set# key obj (atomize keys-and-val)))
+
+(defmethod generic-setf ((obj structure-object) key &rest keys-and-val)
+  (setf (slot-value obj key) (atomize keys-and-val)))
+
+(defmethod generic-setf ((obj standard-object) key &rest keys-and-val)
+  (setf (slot-value obj key) (atomize keys-and-val)))
 
 (defsetf generic-elt generic-setf)
 (defsetf ? generic-setf)
