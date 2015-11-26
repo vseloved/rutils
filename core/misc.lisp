@@ -3,10 +3,10 @@
 (in-package #:rutils.misc)
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
-
-
 (declaim (inline or2 and2 xor2 void true))
 
+
+;;; predicates and other logical operations
 
 (defmacro multiple-value-prog2 (first-form second-form &body forms)
   "Evaluates FIRST-FORM, then SECOND-FORM, and then FORMS. Yields as its value
@@ -77,6 +77,14 @@
         ((null y) x)
         (t (>= x y))))
 
+(defun true (val)
+  "The complement to NULL.
+   Unlike IDENTITY will return T if VAL is not NIL."
+  (and val t))
+
+
+;;; random utilities
+
 (defmacro named-lambda (name lambda-list &body body)
   "Expands into a lambda-expression within whose BODY NAME denotes the
    corresponding function."
@@ -96,11 +104,6 @@
   `(progn ,@(mapcar (lambda (clause)
                       `(setf ,var ,clause))
                     clauses)))
-
-(defun true (val)
-  "The complement to NULL.
-   Unlike IDENTITY will return T if VAL is not NIL."
-  (and val t))
 
 (defmacro 2nd (form)
   "(NTH-VALUE 1 FORM)"
@@ -143,6 +146,9 @@
                          names-and-forms gensyms)
              ,@forms)))))
 
+
+;;; Predicate case
+
 (define-condition case-failure (#+sbcl sb-kernel:case-failure
                                 type-error)
   ((name :reader case-failure-name :initarg :name)
@@ -154,9 +160,6 @@
               (type-error-datum condition)
               (slot-value condition 'name)
               (slot-value condition 'possibilities)))))
-
-
-;;; Predicate case
 
 (defun expand-predicate-case (pred keyform clauses case)
   (once-only (keyform)

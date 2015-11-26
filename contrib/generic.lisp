@@ -3,6 +3,7 @@
 (cl:in-package #:rutilsx.generic)
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
+(declaim (inline copy))
 
 
 ;;; Generic element access protocol
@@ -163,3 +164,15 @@
                    (mapcar #`(funcall fn % %%)
                            (car list) (cdr list))))
       (t (mapindex fn list)))))
+
+(defgeneric copy (obj)
+  (:documentation
+   "Create a shallow copy of an object.")
+  (:method ((obj list))
+    (copy-list obj))
+  (:method ((obj sequence))
+    (copy-seq obj))
+  (:method ((obj hash-table))
+    (copy-hash-table obj))
+  (:method ((obj structure-object))
+    (copy-structure obj)))

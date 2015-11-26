@@ -3,6 +3,7 @@
 (cl:in-package #:rutils.sequence)
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
+(declaim (inline safe-sort))
 
 
 (defun split-sequence (delimiter seq
@@ -427,5 +428,10 @@
            :datum sequence
            :expected-type '(and proper-sequence (not (satisfies emptyp))))))
 
+(defun safe-sort (sequence predicate &rest args &key key)
+  "The destructuve nature of SORT triggers many obscure bugs.
+   This function is a thin wrapper over SORT that enqures
+   that an input SEQUENCE is copied."
+  (apply #'sort (copy-seq sequence) predicate args))
 
 (eval-always (pushnew :split-sequence *features*))

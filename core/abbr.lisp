@@ -29,6 +29,7 @@
 (abbr plist->ht hash-table-from-plist)
 (abbr merge-hts merge-hash-tables)
 (abbr print-ht print-hash-table)
+(abbr p# print-hash-table)
 
 (abbr mkeyw  ensure-keyword)
 (abbr mklist ensure-list)

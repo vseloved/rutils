@@ -65,7 +65,7 @@
            (set# ,key *funcall-memory* ,form)))))
 
 
-(defreadtable rutilsx-readtable
+(named-readtables:defreadtable rutilsx-readtable
     (:merge rutils-readtable)
   (:macro-char #\@ #'|@-reader| t)
   (:dispatch-macro-char #\# #\^ #'|#^-reader|)

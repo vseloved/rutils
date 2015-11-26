@@ -158,3 +158,18 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                               :format-control "Can't iterate over proper list ~
                                                in DOTABLE: need an alist"))))
            ,rez)))))
+
+(let ((default-method (find-method #'print-object nil '(hash-table t)))
+      toggled)
+  (defun toggle-print-hash-table (&optional (on nil explicit))
+    "Toggles printing hash-tables with PRINT-HASH-TABLE or with default method.
+     If ON is set explicitly will turn on literal printing (T) or default (NIL)."
+    (let ((off (if explicit on (not toggled))))
+      (if off
+          (progn (defmethod print-object ((obj hash-table) stream)
+                   (print-hash-table obj stream))
+                 (setf toggled t))
+          (progn (remove-method #'print-object
+                                (find-method #'print-object nil '(hash-table t)))
+                 (add-method #'print-object default-method)
+                 (setf toggled nil))))))

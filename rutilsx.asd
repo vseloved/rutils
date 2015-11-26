@@ -3,7 +3,7 @@
 
 (asdf:defsystem #:rutilsx
   :name "More radical utilities"
-  :version "1.4.0";(:read-file-line "version.txt" 2)
+  :version (:read-file-line "version.txt" :at 1)
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
@@ -13,6 +13,7 @@
   :components
   ((:module #:contrib
             :components ((:file "packages")
+                         (:file "readtable" :depends-on ("packages"))
                          (:file "generic" :depends-on ("packages"))
                          (:file "bind" :depends-on ("packages"))
                          (:file "iter" :depends-on ("packages"))

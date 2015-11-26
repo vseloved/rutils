@@ -180,6 +180,7 @@
            #:print-hash-table
            #:sethash
            #:takehash
+           #:toggle-print-hash-table
            #:with-keys))
 
 (defpackage #:rutils.array
@@ -205,6 +206,7 @@
            #:partition-with
            #:removef
            #:rotate
+           #:safe-sort
            #:sequence-of-length
            #:shuffle
            #:split-sequence
@@ -259,6 +261,7 @@
            #:alist->ht
            #:merge-hts
            #:print-ht
+           #:p#
            #:m1
            #:make
            #:mapcat

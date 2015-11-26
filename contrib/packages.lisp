@@ -7,7 +7,8 @@
 (defpackage #:rutilsx.generic
   (:use :common-lisp #:rutil)
   (:documentation "Generic access to pairs, sequences and tables.")
-  (:export #:eq-test
+  (:export #:copy
+           #:eq-test
            #:generic-elt
            #:keys
            #:kvs
@@ -49,6 +50,11 @@
            #:generated
            #:generated-item
            #:yield))
+
+(defpackage #:rutilsx.readtable
+  (:documentation "Additional reader syntax support.")
+  (:use :common-lisp #:rutil)
+  (:export #:rutilsx-readtable))
 
 (defpackage #:rutilsx
   (:documentation "The whole set of utilities in one package.")
