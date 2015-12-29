@@ -90,26 +90,10 @@
                                      (cons 'progn sexp)
                                      sexp))))
 
-(defmacro trivial-positional-lambda (&environment env body)
-  (declare (ignorable env))
-  (let ((x (gensym "X"))
-        (y (gensym "Y")))
-    `(lambda (&optional ,x ,y)
-       (declare (ignorable ,x)
-                (ignorable ,y))
-       #-sbcl
-       ,(subst y '%%
-               (subst x '%
-                      body))
-       #+sbcl
-       ,(sb-walker:walk-form
-         body env
-         (lambda (subform context env)
-           (declare (ignore context env))
-           (case subform
-             (%  x)
-             (%% y)
-             (t  subform)))))))
+(defmacro trivial-positional-lambda (body)
+  `(lambda (&optional % %%)
+     (declare (ignorable %) (ignorable %%))
+     ,body))
 
 (defun |#/-reader| (stream char arg)
   "Literal syntax for raw strings (which don't need escapin of control chars).

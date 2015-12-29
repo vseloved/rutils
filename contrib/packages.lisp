@@ -28,7 +28,8 @@
            #:defclause-sequence
            #:defmacro-clause
            #:defmacro-driver
-           #:display-iter-clauses))
+           #:display-iter-clauses
+           #:dsetq))
 
 (defpackage #:rutilsx.bind
   (:documentation "Unified extensible bind operator.")

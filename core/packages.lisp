@@ -180,6 +180,7 @@
            #:print-hash-table
            #:sethash
            #:takehash
+           #-(or abcl ecl)
            #:toggle-print-hash-table
            #:with-keys))
 
