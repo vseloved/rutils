@@ -164,8 +164,8 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                                                in DOTABLE: need an alist"))))
            ,rez)))))
 
-#-(or abcl ecl)
-(let ((default-method (find-method #'print-object nil '(hash-table t)))
+(let ((default-method (ignore-errors (find-method
+                                      #'print-object nil '(hash-table t))))
       toggled)
   (defun toggle-print-hash-table (&optional (on nil explicit))
     "Toggles printing hash-tables with PRINT-HASH-TABLE or with default method.
@@ -177,5 +177,6 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                  (setf toggled t))
           (progn (remove-method #'print-object
                                 (find-method #'print-object nil '(hash-table t)))
-                 (add-method #'print-object default-method)
+                 (unless (null default-method)
+                   (add-method #'print-object default-method))
                  (setf toggled nil))))))
