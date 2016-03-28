@@ -57,11 +57,11 @@
 
 (defmacro :* (place n)
   "Multiply in-lace PLACE by N."
-  (setf place (* place n)))
+  `(setf ,place (* ,place ,n)))
 
 (defmacro :/ (place n)
   "Divide in-lace PLACE by N."
-  (setf place (/ place n)))
+  `(setf ,place (/ ,place ,n)))
 
 (abbr flat-map mappend)
 (abbr mapcat mappend)
