@@ -113,7 +113,6 @@
            #:dyadic
            #:ensure-list
            #:flatten
-           #:group
            #:interleave
            #:interpose
            #:last1
@@ -191,7 +190,8 @@
   (:export #:array-index
            #:array-length
            #:dovec
-           #:slice))
+           #:slice
+           #:vec))
 
 (defpackage #:rutils.sequence
   (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
@@ -201,6 +201,7 @@
            #:doindex
            #:emptyp
            #:equal-lengths
+           #:group
            #:last-elt
            #:length=
            #:nshuffle
@@ -245,7 +246,8 @@
   (:use :common-lisp #:rutils.core #:rutils.misc
         #:rutils.sequence #:rutils.list #:rutils.hash-table)
   (:documentation "Abbreviations of some common utilities with long names.")
-  (:export #:defpar
+  (:export #:call
+           #:defpar
            #:ds-bind
            #:filter
            #:flat-map

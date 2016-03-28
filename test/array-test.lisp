@@ -15,3 +15,11 @@
           (slice "foo" 0 1))
   (should be blankp
           (slice "foo" 3 3)))
+
+(deftest vec ()
+  (should be equalp #()
+          (vec))
+  (should be equalp #(1)
+          (vec 1))
+  (should be equalp #(1 "abc")
+          (vec 1 "abc")))

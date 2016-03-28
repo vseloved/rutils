@@ -11,6 +11,7 @@
 (abbr ds-bind destructuring-bind)
 (abbr mv-bind multiple-value-bind)
 
+(abbr p# print-hash-table)
 (abbr get# gethash (key hashtable &optional default))
 (abbr set# sethash)
 (abbr getset# getsethash)
@@ -29,7 +30,6 @@
 (abbr plist->ht hash-table-from-plist)
 (abbr merge-hts merge-hash-tables)
 (abbr print-ht print-hash-table)
-(abbr p# print-hash-table)
 
 (abbr mkeyw  ensure-keyword)
 (abbr mklist ensure-list)
@@ -55,8 +55,19 @@
 (abbr :+ incf)
 (abbr :- decf)
 
+(defmacro :* (place n)
+  "Multiply in-lace PLACE by N."
+  (setf place (* place n)))
+
+(defmacro :/ (place n)
+  "Divide in-lace PLACE by N."
+  (setf place (/ place n)))
+
 (abbr flat-map mappend)
 (abbr mapcat mappend)
+
+(abbr call funcall)
+
 
 (cl:in-package #:rutils.anaphora)
 

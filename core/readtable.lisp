@@ -21,7 +21,8 @@
   (declare (ignore char arg))
   (read-char stream)
   (let* ((vals (read-delimited-list #\) stream t)))
-    `(make-array ,(length vals) :initial-contents (list ,@vals))))
+    `(make-array ,(length vals) :initial-contents (list ,@vals)
+                 :adjustable t)))
 
 (defun |#h-reader| (stream char arg)
   "Literal syntax for hash-tables.
@@ -90,6 +91,23 @@
                                      (cons 'progn sexp)
                                      sexp))))
 
+(defun |^-reader| (stream char)
+  "Literal syntax for zero/one/two argument lambdas.
+   Use % as the function's argument, %% as the second.
+
+   Examples:
+
+   - ^(+ 2 %) => (lambda (&optional x y) (+ 2 x))
+   - ^((print %) (1+ %)) => (lambda (&optional x) (print x) (1+ x))
+   - ^(+ 1 2) => (lambda (&optional x y) (+ 1 2))
+   - ^(+ % %%) => (lambda (&optional x y) (+ x y))
+  "
+  (declare (ignore char))
+  (let ((sexp (read stream t nil t)))
+    `(trivial-positional-lambda ,(if (and (listp sexp) (listp (car sexp)))
+                                     (cons 'progn sexp)
+                                     sexp))))
+
 (defmacro trivial-positional-lambda (body)
   `(lambda (&optional % %%)
      (declare (ignorable %) (ignorable %%))
@@ -102,7 +120,7 @@
 
        CL-USER> #/This is a \"test\" string/#
        \"This is a \\\"test\\\" string\"
-       ;; here \" are actually unescaped, but you can't write it in docstring :)
+       ;; here \" are actually unescaped, but you can't write it in a docstring :)
   "
   (declare (ignore char arg))
   (with-output-to-string (str)
@@ -116,6 +134,7 @@
 (defreadtable rutils-readtable
     (:merge :standard)
   (:macro-char #\} (get-macro-character #\)))
+  (:macro-char #\^ #'|^-reader|)
   (:dispatch-macro-char #\# #\v #'|#v-reader|)
   (:dispatch-macro-char #\# #\h #'|#h-reader|)
   (:dispatch-macro-char #\# #\{ #'|#{-reader|)

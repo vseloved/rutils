@@ -434,4 +434,27 @@
    that an input SEQUENCE is copied."
   (apply #'sort (copy-seq sequence) predicate args))
 
+(defun group (n seq)
+  "Split SEQ into a list of sequences of the same type of length N
+   (the last sequence may be shorter)."
+  (declare (integer n))
+  (when (zerop n)
+    (error "Group length N shouldn't be zero."))
+  (etypecase seq
+    (list (labels ((rec (src &optional acc)
+                     (let ((rest (nthcdr n src)))
+                       (if (consp rest)
+                           (rec rest (cons (subseq src 0 n) acc))
+                           (nreverse (cons src acc))))))
+            (when seq
+              (rec seq))))
+    (sequence
+     (when (plusp (length seq))
+       (do ((i 0 (+ i n))
+            (len (length seq))
+            (acc nil))
+           ((>= (+ i n) len)
+            (nreverse (push (subseq seq i) acc)))
+         (push (subseq seq i (+ i n)) acc))))))
+
 (eval-always (pushnew :split-sequence *features*))

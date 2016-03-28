@@ -12,14 +12,14 @@
   :depends-on (#:named-readtables #:rutils)
   :components
   ((:module #:contrib
-            :components ((:file "packages")
-                         (:file "readtable" :depends-on ("packages"))
-                         (:file "generic" :depends-on ("packages"))
-                         (:file "bind" :depends-on ("packages"))
-                         (:file "iter" :depends-on ("packages"))
-                         (:file "threading" :depends-on ("packages"))
-                         (:file "generators" :depends-on ("packages"))
-                         (:file "rutilsx" :depends-on ("packages"))))))
+    :components ((:file "packages")
+                 (:file "readtable" :depends-on ("packages"))
+                 (:file "generic" :depends-on ("packages"))
+                 (:file "bind" :depends-on ("packages"))
+                 (:file "iter" :depends-on ("packages"))
+                 (:file "threading" :depends-on ("packages"))
+                 (:file "generators" :depends-on ("packages"))
+                 (:file "rutilsx" :depends-on ("packages"))))))
 
 
 (defmethod perform ((o asdf:test-op)

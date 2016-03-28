@@ -32,3 +32,8 @@
       `(dotimes (,index-var (length ,vec) ,result-form)
          (let ((,var (svref ,vec ,index-var)))
            ,@body)))))
+
+(defun vec (&rest args)
+  "Make a new adjustable vector with ARGS as contents."
+  (make-array (length args) :initial-contents args
+                            :adjustable t :fill-pointer t))

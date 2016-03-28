@@ -35,7 +35,8 @@
   (:documentation "Unified extensible bind operator.")
   (:use :common-lisp #:rutil)
   (:export #:bind
-           #:bind-dispatch))
+           #:bind-dispatch
+           #:with))
 
 (defpackage #:rutilsx.threading
   (:documentation "Clojure-like threading macros.")
