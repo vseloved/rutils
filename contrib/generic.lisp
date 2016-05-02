@@ -19,10 +19,7 @@
 
 (defmethod generic-elt ((obj list) key &rest keys)
   (declare (ignore keys))
-  (listcase obj
-    (alist (assoc1 key obj :test 'equal))
-    (dlist (nth (position key (car obj) :test 'equal) (cdr obj)))
-    (t (nth key obj))))
+  (nth key obj))
 
 (defmethod generic-elt ((obj vector) key &rest keys)
   (declare (ignore keys))
@@ -65,12 +62,7 @@
   (error "Can't access NIL with generic-setf!"))
 
 (defmethod generic-setf ((obj list) key &rest keys-and-val)
-  (listcase obj
-    ;; (alist (setf (assoc key obj :test 'equal)
-    ;;              keys-and-val))
-    (dlist (setf (nth (position key (car obj) :test 'equal) (cdr obj))
-                 (atomize keys-and-val)))
-    (t (setf (nth key obj) (atomize keys-and-val)))))
+  (setf (nth key obj) (atomize keys-and-val)))
 
 (defmethod generic-setf ((obj vector) key &rest keys-and-val)
   (setf (aref obj key) (atomize keys-and-val)))

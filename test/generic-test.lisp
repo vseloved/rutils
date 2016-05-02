@@ -17,6 +17,10 @@
 (defstruct foo-struct bar)
 
 (deftest ? ()
+  (should be = 42
+          (? '(0 1 42) 2))
+  (should be = 42
+          (? #(0 1 2) 2))
   (should be equalp #h(1 #h(2 4))
           (let ((ht #h(1 #h(2 3))))
             (:= (? ht 1 2) 4)

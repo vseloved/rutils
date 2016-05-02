@@ -33,9 +33,10 @@
 
 (defpackage #:rutilsx.bind
   (:documentation "Unified extensible bind operator.")
-  (:use :common-lisp #:rutil)
+  (:use :common-lisp #:rutil #:rutilsx.generic)
   (:export #:bind
            #:bind-dispatch
+           #:@
            #:with))
 
 (defpackage #:rutilsx.threading

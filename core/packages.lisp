@@ -260,6 +260,8 @@
            #:ht->plist
            #:ht->alist
            #:in#
+           #:keep-if
+           #:keep-if-not
            #:plist->ht
            #:alist->ht
            #:merge-hts

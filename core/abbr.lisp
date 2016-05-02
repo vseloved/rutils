@@ -1,6 +1,5 @@
 ;;; see LICENSE file for permissions
 
-
 (in-package #:rutils.abbr)
 
 (declaim (inline in#))
@@ -68,6 +67,8 @@
 
 (abbr call funcall)
 
+(abbr keep-if remove-if-not)
+(abbr keep-if-not remove-if)
 
 (cl:in-package #:rutils.anaphora)
 

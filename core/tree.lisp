@@ -39,7 +39,7 @@
   (labels ((rec (node)
              (if (atom node)
                  (funcall fn node)
-                 (cons (funcall fn (car node))
+                 (cons (rec (car node))
                        (mapcar #'rec (cdr node))))))
     (when-it tree
       (rec it))))

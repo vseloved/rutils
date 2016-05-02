@@ -18,12 +18,17 @@ depending on the type of the first argument."
   (append (apply #'bind-dispatch binding)
           form))
 
-(defgeneric bind-dispatch (arg &rest args)
-  (:method ((arg symbol) &rest args)
-    (if (cdr args)
-        `(multiple-value-bind (,arg ,@(butlast args)) ,(car (last args)))
-        `(let ((,arg ,(car args))))))
-  (:method ((arg list) &rest args)
-    `(destructuring-bind ,arg ,@args)))
+(defgeneric bind-dispatch (arg1 arg2 &rest args)
+  (:method ((arg1 symbol) arg2 &rest args)
+    (if args
+        `(multiple-value-bind (,arg1 ,arg2 ,@(butlast args)) ,(last1 args))
+        `(let ((,arg1 ,arg2)))))
+  (:method ((arg1 list) arg2 &rest args)
+    (case arg2
+      (? `(let (,@(mapcar (lambda (var-key)
+                             `(,(first var-key) (? ,(first args) ,(second var-key))))
+                          arg1))))
+      (@ `(with-slots ,arg1 ,(first args)))
+      (t `(destructuring-bind ,arg1 ,arg2)))))
 
 (abbr with bind)

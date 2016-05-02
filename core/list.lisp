@@ -289,9 +289,12 @@ result lists to a single list. FUNCTION must return a list."
    ALIST, DLIST or simple list (T)."
   (once-only (list)
     `(if (consp (first ,list))
-         (if (consp (second ,list))
-             (progn ,@(assoc1 'alist cases))
-             (progn ,@(assoc1 'dlist cases)))
+         (cond ((consp (second ,list))
+                (progn ,@(assoc1 'alist cases)))
+               ((second ,list)
+                (progn ,@(assoc1 'dlist cases)))
+               (t
+                (progn ,@(assoc1 't cases))))
          (progn ,@(assoc1 't cases)))))
 
 (defun range (start limit &key (step 1))
