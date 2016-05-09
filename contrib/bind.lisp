@@ -5,7 +5,8 @@
 (declaim #.+default-opts+)
 
 
-(defmacro bind ((&rest bindings) &body body)
+(eval-always
+  (defmacro bind ((&rest bindings) &body body)
   "Bind variables from BINDINGS to be active inside BODY, as if by LET*,
 combined with MULTIPLE-VALUE-BIND, DESTRUCTURING-BIND and other -bind forms,
 depending on the type of the first argument."
@@ -13,6 +14,9 @@ depending on the type of the first argument."
     (dolist (binding (reverse bindings))
       (setf rez `((,@(funcall #'expand-binding binding rez)))))
     (car rez)))
+
+  (abbr with bind)
+)
 
 (defun expand-binding (binding form)
   (append (apply #'bind-dispatch binding)
@@ -30,5 +34,3 @@ depending on the type of the first argument."
                           arg1))))
       (@ `(with-slots ,arg1 ,(first args)))
       (t `(destructuring-bind ,arg1 ,arg2)))))
-
-(abbr with bind)
