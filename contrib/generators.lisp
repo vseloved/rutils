@@ -22,7 +22,7 @@
        (reverse ,rez))))
 
 (defmacro doing ((item generator-form &optional result) &body body)
-  "Like DO but for iterating GENERATOR-FORM."
+  "Like DOLIST but for iterating GENERATOR-FORM."
   (with-gensyms (e)
     `(block nil
        (handler-bind ((generated (lambda (,e)

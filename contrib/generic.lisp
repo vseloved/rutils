@@ -3,8 +3,15 @@
 (cl:in-package #:rutilsx.generic)
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
-(declaim (inline copy))
 
+(declaim (inline copy smart-slot-value))
+
+
+(defun smart-slot-value (object slot-name)
+  (slot-value object
+              (or (find-symbol (string-upcase slot-name)
+                               (symbol-package (class-name (class-of instance))))
+                  slot-name)))
 
 ;;; Generic element access protocol
 
@@ -35,11 +42,11 @@
 
 (defmethod generic-elt ((obj structure-object) key &rest keys)
   (declare (ignore keys))
-  (slot-value obj key))
+  (smart-slot-value obj key))
 
 (defmethod generic-elt ((obj standard-object) key &rest keys)
   (declare (ignore keys))
-  (slot-value obj key))
+  (smart-slot-value obj key))
 
 (defmethod generic-elt ((obj (eql nil)) key &rest keys)
   (declare (ignore key keys))
@@ -74,10 +81,10 @@
   (set# key obj (atomize keys-and-val)))
 
 (defmethod generic-setf ((obj structure-object) key &rest keys-and-val)
-  (setf (slot-value obj key) (atomize keys-and-val)))
+  (setf (smart-slot-value obj key) (atomize keys-and-val)))
 
 (defmethod generic-setf ((obj standard-object) key &rest keys-and-val)
-  (setf (slot-value obj key) (atomize keys-and-val)))
+  (setf (smart-slot-value obj key) (atomize keys-and-val)))
 
 (defsetf generic-elt generic-setf)
 (defsetf ? generic-setf)

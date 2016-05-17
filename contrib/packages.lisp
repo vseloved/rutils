@@ -56,7 +56,7 @@
 
 (defpackage #:rutilsx.readtable
   (:documentation "Additional reader syntax support.")
-  (:use :common-lisp #:rutil)
+  (:use :common-lisp #:rutil #:rutilsx.generic)
   (:export #:rutilsx-readtable))
 
 (defpackage #:rutilsx

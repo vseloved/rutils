@@ -37,7 +37,7 @@
         (let ((rez (intern (cdar acc))))
           (dolist (pair (rest acc))
             (ecase (car pair)
-              (#\. (setf rez `(slot-value ,rez ',(intern (cdr pair)))))
+              (#\. (setf rez `(smart-slot-value ,rez ',(intern (cdr pair)))))
               (#\# (setf rez `(elt ,rez ,(parse-integer (cdr pair)))))))
           rez))))
 
