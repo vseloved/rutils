@@ -8,7 +8,7 @@
 (defstruct dummy-struct-for-bind i j)
 (defclass dummy-obj-for-bind ()
   ((k :initarg :k)
-   (l :initarg :l))
+   (l :initarg :l)))
 
 (deftest bind ()
   (should be equal '(1 2 3 4 5 6 7 8 9 10 11 12 13 14 15)

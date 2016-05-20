@@ -52,4 +52,18 @@
          (c (copy p)))
     (should be not-eql p c)
     (should be eql (lt p) (lt c))))
-  
+
+
+(in-package #:rutils.test)
+
+(defstruct foo bar)
+
+(in-package #:rutilsx.test)
+
+(defstruct foo bar)
+
+(deftest smart-slot-value ()
+  (should be true
+          (smart-slot-value (make-foo :bar t) 'bar))
+  (should be true
+          (smart-slot-value (rutils.test::make-foo :bar t) 'bar)))

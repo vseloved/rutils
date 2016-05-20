@@ -10,7 +10,7 @@
 (defun smart-slot-value (object slot-name)
   (slot-value object
               (or (find-symbol (string-upcase slot-name)
-                               (symbol-package (class-name (class-of instance))))
+                               (symbol-package (class-name (class-of object))))
                   slot-name)))
 
 ;;; Generic element access protocol

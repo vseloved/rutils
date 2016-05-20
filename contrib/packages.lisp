@@ -14,6 +14,7 @@
            #:kvs
            #:maptab
            #:pairs
+           #:smart-slot-value
            #:vals
            #:?))
 
@@ -52,11 +53,12 @@
            #:force
            #:generated
            #:generated-item
-           #:yield))
+           #:yield
+           #:yield-to))
 
 (defpackage #:rutilsx.readtable
   (:documentation "Additional reader syntax support.")
-  (:use :common-lisp #:rutil #:rutilsx.generic)
+  (:use :common-lisp #:rutil #:rutilsx.generic #:rutilsx.bind)
   (:export #:rutilsx-readtable))
 
 (defpackage #:rutilsx
