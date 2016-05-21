@@ -457,4 +457,11 @@
             (nreverse (push (subseq seq i) acc)))
          (push (subseq seq i (+ i n)) acc))))))
 
+(defun keep (item sequence &rest args &key from-end test test-not start
+                                        end count key)
+  (apply #'remove item sequence :test ^(not (funcall (or test 'eql) % %%))
+         (loop :for (k v) :on args :by #'cddr
+               :unless (eql k :test) :nconc (list k v))))
+
+
 (eval-always (pushnew :split-sequence *features*))

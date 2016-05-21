@@ -202,6 +202,7 @@
            #:emptyp
            #:equal-lengths
            #:group
+           #:keep
            #:last-elt
            #:length=
            #:nshuffle

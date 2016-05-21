@@ -190,3 +190,7 @@
           (group 2 #()))
   (should be equal '("fo" "ob" "ar" "ba" "z")
           (group 2 "foobarbaz")))
+
+(deftest keep ()
+  (should be equal '("bar" "baz")
+          (keep #\b '("foo" "bar" "baz") :key ^(? % 0))))
