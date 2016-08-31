@@ -13,6 +13,26 @@
                                (symbol-package (class-name (class-of object))))
                   slot-name)))
 
+(define-setf-expander smart-slot-value (object slot-name &environment env)
+  (let ((obj-sym (gensym (symbol-name 'obj-sym)))
+        (slot-name-sym (gensym (symbol-name 'slot-name-sym)))
+        (slot-sym (gensym (symbol-name 'slot-sym))))
+    (multiple-value-bind (dummies vals newval setter getter)
+        (get-setf-expansion `(slot-value ,obj-sym ,slot-sym) env)
+      (values `(,obj-sym
+                ,slot-name-sym
+                ,slot-sym
+                ,@dummies)
+              `(,object
+                ,slot-name
+                (or (find-symbol (string-upcase ,slot-name-sym)
+                                 (symbol-package (class-name (class-of ,obj-sym))))
+                    ,slot-name-sym)
+                ,@vals)
+              newval
+              setter
+              getter))))
+
 ;;; Generic element access protocol
 
 (eval-always
