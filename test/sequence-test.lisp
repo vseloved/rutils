@@ -194,3 +194,15 @@
 (deftest keep ()
   (should be equal '("bar" "baz")
           (keep #\b '("foo" "bar" "baz") :key ^(? % 0))))
+
+(deftest sum ()
+  (should be = 6
+          (sum '1+ (range 0 3)))
+  (should be = 1
+          (sum '1+ (range 0 3) '(1))))
+
+(deftest product ()
+  (should be = 120
+          (product '+ (range 0 5)))
+  (should be = 6
+          (product '+ (range 0 3) '(1 1 1))))

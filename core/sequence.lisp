@@ -3,7 +3,7 @@
 (cl:in-package #:rutils.sequence)
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
-(declaim (inline safe-sort))
+(declaim (inline safe-sort map*))
 
 
 (defun split-sequence (delimiter seq
@@ -459,9 +459,22 @@
 
 (defun keep (item sequence &rest args &key from-end test test-not start
                                         end count key)
+  "The opposite of REMOVE."
   (apply #'remove item sequence :test ^(not (funcall (or test 'eql) % %%))
          (loop :for (k v) :on args :by #'cddr
                :unless (eql k :test) :nconc (list k v))))
+
+(defun sum (fn seq &rest seqs)
+  "Sum the results of mapping FN to SEQ and other SEQS."
+  (reduce '+ (apply 'map 'list fn seq seqs)))
+
+(defun product (fn seq &rest seqs)
+  "Product of the results of mapping FN to SEQ and other SEQS."
+  (reduce '* (apply 'map 'list fn seq seqs)))
+
+(defun map* (fn seq &rest seqs)
+  "DWIM version of map that uses the type of first sequence (SEQ) for result."
+  (apply 'map (type-of seq) fn seq seqs))
 
 
 (eval-always (pushnew :split-sequence *features*))

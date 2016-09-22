@@ -16,13 +16,15 @@
   (prog1 (gethash key ht)
     (remhash key ht)))
 
-(defmacro getsethash (key table value)
-  "Either get the value from TABLE by KEY or set a new calculated VALUE there
-   and return it.
+(defmacro getsethash (key table new-value)
+  "Either get the value from TABLE by KEY or set a new calculated NEW-VALUE
+   there and return it.
    It's similar to GETHASH called with 3 parameteres, but functions lazily."
   (once-only (key table)
-    `(or (gethash ,key ,table)
-         (sethash ,key ,table ,value))))
+    (with-gensyms (val in#)
+      `(multiple-value-bind (,val ,in#) (gethash ,key ,table)
+         (if ,in# ,val
+             (sethash ,key ,table ,new-value))))))
 
 (defun copy-hash-table (ht &key key test size
                                 rehash-size rehash-threshold)
@@ -180,3 +182,9 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                  (unless (null default-method)
                    (add-method #'print-object default-method))
                  (setf toggled nil))))))
+
+(defun hash-set (seq &key (test 'eql))
+  "Create a hash-set with TEST from the SEQ."
+  (let ((rez (make-hash-table :test test)))
+    (map nil ^(sethash % rez t) seq)
+    rez))

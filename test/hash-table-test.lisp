@@ -74,3 +74,13 @@
   (should print-to *standard-output* (format nil "~%(1 2) ~%(3 4) ~%(5 6) ")
           (dotable (k v #h(1 2 3 4 5 6))
             (print (list k v)))))
+
+(deftest hash-set ()
+  (should be equalp #h()
+          (hash-set nil))
+  (should be equalp #h(:key t)
+          (hash-set '(:key)))
+  (should be equalp #h(:key t)
+          (hash-set #(:key)))
+  (should be equalp #h(equal "key" t)
+          (hash-set '("key") :test 'equal)))

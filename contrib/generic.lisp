@@ -4,7 +4,7 @@
 (named-readtables:in-readtable rutils-readtable)
 (declaim #.+default-opts+)
 
-(declaim (inline copy smart-slot-value))
+(declaim (inline copy smart-slot-value smart-set-slot-value))
 
 
 (defun smart-slot-value (object slot-name)
@@ -12,6 +12,16 @@
               (or (find-symbol (string-upcase slot-name)
                                (symbol-package (class-name (class-of object))))
                   slot-name)))
+
+(defun smart-set-slot-value (object slot-name value)
+  (setf (slot-value object
+                    (or (find-symbol (string-upcase slot-name)
+                                     (symbol-package (class-name (class-of object))))
+                        slot-name))
+        value))
+
+(defsetf smart-slot-value smart-set-slot-value)
+
 
 ;;; Generic element access protocol
 
@@ -31,6 +41,10 @@
 (defmethod generic-elt ((obj vector) key &rest keys)
   (declare (ignore keys))
   (aref obj key))
+
+(defmethod generic-elt ((obj array) (key list) &rest keys)
+  (declare (ignore keys))
+  (apply 'aref obj key))
 
 (defmethod generic-elt ((obj sequence) key &rest keys)
   (declare (ignore keys))
@@ -163,6 +177,9 @@
                    (mapcar #`(funcall fn % %%)
                            (car list) (cdr list))))
       (t (mapindex fn list)))))
+
+
+;;; generic copy
 
 (defgeneric copy (obj)
   (:documentation

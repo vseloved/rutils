@@ -169,6 +169,7 @@
   (:export #:copy-hash-table
            #:dotable
            #:getsethash
+           #:hash-set
            #:hash-table-keys
            #:hash-table-vals
            #:merge-hash-tables
@@ -205,8 +206,10 @@
            #:keep
            #:last-elt
            #:length=
+           #:map*
            #:nshuffle
            #:partition-with
+           #:product
            #:removef
            #:rotate
            #:safe-sort
@@ -214,7 +217,8 @@
            #:shuffle
            #:split-sequence
            #:split-sequence-if
-           #:split-sequence-if-not))
+           #:split-sequence-if-not
+           #:sum))
 
 (defpackage #:rutils.pair
   (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
@@ -251,6 +255,7 @@
            #:defpar
            #:ds-bind
            #:filter
+           #:flet*
            #:flat-map
            #:fn
            #:get#

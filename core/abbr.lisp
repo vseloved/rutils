@@ -70,6 +70,10 @@
 (abbr keep-if remove-if-not)
 (abbr keep-if-not remove-if)
 
+(defmacro flet* (&rest body)
+  "An abbreviation for LABELS."
+  `(labels ,@body))
+
 (cl:in-package #:rutils.anaphora)
 
 (abbr aand and-it)

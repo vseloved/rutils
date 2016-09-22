@@ -30,7 +30,7 @@
   (let ((index-var (gensym "INDEX")))
     (once-only (vec)
       `(dotimes (,index-var (length ,vec) ,result-form)
-         (let ((,var (svref ,vec ,index-var)))
+         (let ((,var (aref ,vec ,index-var)))
            ,@body)))))
 
 (defun vec (&rest args)
