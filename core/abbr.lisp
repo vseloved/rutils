@@ -50,7 +50,15 @@
 (abbr split-if split-sequence-if)
 (abbr split-if-not split-sequence-if-not)
 
-(abbr := psetf)
+(defmacro := (&rest places-vals &environment env)
+  "Like PSETF but returns the set value of the last expression."
+  (declare (ignore env))
+  (with-gensyms (rez)
+    `(let ((,rez ,(last1 places-vals)))
+       (psetf ,@(butlast places-vals 2)
+              ,(first (last places-vals 2)) ,rez)
+       ,rez)))
+
 (abbr :+ incf)
 (abbr :- decf)
 

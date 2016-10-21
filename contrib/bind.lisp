@@ -46,7 +46,7 @@ depending on the type of the first argument."
   (:method ((arg1 list) (arg2 (eql '?)) &rest args)
     `(let (,@(mapcar (lambda (var-key)
                        `(,(first (mklist var-key))
-                         (? ,(first args) ,(last1 (mklist var-key)))))
+                         (? ,(first args) ',(last1 (mklist var-key)))))
                      arg1))))
   (:method ((arg1 list) (arg2 (eql '@)) &rest args)
     (with-gensyms (obj)
