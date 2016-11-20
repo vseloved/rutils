@@ -54,9 +54,9 @@
   "Like PSETF but returns the set value of the last expression."
   (declare (ignore env))
   (with-gensyms (rez)
-    `(let ((,rez ,(last1 places-vals)))
+    `(let (,rez)
        (psetf ,@(butlast places-vals 2)
-              ,(first (last places-vals 2)) ,rez)
+              ,(first (last places-vals 2)) (setf ,rez ,(last1 places-vals)))
        ,rez)))
 
 (abbr :+ incf)
@@ -81,6 +81,7 @@
 (defmacro flet* (&rest body)
   "An abbreviation for LABELS."
   `(labels ,@body))
+
 
 (cl:in-package #:rutils.anaphora)
 
