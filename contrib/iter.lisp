@@ -3000,7 +3000,6 @@ for the keys, the second for the values."
   ""
   ;; VALUE: the list so far.
   ;; TODO: remove the "maybe quoted" idiom from documentation & code
-  (when (quoted? result-type) (setq result-type (second result-type)))
   (when (quoted? place) (setq place (second place)))
   (let ((place-string (locally (declare (optimize safety))
                         (symbol-name place))))
