@@ -9,7 +9,7 @@
   :licence "3-clause MIT licence"
   :description
   "The most radical utilities."
-  :depends-on (#:named-readtables #:rutils)
+  :depends-on (#:named-readtables #:rutils #:closer-mop)
   :components
   ((:module #:contrib
     :components ((:file "packages")

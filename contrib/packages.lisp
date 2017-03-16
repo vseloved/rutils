@@ -4,8 +4,18 @@
 (cl:in-package :cl-user)
 
 
-(defpackage #:rutilsx.generic
+(defpackage #:rutilsx.generators
+  (:documentation "Python-like generators (yield) support.")
   (:use :common-lisp #:rutil)
+  (:export #:doing
+           #:force
+           #:generated
+           #:generated-item
+           #:yield
+           #:yield-to))
+
+(defpackage #:rutilsx.generic
+  (:use :common-lisp #:rutil #:rutilsx.generators)
   (:documentation "Generic access to pairs, sequences and tables.")
   (:export #:copy
            #:eq-test
@@ -45,17 +55,8 @@
   (:documentation "Clojure-like threading macros.")
   (:use :common-lisp #:rutil)
   (:export #:->
-           #:->>))
-
-(defpackage #:rutilsx.generators
-  (:documentation "Python-like generators (yield) support.")
-  (:use :common-lisp #:rutil)
-  (:export #:doing
-           #:force
-           #:generated
-           #:generated-item
-           #:yield
-           #:yield-to))
+           #:->>
+           #:=>))
 
 (defpackage #:rutilsx.readtable
   (:documentation "Additional reader syntax support.")

@@ -36,3 +36,11 @@
                            `(,form ,x))))
         `(->> ,threaded ,@(rest forms)))
       x))
+
+(defmacro => (fn1 fn2 &rest fns)
+  "Function composition of FN1, FN2 and all the other FNS."
+  (let ((arg (gensym "ARG")))
+    `(lambda (,arg)
+       ,(if fns
+            `(,fn1 (call (=> ,fn2 ,@fns) ,arg))
+            `(,fn1 (,fn2 ,arg))))))

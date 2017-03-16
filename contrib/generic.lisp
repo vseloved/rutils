@@ -7,18 +7,31 @@
 (declaim (inline copy smart-slot-value smart-set-slot-value))
 
 
-(defun smart-slot-value (object slot-name)
-  (slot-value object
-              (or (find-symbol (string-upcase slot-name)
-                               (symbol-package (class-name (class-of object))))
-                  slot-name)))
+(let ((cache (make-hash-table :test 'equalp)))
+  (defun find-symbol-package (slot-name object)
+    (getset# (pair (class-of object) slot-name)
+             cache
+             (some (lambda (pkg)
+                     (find-symbol (string-upcase slot-name) pkg))
+                   (remove-duplicates
+                    (loop :for class :in (c2mop:class-precedence-list
+                                          (class-of object))
+                          :for pkg := (symbol-package (class-name class))
+                          :until (eql 'common-lisp pkg)
+                          :collect pkg)))))
 
-(defun smart-set-slot-value (object slot-name value)
-  (setf (slot-value object
-                    (or (find-symbol (string-upcase slot-name)
-                                     (symbol-package (class-name (class-of object))))
-                        slot-name))
-        value))
+  (defun smart-slot-value (object slot-name)
+    (slot-value object
+                (or (find-symbol-package slot-name object)
+                    slot-name)))
+
+  (defun smart-set-slot-value (object slot-name value)
+    (setf (slot-value object
+                      (or (find-symbol-package slot-name object)
+                          slot-name))
+          value)))
+
+;(mapcar 'c2mop:slot-definition-name (c2mop:class-slots (class-of *pos-tagger*)))
 
 (defsetf smart-slot-value smart-set-slot-value)
 
