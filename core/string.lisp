@@ -74,7 +74,7 @@
 
 
 (defun starts-with (prefix string &key (test 'string=))
-  "Test, whether STRING starts with PREFIX."
+  "Test, whether STRING starts with PREFIX. Accepts TEST."
   (if-it (mismatch prefix string :test test)
          (= it (length prefix))
          t))
@@ -84,6 +84,22 @@
   (if-it (mismatch suffix string :from-end t :test test)
          (zerop it)
          t))
+
+(defun cutsym (symbol start &optional end)
+  "Returns a new symbol made of the SUBSTRing from START to END (optional), as in SUBSTR."
+  (let ((substring (substr (symbol-name symbol) start end)))
+    (if (keywordp symbol)
+        (rutils.core:ensure-keyword substring)
+        (rutils.core:ensure-symbol substring))))
+
+(declaim (inline symbol-starts-with symbol-ends-with))
+(defun symbol-starts-with (prefix symbol)
+  "Test, whether SYMBOL starts with PREFIX."
+  (starts-with (symbol-name prefix) (symbol-name symbol)))
+
+(defun symbol-ends-with (suffix symbol)
+  "Test, whether SYMBOL ends with SUFFIX."
+  (ends-with (symbol-name suffix) (symbol-name symbol)))
 
 (deftype string-designator ()
   "A string designator type. It is either a string, a symbol, or a character."

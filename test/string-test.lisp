@@ -76,6 +76,46 @@
   (should be true
           (ends-with "foo" "FOO" :test 'string-equal)))
 
+(deftest cutsym ()
+  (should be eq 'foo
+          (cutsym 'foo 0))
+  (should be eq 'oo
+          (cutsym 'foo 1))
+  (shoulg be eq 'foo
+          (cutsym 'foo 0 3))
+  (should be eq 'fo
+          (cutysym 'foo 0 -1))
+  (should be eq 'o
+          (cutsym 'o)))
+
+(deftest symbol-starts-with ()
+  (should be null
+          (symbol-starts-with 'foo '||))
+  (should be true
+          (symbol-starts-with '|| 'foo))
+  (should be null
+          (symbol-starts-with 'foo 'fo))
+  (should be true
+          (symbol-starts-with 'foo 'foo))
+  (should be true
+          (symbol-starts-with 'foo 'foobar))
+  (should be true
+          (symbol-starts-with "FOO" )))
+
+(deftest symbol-ends-with ()
+  (should be null
+          (symbol-ends-with 'foo '||))
+  (should be true
+          (symbol-ends-with '|| 'foo))
+  (should be null
+          (symbol-ends-with 'foo 'fo))
+  (should be true
+          (symbol-ends-with 'foo 'foo))
+  (should be true
+          (symbol-ends-with 'bar 'foobar))
+  (should be true
+          (symbol-ends-with "BAR" 'foobar)))
+
 (deftest dolines ()
   (should be equal '("world" "hello")
           (let ((file (fmt "/tmp/~A" (gensym)))
