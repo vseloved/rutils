@@ -6,32 +6,54 @@
 
 (declaim (inline copy smart-slot-value smart-set-slot-value))
 
+(defmacro adding-smart-slot-methods (obj slot expr)
+  (with-gensyms (err class name alt args val)
+    `(handler-case ,expr
+       (simple-error (,err)
+         (let ((,class (class-of ,obj))
+               (,name (symbol-name ,slot)))
+           (dolist (,alt (c2mop:class-slots ,class)
+                         (error ,err))
+             (let ((,alt (c2mop:slot-definition-name ,alt)))
+               (when (string= ,name (symbol-name ,alt))
+                 (add-method (ensure-generic-function 'smart-slot-value)
+                             (make 'standard-method
+                                   :specializers
+                                   (list ,class
+                                         (c2mop:intern-eql-specializer ,slot))
+                                   :lambda-list '(,obj ,slot)
+                                   :function
+                                   (lambda (,args _)
+                                     (declare (ignorable _))
+                                     (slot-value (first ,args) ,alt))))
+                 (add-method (ensure-generic-function 'smart-set-slot-value)
+                             (make 'standard-method
+                                   :specializers
+                                   (list ,class
+                                         (c2mop:intern-eql-specializer ,slot)
+                                         (find-class 't))
+                                   :lambda-list '(,obj ,slot ,val)
+                                   :function
+                                   (lambda (,args _)
+                                     (declare (ignorable _))
+                                     (:= (slot-value (first ,args) ,alt)
+                                         (third ,args)))))
+                 (let ((,slot ,alt))
+                   (return ,expr))))))))))
 
-(let ((cache (make-hash-table :test 'equalp)))
-  (defun find-symbol-package (slot-name object)
-    (getset# (pair (class-of object) slot-name)
-             cache
-             (some (lambda (pkg)
-                     (find-symbol (string-upcase slot-name) pkg))
-                   (remove-duplicates
-                    (loop :for class :in (c2mop:class-precedence-list
-                                          (class-of object))
-                          :for pkg := (symbol-package (class-name class))
-                          :until (eql 'common-lisp pkg)
-                          :collect pkg)))))
+(defgeneric smart-slot-value (obj slot)
+  (:documentation
+   "Similar to SLOT-VALUE but tries to find slot definitions regardless
+    of the package.")
+  (:method (obj slot)
+    (adding-smart-slot-methods obj slot (slot-value obj slot))))
 
-  (defun smart-slot-value (object slot-name)
-    (slot-value object
-                (or (find-symbol-package slot-name object)
-                    slot-name)))
-
-  (defun smart-set-slot-value (object slot-name value)
-    (setf (slot-value object
-                      (or (find-symbol-package slot-name object)
-                          slot-name))
-          value)))
-
-;(mapcar 'c2mop:slot-definition-name (c2mop:class-slots (class-of *pos-tagger*)))
+(defgeneric smart-set-slot-value (obj slot val)
+  (:documentation
+   "Similar to (SETF SLOT-VALUE) but tries to find slot definitions regardless
+    of the package.")
+  (:method (obj slot val)
+    (adding-smart-slot-methods obj slot (:= (slot-value obj slot) val))))
 
 (defsetf smart-slot-value smart-set-slot-value)
 

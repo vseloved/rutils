@@ -73,15 +73,18 @@
 ;;               `(substr ,getter ,start ,end)))))
 
 
-(defun starts-with (prefix string &key (test 'string=))
-  "Test, whether STRING starts with PREFIX."
-  (if-it (mismatch prefix string :test test)
+(defun starts-with (prefix string &key (test 'string=) (start 0))
+  "Test, whether STRING starts with PREFIX.
+   If START is provided matches from this offset from the start."
+  (if-it (mismatch prefix string :test test :start2 start)
          (= it (length prefix))
          t))
 
-(defun ends-with (suffix string &key (test 'string=))
-  "Test, whether STRING ends with SUFFIX. Accepts TEST."
-  (if-it (mismatch suffix string :from-end t :test test)
+(defun ends-with (suffix string &key (test 'string=) -end)
+  "Test, whether STRING ends with SUFFIX. Accepts TEST.
+   If -END is provided matches from this offset from end."
+  (if-it (mismatch suffix string :from-end t :test test
+                                 :end2 (when -end (- (length string) -end)))
          (zerop it)
          t))
 

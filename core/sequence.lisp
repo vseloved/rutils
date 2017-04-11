@@ -432,7 +432,8 @@
   "The destructuve nature of SORT triggers many obscure bugs.
    This function is a thin wrapper over SORT that enqures
    that an input SEQUENCE is copied."
-  (apply #'sort (copy-seq sequence) predicate args))
+  (declare (ignorable key))
+  (apply 'sort (copy-seq sequence) predicate args))
 
 (defun group (n seq)
   "Split SEQ into a list of sequences of the same type of length N

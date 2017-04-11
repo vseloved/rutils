@@ -174,9 +174,10 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
      If ON is set explicitly will turn on literal printing (T) or default (NIL)."
     (let ((off (if explicit on (not toggled))))
       (if off
-          (progn (defmethod print-object ((obj hash-table) stream)
-                   (print-hash-table obj stream))
-                 (setf toggled t))
+          (progn
+            (defmethod print-object ((obj hash-table) stream)
+              (print-hash-table obj stream))
+            (setf toggled t))
           (progn (remove-method #'print-object
                                 (find-method #'print-object nil '(hash-table t)))
                  (unless (null default-method)

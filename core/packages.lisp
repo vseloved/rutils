@@ -190,6 +190,7 @@
   (:documentation "Array utilities.")
   (:export #:array-index
            #:array-length
+           #:copy-array
            #:dovec
            #:slice
            #:vec))
@@ -266,6 +267,7 @@
            #:ht->plist
            #:ht->alist
            #:in#
+           #:just
            #:keep-if
            #:keep-if-not
            #:plist->ht

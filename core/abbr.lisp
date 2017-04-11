@@ -82,6 +82,8 @@
   "An abbreviation for LABELS."
   `(labels ,@body))
 
+(abbr just identity)
+
 
 (cl:in-package #:rutils.anaphora)
 

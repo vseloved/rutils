@@ -37,3 +37,18 @@
   "Make a new adjustable vector with ARGS as contents."
   (make-array (length args) :initial-contents args
                             :adjustable t :fill-pointer t))
+
+(defun copy-array (arr)
+  "Create a fresh copy of the array ARR."
+  (let* ((dims (array-dimensions arr))
+         (dim-count (length dims))
+         (rez (make-array dims :element-type (array-element-type arr))))
+    (labels ((drill-down (is)
+               (if (= (length is) dim-count)
+                   (:= (apply #'aref rez is)
+                       (apply #'aref arr is))
+                   (dotimes (i (array-dimension arr (- dim-count (length is))))
+                     (drill-down (cons i is))))))
+      (dotimes (i (array-dimension arr (1- dim-count)))
+        (drill-down (list i))))
+    rez))

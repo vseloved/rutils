@@ -43,11 +43,11 @@
     (ht->pairs table))
   (:method ((list list))
     (listcase list
-      (alist (mapcar #`(pair (car %) (cdr %))
+      (alist (mapcar ^(pair (car %) (cdr %))
                      list))
-      (dlist (mapcar #'pair
+      (dlist (mapcar 'pair
                      (car list) (cdr list)))
-      (t (mapindex #'pair list)))))
+      (t (mapindex 'pair list)))))
 
 (defmacro with-pair ((lt rt) pair &body body)
   "Bind LT and RT to PAIR's slots and execute BODY inside."
