@@ -60,6 +60,15 @@
 
 ;;; Generic element access protocol
 
+(define-condition generic-elt-error ()
+  ((obj :accessor generic-elt-error-obj :initarg :obj)
+   (key :accessor generic-elt-error-key :initarg :key)))
+
+(defmethod print-object ((err generic-elt-error) stream)
+  (format stream
+          "Generic element access error: object ~A can't be accessed by key: ~A"
+          (slot-value err 'obj) (slot-value err 'key)))
+
 (eval-always
 
 (defgeneric generic-elt (obj key &rest keys)
@@ -67,7 +76,10 @@
    "Generic element access in OBJ by KEY.
     Supports chaining with KEYS.")
   (:method :around (obj key &rest keys)
-    (reduce #'generic-elt keys :initial-value (call-next-method obj key))))
+    (reduce #'generic-elt keys :initial-value (call-next-method obj key)))
+  (:method (obj key &rest keys)
+    (declare (ignore keys))
+    (error 'generic-elt-error :obj obj :key key)))
 
 (defmethod generic-elt ((obj list) key &rest keys)
   (declare (ignore keys))

@@ -141,4 +141,7 @@
   (:dispatch-macro-char #\# #\` #'|#`-reader|)
   (:dispatch-macro-char #\# #\/ #'|#/-reader|))
 
+(defreadtable standard-readtable
+  (:merge :standard))
+
 )

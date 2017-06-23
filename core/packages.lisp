@@ -9,6 +9,7 @@
   (:documentation "Literate syntax definitions.")
   (:use :common-lisp #:named-readtables)
   (:export #:rutils-readtable
+           #:standard-readtable
 
            #:+default-opts+
 

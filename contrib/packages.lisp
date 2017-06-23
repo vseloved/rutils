@@ -20,6 +20,9 @@
   (:export #:copy
            #:eq-test
            #:generic-elt
+           #:generic-elt-error
+           #:generic-elt-error-obj
+           #:generic-elt-error-key
            #:keys
            #:kvs
            #:maptab

@@ -461,9 +461,12 @@
 (defun keep (item sequence &rest args &key from-end test test-not start
                                         end count key)
   "The opposite of REMOVE."
-  (apply #'remove item sequence :test ^(not (funcall (or test 'eql) % %%))
-         (loop :for (k v) :on args :by #'cddr
-               :unless (eql k :test) :nconc (list k v))))
+  (declare (ignorable from-end start end count key))
+  (let ((test (or test
+                  (complement (or test-not #'eql)))))
+    (apply 'remove item sequence :test test
+           (loop :for (k v) :on args :by #'cddr
+                 :unless (member k '(:test :test-not)) :nconc (list k v)))))
 
 (defun sum (fn seq &rest seqs)
   "Sum the results of mapping FN to SEQ and other SEQS."
