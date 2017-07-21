@@ -256,7 +256,6 @@
   (:export #:call
            #:defpar
            #:ds-bind
-           #:filter
            #:flet*
            #:flat-map
            #:fn
