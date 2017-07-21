@@ -26,7 +26,7 @@
    last item in the first form, or in place of % if it is present in the form,
    making a list of it if it is not a list already.
    If there are more forms, inserts the first form
-   as the second item in second form, etc."
+   as the last item in second form, etc."
   (if (first forms)
       (let* ((form (first forms))
              (threaded (if (listp form)
