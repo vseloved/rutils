@@ -183,9 +183,3 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                  (unless (null default-method)
                    (add-method #'print-object default-method))
                  (setf toggled nil))))))
-
-(defun hash-set (seq &key (test 'eql))
-  "Create a hash-set with TEST from the SEQ."
-  (let ((rez (make-hash-table :test test)))
-    (map nil ^(sethash % rez t) seq)
-    rez))

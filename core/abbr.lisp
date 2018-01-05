@@ -50,6 +50,9 @@
 (abbr split-if split-sequence-if)
 (abbr split-if-not split-sequence-if-not)
 
+(abbr pushx vector-push-extend)
+
+
 (defmacro := (&rest places-vals &environment env)
   "Like PSETF but returns the set value of the last expression."
   (declare (ignore env))

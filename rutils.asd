@@ -25,6 +25,7 @@
                          (:file "list")
                          (:file "string")
                          (:file "hash-table")
+                         (:file "hash-set")
                          (:file "tree")
                          (:file "array")
                          (:file "sequence")

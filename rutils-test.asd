@@ -20,6 +20,7 @@
                          (:file "list-test" :depends-on ("package"))
                          (:file "string-test" :depends-on ("package"))
                          (:file "hash-table-test" :depends-on ("package"))
+                         (:file "hash-set-test" :depends-on ("package"))
                          (:file "sequence-test" :depends-on ("package"))
                          (:file "tree-test" :depends-on ("package"))
                          (:file "pair-test" :depends-on ("package"))

@@ -239,3 +239,15 @@
     (copy-hash-table obj))
   (:method ((obj structure-object))
     (copy-structure obj)))
+
+
+;;; generic count
+
+(defgeneric tally (obj)
+  (:documentation
+   "Return the count of items in a collection or other compound object.")
+  (:method ((obj sequence))
+    (length obj))
+  (:method ((obj hash-table))
+    (hash-table-count obj)))
+  

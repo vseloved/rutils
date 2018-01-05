@@ -18,6 +18,7 @@
   (:use :common-lisp #:rutil #:rutilsx.generators)
   (:documentation "Generic access to pairs, sequences and tables.")
   (:export #:copy
+           #:tally
            #:eq-test
            #:generic-elt
            #:generic-elt-error

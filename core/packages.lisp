@@ -170,7 +170,6 @@
   (:export #:copy-hash-table
            #:dotable
            #:getsethash
-           #:hash-set
            #:hash-table-keys
            #:hash-table-vals
            #:merge-hash-tables
@@ -181,9 +180,20 @@
            #:print-hash-table
            #:sethash
            #:takehash
-           #-(or abcl ecl)
-           #:toggle-print-hash-table
+           #-(or abcl ecl) #:toggle-print-hash-table
            #:with-keys))
+
+(defpackage #:rutils.hash-set
+  (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
+        #:rutils.hash-table)
+  (:documentation "Hash-set utilities.")
+  (:export #:hash-set
+           #:emptyp#
+           #:add#
+           #:inter#
+           #:union#
+           #:diff#
+           #:xor#))
 
 (defpackage #:rutils.array
   (:use :common-lisp #:rutils.readtable #:rutils.core #:rutils.misc
@@ -274,7 +284,6 @@
            #:alist->ht
            #:merge-hts
            #:print-ht
-           #:p#
            #:m1
            #:make
            #:mapcat
@@ -282,6 +291,8 @@
            #:mklist
            #:mksym
            #:mv-bind
+           #:pushx
+           #:p#
            #:rem#
            #:set#
            #:split
