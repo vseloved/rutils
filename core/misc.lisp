@@ -2,7 +2,8 @@
 
 (in-package #:rutils.misc)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 (declaim (inline or2 and2 xor2 void true))
 
 

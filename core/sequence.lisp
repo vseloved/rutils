@@ -2,7 +2,8 @@
 
 (cl:in-package #:rutils.sequence)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 (declaim (inline safe-sort map*))
 
 

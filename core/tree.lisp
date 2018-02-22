@@ -2,7 +2,8 @@
 
 (cl:in-package #:rutils.tree)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (defmacro dotree ((subtree tree &optional result) &body body)

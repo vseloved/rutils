@@ -1,7 +1,8 @@
 ;; For license see LICENSE
 
 (in-package #:rutils.readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
