@@ -2,7 +2,8 @@
 
 (in-package #:rutils.hash-table)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (declaim (inline sethash))

@@ -2,7 +2,8 @@
 
 (cl:in-package #:rutils.core)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (define-condition rutils-style-warning (simple-condition style-warning) ())

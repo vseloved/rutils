@@ -2,7 +2,8 @@
 
 (cl:in-package #:rutils.anaphora)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (defmacro if-it (test then &optional else)

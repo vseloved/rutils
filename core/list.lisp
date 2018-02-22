@@ -2,7 +2,8 @@
 
 (cl:in-package #:rutils.list)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (declaim (inline last1 single dyadic tryadic append1 conc1 ensure-list

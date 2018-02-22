@@ -2,8 +2,8 @@
 
 (cl:in-package #:rutils.array)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
-
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 (deftype array-index (&optional (length array-dimension-limit))
   "Type designator for an index into array of LENGTH: an integer between
