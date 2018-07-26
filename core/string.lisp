@@ -96,14 +96,15 @@
 (defmacro dolines ((line src &optional result) &body body)
   "Iterate over each LINE in SRC (a stream or path to a file) as in DOLIST."
   (let ((in (gensym)))
-    `(if (streamp ,src)
-         (loop :for ,line := (read-line ,src nil nil) :while ,line :do
-            (progn ,@body)
-            :finally (return ,result))
-         (with-open-file (,in ,src)
-           (loop :for ,line := (read-line ,in nil nil) :while ,line :do
-              (progn ,@body)
-              :finally (return ,result))))))
+    (once-only (src)
+      `(if (streamp ,src)
+           (loop :for ,line := (read-line ,src nil nil) :while ,line :do
+             (progn ,@body)
+                 :finally (return ,result))
+           (with-open-file (,in ,src)
+             (loop :for ,line := (read-line ,in nil nil) :while ,line :do
+               (progn ,@body)
+                   :finally (return ,result)))))))
 
 (defmacro with-out-file ((var path) &body body)
   `(with-open-file (,var ,path :direction :output
