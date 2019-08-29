@@ -50,7 +50,7 @@ RTL-USER> #`(+ % %%)
 #<FUNCTION (LAMBDA (&OPTIONAL % %%)) {1022395BAB}>
 ```
 
-Unlike Clojure, only 2 implicit arguments are supported: `%` and `%%`. This covers more than 80% of use cases. And, think of it, wen you have a lambda with more than 2 arguments, most probably, it's not so simple to be written in shorthand form. After all, it's supposed that these small functions should span a single expression and at most 3 lines of code...
+Unlike Clojure, only 2 implicit arguments are supported: `%` and `%%`. This covers more than 80% of use cases. And, think of it, when you have a lambda with more than 2 arguments, most probably, it's not so simple to be written in shorthand form. After all, it's supposed that these small functions should span a single expression and at most 3 lines of code...
 
 Although, multiple-expression lambdas are also supported: `^((print %) (1+ %%)) => (lambda (&optional % %%) (print %) (1+ %%))`
 
@@ -103,16 +103,16 @@ Compare `(elt (nth 1 (foo-slot2 (bar-slot1 obj)) 0)` (sometimes you have to writ
 
 5. Heredoc strings
 
-Heredoc is a concept from the Shell and Perl that allows to represent strings without the need for escaping. The variant RUTILS provides uses the open-close syntax: `#/ ... /#`.
+Heredoc is a concept from the Shell and Perl that allows representing strings without the need for escaping. The variant RUTILS provides uses the open-close syntax: `#/ ... /#`.
 
 ```
 RTL-USER> #/This is a string
-which allows to use the quote (") without escaping/#
+which allows using the quote (") without escaping/#
 "This is a string
-which allows to use the quote (\") without escaping"
+which allows using the quote (\") without escaping"
 ```
 
-It might be very usefull for docstrings, to repreent JSON and other documents, etc.
+It might be very useful for docstrings, to represent JSON and other documents, etc.
 
 Note, that it may not always play well with some REPL (e.g. SLIME), which count open/close quotes.
 
@@ -131,7 +131,7 @@ First of all, it has the classic:
 If you don't know how these are used you can read more in PCL or On Lisp.
 
 - `eval-always` is `eval-when` with all 3 modes on
-- `ensure-symbol`/`mksym` and `ensure-kyword`/`mkeyw` turn a string into a symbol or keyword (first upcasing it). It has a keyword `:format` argument that allows to specify a format-string for the symbol tranformation
+- `ensure-symbol`/`mksym` and `ensure-kyword`/`mkeyw` turn a string into a symbol or keyword (first upcasing it). It has a keyword `:format` argument that allows specifying a format-string for the symbol transformation
 
 Finally, it provides `abbr` that allows to easily define aliases for any functions and macros.
 
@@ -169,13 +169,13 @@ And a couple of shorthands I use quite often:
 
 Finally,
 
-- `named-lambda`/`fn` allows to created named anonymus functions, for what it's worth :) Their main use-case is improved debugging
+- `named-lambda`/`fn` allows to created named anonymous functions, for what it's worth :) Their main use-case is improved debugging
 - `coercef` coerces and re-assigns the variable (there's also a similar `appendf` for lists)
 
 
 ### rutils.anaphora
 
-There's a separate Lisp library called [ANAPHORA](https://common-lisp.net/project/anaphora/) that provides such control-flow constructs that allow to perform simultaneous assignment and logical tests. RUTILS copies the basic and most widely-used ones. `when-it` and `if-it` are among the most used extensions for me. Here's an example:
+There's a separate Lisp library called [ANAPHORA](https://common-lisp.net/project/anaphora/) that provides such control-flow constructs that allow performing simultaneous assignment and logical tests. RUTILS copies the basic and most widely-used ones. `when-it` and `if-it` are among the most used extensions for me. Here's an example:
 
 ```
 (when-it (foo)
@@ -190,7 +190,7 @@ is the same as:
     (bar it)))
 ```
 
-This is the implicit anaphora, in which `it` variable is created behind-the-scenes. Such approach is not unseen in Lisp, as there's `call-next-method` that follows the same principle. Yet, RUTILS supports an explicit style, as well:
+This is the implicit anaphora, in which `it` variable is created behind-the-scenes. Such an approach is not unseen in Lisp, as there's `call-next-method` that follows the same principle. Yet, RUTILS supports an explicit style, as well:
 
 ```
 (if-let (x (foo))
@@ -216,7 +216,7 @@ The names should speak for themselves.
 
 ### `rutils.bind`
 
-This library provides an extensible unification of all Lisp binding operations (`let`, `let*`, `multiple-value-bind`, `destructuring-bind`, `with-slots`,...) — `bind`/`with` (I prefer the second variant). Unlike `iter` or `anaphora`, I didn't taken some of the existing binding libraries (e.g. METABANG-BIND) and decided to implement a novel version that provides more intuitive syntax for the common operations: primarily, multiple values, key-based and slot access.
+This library provides an extensible unification of all Lisp binding operations (`let`, `let*`, `multiple-value-bind`, `destructuring-bind`, `with-slots`,...) — `bind`/`with` (I prefer the second variant). Unlike `iter` or `anaphora`, I didn't take some of the existing binding libraries (e.g. METABANG-BIND) and decided to implement a novel version that provides more intuitive syntax for the common operations: primarily, multiple values, key-based and slot access.
 
 Here's an example:
 
@@ -260,7 +260,7 @@ Access to struct/object slots is performed using `smart-slot-value`, also define
 
 ### `rutils.iter`
 
-Alongside SPLIT-SEQUENCE, this is another external library originally called [ITERATE](https://common-lisp.net/project/iterate/) that is incorporated by RUTILS. With an important modification of defining the clause keys in the keyword package. You can refer to the oficial documentation for the extensive examples of its usage. Just mind that instead of:
+Alongside SPLIT-SEQUENCE, this is another external library originally called [ITERATE](https://common-lisp.net/project/iterate/) that is incorporated by RUTILS. With an important modification of defining the clause keys in the keyword package. You can refer to the official documentation for the extensive examples of its usage. Just mind that instead of:
 
 ```
 (iterate (for item in list)
@@ -315,7 +315,7 @@ This package provides the `pair` struct that is intended to serve as a replaceme
 
 The accessor functions are `pair-left`/`lt` and `pair-right`/`rt`. And the pair may be created by both calling `(make-pair :left :foo :right 42)` and a shorter `(pair :foo 42)`.
 
-`pair` is a list-based struct, which allows it to be used in destructuring similar to cons. At the drawback of somewhat worse performance (another dereference is needed to access the right part). So, if you need to squize the last bit of performance, in some place, you might still need to use cons-pairs. There's also `with-pair` to destructure a single pair:
+`pair` is a list-based struct, which allows it to be used in destructuring similar to cons. At the drawback of somewhat worse performance (another dereference is needed to access the right part). So, if you need to squeeze the last bit of performance, in someplace, you might still need to use cons-pairs. There's also `with-pair` to destructure a single pair:
 
 ```
 RTL-USER> (with-pair (l r) (pair :foo 42)
@@ -332,9 +332,9 @@ The utility functions to transform a list of pairs to/from a hash-table are prov
 
 This package accumulates many list-manipulation utilities from On Lisp, other books, and beyond. After all, the name Lisp originally meant "List Processing", and a lot of stuff was invented to make such manipulation more efficient. But not all of it got into the standard.
 
-- `last1` provides read-write access to the last element. It should be noted that it isn't efficient (`O(n)`) hence, possibly, its absense from the standard
+- `last1` provides read-write access to the last element. It should be noted that it isn't efficient (`O(n)`) hence, possibly, its absence from the standard
 - `assoc1` is the classic missing shortcut to not have to write `(cdr (assoc ...))`; it also works for pairs
-- `single`/`dyadic`/`triadic` check if list has exatly 1,2 or 3 elements
+- `single`/`dyadic`/`triadic` check if list has exactly 1,2 or 3 elements
 - `ensure-list`/`mklist` turns atom arguments into lists while preserving list arguments as is; `atomize` is the opposite operation
 - `flatten` turns the list into absolutely flat (removing all nesting) or removes just the number of levels supplied as the optional second argument
 
@@ -359,7 +359,7 @@ RTL-USER> (interpose :foo '(1 2 3))
 
 Plist- and alist-related stuff:
 
-- `plistp` and `alistp` check if the appropriate conditions for a list beign a plist or alist are met; there's also `alist-to-plist` and `plist-to-alist`
+- `plistp` and `alistp` check if the appropriate conditions for a list being a plist or alist are met; there's also `alist-to-plist` and `plist-to-alist`
 - there's also `remove-from-plist` and `delete-from-plist`
 - finally, there's `doplist` which iterates the plist by one key-value pair, at once
 
@@ -412,8 +412,8 @@ RTL-USER> (mapindex (lambda (i x)
 
 The two main utilities here are:
 
-- `slice` perfoms efficient vector subsequencing (also works for strings) by using array-displacement
-- `vec` creates a dymanic adjustable vector from its arguments
+- `slice` performs efficient vector subsequencing (also works for strings) by using array-displacement
+- `vec` creates a dynamic adjustable vector from its arguments
 
 There's also `dovec` wich iterates the elements of the vector — a more direct way than using `dotimes` + `aref`.
 
@@ -423,12 +423,12 @@ This package provides a number of very frequently used string utilities and also
 
 String utilities:
 
-- `blankp` tests wheteher the string is empty (i.e. `(zerop (length string))`
+- `blankp` tests whether the string is empty (i.e. `(zerop (length string))`
 - `strcat` concatenates strings, as well as characters and, actually, anything else that prints to string, including nil (yep, the name is taken from C)
 - `strjoin` is a shortcut for `(format nil "~{~A~^<deliiter>~}" ...)`
-- `substr` is an efficent substring implementation (babsed on `slice`, i.e. using displaced arrays) that also allows to use negative indices, like in Python, which signify index from the end of the string
+- `substr` is an efficient substring implementation (based on `slice`, i.e. using displaced arrays) that also allows using negative indices, like in Python, which signify index from the end of the string
 - `white-char-p` tests whether the character is one of the 5 basic whitespace-characters (`#\Space`, `#\Tab`, `#\Newline`, `#\Return`, `#\Linefeed`)
-- `starts-with` and `ends-with` are mre intuitive wrappers around `mismatch`
+- `starts-with` and `ends-with` are more intuitive wrappers around `mismatch`
 - `last-char` returns the last character of the given string
 - `fmt` is the shortcut for `format nil`
 
@@ -446,7 +446,7 @@ File-related stuff (very commonly used by me):
 
 ### rutils.sequence
 
-This package contains the very popular `split-sequence` family of utilities (it's recommended to utilize it using the shorter `split`/`split-if`/`split-if-not` names), with a minor, but impactful change of the default value of `remove-empty-subseqs` argument to `t` (for me, it's the value I have to provide in 99% of the cases). More docs on `split-sequence` can be found in the internet, in particular, on [Cliki](https://www.cliki.net/SPLIT-SEQUENCE)
+This package contains the very popular `split-sequence` family of utilities (it's recommended to utilize it using the shorter `split`/`split-if`/`split-if-not` names), with a minor, but impactful change of the default value of `remove-empty-subseqs` argument to `t` (for me, it's the value I have to provide in 99% of the cases). More docs on `split-sequence` can be found on the internet, in particular, on [Cliki](https://www.cliki.net/SPLIT-SEQUENCE).
 
 Also provided is the `partition-with` function that splits the sequence into groups by a list of delimiters:
 
@@ -483,7 +483,7 @@ Efficient length comparison is performed by the following utilities:
 
 - `emptyp` tests if the sequence has length zero.
 - `length=` checks if the sequence length is exactly the second argument
-- and `equal-lengths` tests if the sequences have same lengths
+- and `equal-lengths` tests if the sequences have the same lengths
 
 `last-elt` retrieves the last element (also setfable).
 
@@ -499,7 +499,7 @@ And `map*` is a DWIM version of `map`. It doesn't ask for the result type and ju
 
 Hash-tables have, sadly, very rudimentary API, in the standard, despite their current ubiquity. I guess, at the time they were introduced, there the understanding of their universal utility hadn't been formed yet. So, RUTILS bridges that gap.
 
-Alongside the eader support, provided by the readtable, literal syntax is also supported by the printer with `print-hash-table`/`print-ht`. Besides, there's also a way to plug into normal printing, with `toggle-print-hash-table`:
+Alongside the reader support, provided by the readtable, literal syntax is also supported by the printer with `print-hash-table`/`print-ht`. Besides, there's also a way to plug into normal printing, with `toggle-print-hash-table`:
 
 ```
 RTL-USER> #h(:foo 42)
@@ -537,7 +537,7 @@ RTL-USER> (let ((rez ()))
 
 It supports automatic ignoring of `_` argument and, also, iterating over alists.
 
-Another idea I had was to distinguish hash-table-related operations with a hash-sign at the end. It brough to the definition of a group of alternative hash-table operations:
+Another idea I had was to distinguish hash-table-related operations with a hash-sign at the end. It brought to the definition of a group of alternative hash-table operations:
 
 - `get#` - `gethash`
 - `set#` - `sethash`
@@ -557,7 +557,7 @@ Finally, is also sometimes needed `merge-hash-tables`/`merge-hts`, `merge-hash-t
 
 ### rutils.hash-set
 
-From the efficiency standpoint, hash-sets should be the goto set implementations, but, in Lisp, it seems like sets where introduced prir to hash-table so the simpler list-based variants are supported in the standard. Here, we provide a hash-based alernative based on the hash-table with all `t` values:
+From the efficiency standpoint, hash-sets should be the goto set implementations, but, in Lisp, it seems like sets where introduced prior to hash-table so the simpler list-based variants are supported in the standard. Here, we provide a hash-based alternative based on the hash-table with all `t` values:
 
 `hash-set` will create a set from a list of items (hash-table-test may be specified).
 
@@ -600,7 +600,7 @@ Intersect with another:
 
 ### rutils.kv
 
-Key-values are more than just hash-tables and alists (although, these are the most wide-spread ones, in the Lisp world). A gneric kv-access protocol is defined here: `keys` and `vals` allows to define methods to access excatly those, `kvs` returns key-value pairs as a list (possible flavors are: plist, alist, and dlist).
+Key-values are more than just hash-tables and alists (although, these are the most wide-spread ones, in the Lisp world). A generic kv-access protocol is defined here: `keys` and `vals` allows to define methods to access exactly those, `kvs` returns key-value pairs as a list (possible flavors are: plist, alist, and dlist).
 
 Besides, there's a generic `mapkv`, which iterates a single key-value structure and returns a similar structure with the calculated values assigned to the same keys, and `dokv`, which uses `mapkv` for do-style iteration. However, using `dotable` will be more efficient for hash-tables and alists (although not extensible).
 
@@ -618,7 +618,7 @@ As you see, `mapkv` expects a function of 2 arguments: the key and the value.
 
 The tree utilities, mostly, automate list-based trees iteration.
 
-`dotree`/`maptree` and `doleaves`/`mapleaves` allows to iterate the tree by subtrees or just the leaves in do- and map-styles: i.e. map will also produce an alterted copy of the iterated list.
+`dotree`/`maptree` and `doleaves`/`mapleaves` allow iterating the tree by subtrees or just the leaves in do- and map-styles: i.e. map will also produce an altered copy of the iterated list.
 
 ```
 RTL-USER> (dotree (subtree '(1 (2 3) (4 (5 6))))
@@ -646,7 +646,7 @@ RTL-USER> (maptree ^(if (oddp %) :foo :bar)
 
 In this tutorial, I've described, maybe, 80-90% of what RUTILS has to offer. If you want to learn more, browse the [docs](http://quickdocs.org/rutils/) (but wait for the update), the tests or the codebase itself (I tried to make docstrings comprehensible and clear).
 
-Also, I wanted to clearly state that the major part of RUTILS is not my invention: the part were taken from other libraries, extracted from books, internet forum discussions. Many ideas where borrowed from other languages. My additions are not that big and are, mostly, variations on the existing topics. The principal idea was not to invent something new but, rather, to carefully gather the existing stuff scattered over many places.
+Also, I wanted to clearly state that the major part of RUTILS is not my invention: it was taken from other libraries, extracted from books, internet forum discussions. Many ideas were borrowed from other languages. My additions are not that big and are, mostly, variations on the existing topics. The principal idea was not to invent something new but, rather, to carefully gather the existing stuff scattered over many places.
 
 I have used RUTILS in almost all of my Lisp projects, for more than 7 years already. I never had any problems or conflicts in connection to that. However, you should note that my main platform is SBCL and it's where I do most of the testing. Specific support for other Lisp compilers was occasionally contributed by other users.
 
@@ -665,4 +665,4 @@ This is my personal Top-10 of the most frequently used/useful features of RUTILS
 
 But that's just the tip of an iceberg: I could easily extend it to 30 items that I use regularly, in my code.
 
-So, you may not like some of the choices made by RUTILS (that's one of the reasons it's called radical, after all), but, in fact, it nicely coexists with any other Lisp code and provides a plethora of small improvements that can make your day-to-day Lisp workflow more efficient and pleasant. You can use them as a whole if you happen to have a similar mindset to mine, or partially (for instance, by importing one of its packages like `rutils.bind`), or even cherry pick a couple of items you need and copy-paste it to your own codebase. Anyway, I'd be glad if it comes handy...
+So, you may not like some of the choices made by RUTILS (that's one of the reasons it's called radical, after all), but, in fact, it nicely coexists with any other Lisp code and provides a plethora of small improvements that can make your day-to-day Lisp workflow more efficient and pleasant. You can use them as a whole if you happen to have a similar mindset to mine, or partially (for instance, by importing one of its packages like `rutils.bind`), or even cherry-pick a couple of items you need and copy-paste it to your own codebase. Anyway, I'd be glad if it comes handy...
