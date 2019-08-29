@@ -214,7 +214,7 @@ Other supplied anaphoric macros are:
 
 The names should speak for themselves.
 
-### `rutils.bind`
+### rutils.bind
 
 This library provides an extensible unification of all Lisp binding operations (`let`, `let*`, `multiple-value-bind`, `destructuring-bind`, `with-slots`,...) — `bind`/`with` (I prefer the second variant). Unlike `iter` or `anaphora`, I didn't take some of the existing binding libraries (e.g. METABANG-BIND) and decided to implement a novel version that provides more intuitive syntax for the common operations: primarily, multiple values, key-based and slot access.
 
@@ -245,7 +245,7 @@ RTL-USER> (with ((str "hello world")
 error opening #P"/tmp/foo.txt": File exists
 ```
 
-### `rutils.generic`
+### rutils.generic
 
 This package provides the generic accessor `generic-elt` with a shorter alias `?` and setter `generic-setf` (also `(setf (? ...`). Also, generic `copy` function is defined and generic items count (or length, or size) — `tally`.
 
@@ -258,7 +258,7 @@ RTL-USER> (defstruct foo bar)
 
 Access to struct/object slots is performed using `smart-slot-value`, also defined here. It is an enhanced version of the standard `slot-value`, which searches by the symbol name regardless of the package (using CLOSER-MOP machinery and caching the found accessor). So, `(? (make-foo :bar 42) 'bar)` and `(? (make-foo :bar 42) :bar)`, and even `(? (make-foo :bar 42) 'foo::bar)` will yield the same result 42.
 
-### `rutils.iter`
+### rutils.iter
 
 Alongside SPLIT-SEQUENCE, this is another external library originally called [ITERATE](https://common-lisp.net/project/iterate/) that is incorporated by RUTILS. With an important modification of defining the clause keys in the keyword package. You can refer to the official documentation for the extensive examples of its usage. Just mind that instead of:
 
@@ -276,7 +276,7 @@ you'll have to write:
 
 Using keywords not only makes the iteration keys more visible, in the code, but also prevents name conflicts with the `:common-lisp` package.
 
-### `rutils.abbr`
+### rutils.abbr
 
 Here, you will find some short aliases for common long/antiquetely-named Lisp operations.
 

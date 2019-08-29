@@ -1,5 +1,7 @@
 # RUTILS is a syntactic utilities package for Common Lisp
 
+![RUTILS logo](docs/logo.jpg)
+
 (that aims to radically simplify the Lisp programmer's life
 both in the REPL and in large system development)
 
