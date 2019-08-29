@@ -69,3 +69,18 @@
        ,@(mapcar #``((setf ,var ,(car %)) ,(cadr %))
                  ;; uses the fact, that SETF returns the value set
                  body))))
+
+
+;;; aliases
+
+(abbr aand and-it)
+(abbr acond cond-it)
+(abbr adowhile dowhile-it)
+(abbr aif if-it)
+(abbr awhen when-it)
+
+(abbr and-bind and-let)
+(abbr cond-bind cond-let)
+(abbr dowhile-bind dowhile-let)
+(abbr if-bind if-let)
+(abbr when-bind when-let)

@@ -2,25 +2,22 @@
 ;;;;; see LICENSE file for permissions
 
 
-(cl:in-package #:rutilsx.test)
+(in-package #:rtl)
+
+(defstruct foo bar)
+
+
+(in-package #:rutils.test)
 (named-readtables:in-readtable rutils-readtable)
 
 
-(deftest maptab ()
-  (should be equalp #h()
-          (maptab #'identity #h()))
-  (should be equalp #h(1 3 3 5)
-          (maptab #`(1+ %%) #h(1 2 3 4)))
-  (should be equal '((1 . 3) (3 . 5))
-          (maptab #`(1+ %%) '((1 . 2) (3 . 4)))))
-
-(defstruct foo-struct bar)
+(defstruct foo bar)
 
 (deftest ? ()
   (should be = 42
           (? '(0 1 42) 2))
   (should be = 42
-          (? #(0 1 2) 2))
+          (? #(0 1 42) 2))
   (should be equalp #h(1 #h(2 4))
           (let ((ht #h(1 #h(2 3))))
             (:= (? ht 1 2) 4)
@@ -30,7 +27,7 @@
             (:= (? ht 1 1) 4)
             ht))
   (should be eql :baz
-          (? (make-foo-struct :bar :baz) 'bar)))
+          (? (make-foo :bar :baz) 'bar)))
 
 (defun not-eql (a b)
   (not (eql a b)))
@@ -53,17 +50,8 @@
     (should be not-eql p c)
     (should be eql (lt p) (lt c))))
 
-
-(in-package #:rutils.test)
-
-(defstruct foo bar)
-
-(in-package #:rutilsx.test)
-
-(defstruct foo bar)
-
 (deftest smart-slot-value ()
   (should be true
           (smart-slot-value (make-foo :bar t) 'bar))
   (should be true
-          (smart-slot-value (rutils.test::make-foo :bar t) 'bar)))
+          (smart-slot-value (rtl::make-foo :bar t) 'bar)))

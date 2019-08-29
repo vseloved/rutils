@@ -11,13 +11,13 @@
 
 ;;; Pair
 
-(defstruct (pair (:type list) (:conc-name nil))
-  "A generic pair with left (LT) and right (RT) elements."
-  lt rt)
+(defstruct (pair (:type list))
+  "A generic pair with left and right elements."
+  left right)
 
 (defun pair (x y)
   "A shortcut to make a pair of X and Y."
-  (make-pair :lt x :rt y))
+  (make-pair :left x :right y))
 
 (defun ht->pairs (ht)
   "Dump hash-table HT to list of pairs."

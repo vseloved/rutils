@@ -8,10 +8,10 @@
 ;;; (instead of ITERATE) and only keyword keywords are allowed inside ITER
 ;;; (instead of symbol keywords from ITERATE package).
 
-(cl:in-package #:rutilsx.iter)
+(in-package #:rutils.iter)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
-
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 (declaim (declaration declare-variables))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

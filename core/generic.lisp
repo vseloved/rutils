@@ -1,8 +1,9 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:rutilsx.generic)
+(in-package #:rutils.generic)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 (declaim (inline copy smart-slot-value smart-set-slot-value))
 
@@ -17,27 +18,29 @@
              (let ((,alt (c2mop:slot-definition-name ,alt)))
                (when (string= ,name (symbol-name ,alt))
                  (add-method (ensure-generic-function 'smart-slot-value)
-                             (make 'standard-method
-                                   :specializers
-                                   (list ,class
-                                         (c2mop:intern-eql-specializer ,slot))
-                                   :lambda-list '(,obj ,slot)
-                                   :function
-                                   (lambda (,args _)
-                                     (declare (ignorable _))
-                                     (slot-value (first ,args) ,alt))))
+                             (make-instance
+                              'standard-method
+                              :specializers
+                              (list ,class
+                                    (c2mop:intern-eql-specializer ,slot))
+                              :lambda-list '(,obj ,slot)
+                              :function
+                              (lambda (,args _)
+                                (declare (ignorable _))
+                                (slot-value (first ,args) ,alt))))
                  (add-method (ensure-generic-function 'smart-set-slot-value)
-                             (make 'standard-method
-                                   :specializers
-                                   (list ,class
-                                         (c2mop:intern-eql-specializer ,slot)
-                                         (find-class 't))
-                                   :lambda-list '(,obj ,slot ,val)
-                                   :function
-                                   (lambda (,args _)
-                                     (declare (ignorable _))
-                                     (:= (slot-value (first ,args) ,alt)
-                                         (third ,args)))))
+                             (make-instance
+                              'standard-method
+                              :specializers
+                              (list ,class
+                                    (c2mop:intern-eql-specializer ,slot)
+                                    (find-class 't))
+                              :lambda-list '(,obj ,slot ,val)
+                              :function
+                              (lambda (,args _)
+                                (declare (ignorable _))
+                                (:= (slot-value (first ,args) ,alt)
+                                    (third ,args)))))
                  (let ((,slot ,alt))
                    (return ,expr))))))))))
 
@@ -58,7 +61,7 @@
 (defsetf smart-slot-value smart-set-slot-value)
 
 
-;;; Generic element access protocol
+;;; generic element access protocol
 
 (define-condition generic-elt-error ()
   ((obj :accessor generic-elt-error-obj :initarg :obj)
@@ -68,8 +71,6 @@
   (format stream
           "Generic element access error: object ~A can't be accessed by key: ~A"
           (slot-value err 'obj) (slot-value err 'key)))
-
-(eval-always
 
 (defgeneric generic-elt (obj key &rest keys)
   (:documentation
@@ -83,10 +84,12 @@
 
 (defmethod generic-elt ((obj list) key &rest keys)
   (declare (ignore keys))
+  (when (minusp key) (setf key (- (length obj) key)))
   (nth key obj))
 
 (defmethod generic-elt ((obj vector) key &rest keys)
   (declare (ignore keys))
+  (when (minusp key) (setf key (- (length obj) key)))
   (aref obj key))
 
 (defmethod generic-elt ((obj array) (key list) &rest keys)
@@ -95,6 +98,7 @@
 
 (defmethod generic-elt ((obj sequence) key &rest keys)
   (declare (ignore keys))
+  (when (minusp key) (setf key (- (length obj) key)))
   (elt obj key))
 
 (defmethod generic-elt ((obj hash-table) key &rest keys)
@@ -118,12 +122,12 @@
    "Generic element access in OBJ by KEY.
     Supports chaining with KEYS.")
   (:method :around (obj key &rest keys-and-val)
-   (if (single keys-and-val)
-       (call-next-method)
-       (mv-bind (prev-keys kv) (butlast2 keys-and-val 2)
-         (apply #'generic-setf
-                (apply #'generic-elt obj key prev-keys)
-                kv)))))
+    (if (single keys-and-val)
+        (call-next-method)
+        (multiple-value-bind (prev-keys kv) (butlast2 keys-and-val 2)
+          (apply #'generic-setf
+                 (apply #'generic-elt obj key prev-keys)
+                 kv)))))
 
 (defmethod generic-setf ((obj (eql nil)) key &rest keys)
   (declare (ignore key keys))
@@ -148,97 +152,36 @@
   (setf (smart-slot-value obj key) (atomize keys-and-val)))
 
 (defsetf generic-elt generic-setf)
-(defsetf ? generic-setf)
-
-(abbr ? generic-elt)
-
-) ; end of eval-always
-
-
-;;; Generic table access and iteration protocol
-
-(defgeneric keys (table)
-  (:documentation
-   "Return a list of all keys in a TABLE.
-    Order is unspecified.")
-  (:method ((table hash-table))
-    (ht-keys table))
-  (:method ((list list))
-    (listcase list
-      (alist (mapcar #'car list))
-      (dlist (car list))
-      (t (range 0 (length list))))))
-
-(defgeneric vals (table)
-  (:documentation
-   "Return a list of all values in a TABLE.
-    Order is unspecified.")
-  (:method ((table hash-table))
-    (ht-vals table))
-  (:method ((list list))
-    (listcase list
-      (alist (mapcar #'cdr list))
-      (dlist (cdr list))
-      (t list))))
-
-(defgeneric kvs (table &optional result-kind)
-  (:documentation
-   "Return a list of all key-value pairs in a TABLE in one the 3 kinds:
-
-    - list of pairs (default)
-    - alist
-    - dlist
-
-    Order is unspecified.")
-  (:method ((table hash-table) &optional (result-kind 'pairs))
-    (ecase result-kind
-      (alist (ht->alist table))
-      (dlist (cons (keys table) (vals table)))
-      (pairs (ht->pairs table)))))
-
-(defgeneric eq-test (table)
-  (:documentation
-   "Return an equality test predicate of the TABLE.")
-  (:method ((table hash-table))
-    (hash-table-test table))
-  (:method ((list list))
-    'equal))
-
-(defgeneric maptab (fn table)
-  (:documentation
-   "Like MAPCAR but for a data structure that can be viewed as a table.")
-  (:method (fn (table hash-table))
-    (with-hash-table-iterator (gen-fn table)
-      (let ((rez (make-hash-table :test (hash-table-test table))))
-        (loop
-           (mv-bind (valid key val) (gen-fn)
-             (unless valid (return))
-             (set# key rez (funcall fn key val))))
-        rez)))
-  (:method (fn (list list))
-    (listcase list
-      (alist (mapcar #`(cons (car %)
-                             (funcall fn (car %) (cdr %)))
-                     list))
-      (dlist (list (car list)
-                   (mapcar #`(funcall fn % %%)
-                           (car list) (cdr list))))
-      (t (mapindex fn list)))))
 
 
 ;;; generic copy
 
-(defgeneric copy (obj)
+(defgeneric copy (obj &rest kvs)
   (:documentation
-   "Create a shallow copy of an object.")
-  (:method ((obj list))
-    (copy-list obj))
-  (:method ((obj sequence))
-    (copy-seq obj))
-  (:method ((obj hash-table))
-    (copy-hash-table obj))
-  (:method ((obj structure-object))
-    (copy-structure obj)))
+   "Create a shallow copy of an object.
+    If KVS are specified, they may be used to update the relevant parts
+    (like slots of an object, keys in a hash-table
+     or indexed elements of a sequence).")
+  (:method ((obj list) &rest kvs)
+    (let ((rez (copy-list obj)))
+      (loop :for (k v) :on kvs :by #'cddr :do
+        (:= (? rez k) v))
+      rez))
+  (:method ((obj sequence) &rest kvs)
+    (let ((rez (copy-seq obj)))
+      (loop :for (k v) :on kvs :by #'cddr :do
+        (:= (? rez k) v))
+      rez))
+  (:method ((obj hash-table) &rest kvs)
+    (let ((rez (copy-hash-table obj)))
+      (loop :for (k v) :on kvs :by #'cddr :do
+        (:= (? rez k) v))
+      rez))
+  (:method ((obj structure-object) &rest kvs)
+    (let ((rez (copy-structure obj)))
+      (loop :for (k v) :on kvs :by #'cddr :do
+        (:= (? rez (mksym k)) v))
+      rez)))
 
 
 ;;; generic count
@@ -250,4 +193,4 @@
     (length obj))
   (:method ((obj hash-table))
     (hash-table-count obj)))
-  
+

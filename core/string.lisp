@@ -1,6 +1,6 @@
 ;; For license see LICENSE
 
-(cl:in-package #:rutils.string)
+(in-package #:rutils.string)
 (named-readtables:in-readtable rutils-readtable)
 (eval-when (:compile-toplevel)
   (declaim #.+default-opts+))
@@ -28,7 +28,6 @@
   (and (stringp string)
        (string= string "")))
 
-(eval-always
 (defun read-file (filename)
   "Read a whole file by FILENAME into a string."
   (with-open-file (in filename)
@@ -37,7 +36,6 @@
            (chars-read (read-sequence buf in)))
       (setf (fill-pointer buf) chars-read)
       buf)))
-(abbr slurp read-file))
 
 (defun white-char-p (char)
   "Is CHAR a whitespace character (newline chars are also considered white)."

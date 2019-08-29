@@ -1,6 +1,6 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:rutils.list)
+(in-package #:rutils.list)
 (named-readtables:in-readtable rutils-readtable)
 (eval-when (:compile-toplevel)
   (declaim #.+default-opts+))
@@ -135,6 +135,18 @@
              (decf pos 2))))
      :finally (return plist)))
 
+(defmacro doplist ((key val plist &optional rez) &body body)
+  "Like DOLIST but iterate over 2 items of the PLIST at once,
+   onsidered KEY and VAL. Asserts proper PLIST."
+  (once-only (plist)
+    (with-gensyms (tail)
+      `(progn
+         ;; (assert (plistp ,plist) ,plist "~A is not a proper plist" ,plist)
+         (do ((,tail ,plist (cddr ,tail)))
+             ((null ,tail) ,rez)
+           (destructuring-bind (,key ,val &rest ,(gensym)) ,tail
+             ,@body))))))
+
 (defun assoc1 (item alist &key default key (test nil testp) (test-not nil notp))
   "Return a value in ALIST, whose key is eql to ITEM. Also as 2nd value return,
    whether ITEM was found. If there is no such entry, returns DEFAULT.
@@ -177,18 +189,6 @@ argument.")
 (define-modify-macro nreversef () nreverse
   "Modify-macro for NREVERSE. Reverses the list stored in the given place by
    destructively modifying it and saves back the result into the place.")
-
-(defmacro doplist ((key val plist &optional rez) &body body)
-  "Like DOLIST but iterate over 2 items of the PLIST at once,
-   onsidered KEY and VAL. Asserts proper PLIST."
-  (once-only (plist)
-    (with-gensyms (tail)
-      `(progn
-;         (assert (plistp ,plist) ,plist "~A is not a proper plist" ,plist)
-         (do ((,tail ,plist (cddr ,tail)))
-             ((null ,tail) ,rez)
-           (destructuring-bind (,key ,val &rest ,(gensym)) ,tail
-             ,@body))))))
 
 (defun set-equal (list1 list2 &key (test 'eql) (key nil keyp))
   "Return true if every element of LIST1 matches some element of LIST2 and

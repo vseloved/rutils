@@ -1,7 +1,10 @@
 ;;; RUTILS system definition
 ;;; see LICENSE file for permissions
 
-(asdf:defsystem #:rutils
+
+(in-package :asdf-user)
+
+(defsystem #:rutils
   :name "Radical utilities"
   :version (:read-file-line "version.txt" :at 0)
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
@@ -13,13 +16,13 @@
    developed over the years of CL history by efforts of different individuals,
    and gathered under the unbrella of a hierarchy of packages
    which can be used on-demand."
-  :depends-on (#:named-readtables)
+  :depends-on (#:named-readtables #:closer-mop)
   :components
   ((:module #:core
             :serial t
             :components ((:file "packages")
                          (:file "readtable")
-                         (:file "core")
+                         (:file "symbol")
                          (:file "misc")
                          (:file "anaphora")
                          (:file "list")
@@ -30,6 +33,10 @@
                          (:file "array")
                          (:file "sequence")
                          (:file "pair")
+                         (:file "kv")
+                         (:file "generic")
+                         (:file "bind")
+                         (:file "iter")
                          (:file "abbr")
                          (:file "rutils")))))
 

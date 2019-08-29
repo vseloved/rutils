@@ -1,25 +1,22 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:rutilsx.bind)
+(in-package #:rutils.bind)
 (named-readtables:in-readtable rutils-readtable)
-(declaim #.+default-opts+)
+(eval-when (:compile-toplevel)
+  (declaim #.+default-opts+))
 
 
 (defvar *bind-ignores* nil
   "List of gensymed symbols that should be declared ignored for bind.")
 
-(eval-always
-  (defmacro bind ((&rest bindings) &body body)
+(defmacro bind ((&rest bindings) &body body)
   "Bind variables from BINDINGS to be active inside BODY, as if by LET*,
 combined with MULTIPLE-VALUE-BIND, DESTRUCTURING-BIND and other -bind forms,
 depending on the type of the first argument."
-    (let ((rez body))
-      (dolist (binding (reverse bindings))
-        (:= rez `((,@(call #'expand-binding binding rez)))))
-      (first rez)))
-
-  (abbr with bind)
-)
+  (let ((rez body))
+    (dolist (binding (reverse bindings))
+      (setf rez `((,@(funcall #'expand-binding binding rez)))))
+    (first rez)))
 
 (defun expand-binding (binding form)
   (append (apply #'bind-dispatch binding)

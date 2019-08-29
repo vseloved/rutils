@@ -1,10 +1,11 @@
 ;;; RUTILS-TEST system definition
 ;;; see LICENSE file for permissions
 
+(in-package :asdf-user)
 
-(asdf:defsystem #:rutils-test
+(defsystem #:rutils-test
   :name "Radical utilities test suite."
-  :version "1.1.1"
+  :version (:read-file-line "version.txt" :at 0)
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
   :maintainer "Vsevolod Dyomkin <vseloved@gmail.com>"
   :licence "3-clause MIT licence"
@@ -14,8 +15,10 @@
   :components
   ((:module #:test
             :components ((:file "package")
-                         (:file "core-test" :depends-on ("package"))
+                         (:file "symbol-test" :depends-on ("package"))
                          (:file "misc-test" :depends-on ("package"))
+                         (:file "generic-test" :depends-on ("package"))
+                         (:file "bind-test" :depends-on ("package"))
                          (:file "anaphora-test" :depends-on ("package"))
                          (:file "list-test" :depends-on ("package"))
                          (:file "string-test" :depends-on ("package"))
@@ -24,4 +27,6 @@
                          (:file "sequence-test" :depends-on ("package"))
                          (:file "tree-test" :depends-on ("package"))
                          (:file "pair-test" :depends-on ("package"))
+                         (:file "iter-test" :depends-on ("package"))
+                         (:file "kv-test" :depends-on ("package"))
                          (:file "array-test" :depends-on ("package"))))))

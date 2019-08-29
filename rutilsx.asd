@@ -1,7 +1,9 @@
 ;;; RUTILS system definition
 ;;; see LICENSE file for permissions
 
-(asdf:defsystem #:rutilsx
+(in-package :asdf-user)
+
+(defsystem #:rutilsx
   :name "More radical utilities"
   :version (:read-file-line "version.txt" :at 1)
   :author "Vsevolod Dyomkin <vseloved@gmail.com>"
@@ -14,12 +16,10 @@
   ((:module #:contrib
     :components ((:file "packages")
                  (:file "readtable" :depends-on ("packages"))
-                 (:file "generic" :depends-on ("packages"))
-                 (:file "bind" :depends-on ("packages"))
-                 (:file "iter" :depends-on ("packages"))
-                 (:file "threading" :depends-on ("packages"))
                  (:file "generators" :depends-on ("packages"))
-                 (:file "rutilsx" :depends-on ("packages"))))))
+                 (:file "rutilsx" :depends-on ("packages"
+                                               "generators"
+                                               "readtable"))))))
 
 
 (defmethod perform ((o asdf:test-op)

@@ -1,6 +1,6 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:rutils.sequence)
+(in-package #:rutils.sequence)
 (named-readtables:in-readtable rutils-readtable)
 (eval-when (:compile-toplevel)
   (declaim #.+default-opts+))
@@ -205,9 +205,10 @@
              ((funcall ordering k elt-k)
               (pop key-s)
               (incf i))
-             (t (pop seq-s))))
+             (t
+              (pop seq-s))))
     (values (map result-type
-                 #`(coerce % result-type)
+                 #`(coerce (reverse %) result-type)
                  rez)
             key-rez)))
 
@@ -459,12 +460,12 @@
             (nreverse (push (subseq seq i) acc)))
          (push (subseq seq i (+ i n)) acc))))))
 
-(defun keep (item sequence &rest args &key from-end test test-not start
-                                        end count key)
+(defun keep (item sequence &rest args
+             &key from-end (test #'eql) test-not start end count key)
   "The opposite of REMOVE."
   (declare (ignorable from-end start end count key))
-  (let ((test (or test
-                  (complement (or test-not #'eql)))))
+  (let ((test (complement (or test
+                              (complement (or test-not #'eql))))))
     (apply 'remove item sequence :test test
            (loop :for (k v) :on args :by #'cddr
                  :unless (member k '(:test :test-not)) :nconc (list k v)))))

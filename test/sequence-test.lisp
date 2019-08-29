@@ -93,7 +93,7 @@
           (partition-with '(3 2 1) '(1 2 3)))
   (should be equal '((1) (2) (3)) '(1 2 3)
           (partition-with '(1 2 3) '(1 2 3) :keys-sorted t))
-  (should be equal '((1) (3 2)) '(1 3)
+  (should be equal '((1) (2 3)) '(1 3)
           (partition-with '(1 3) '(1 2 3) :test '<=))
   (should be equal '(nil (2)) '(1 3)
           (partition-with '(1 3) '(1 2 3) :key '1+))
@@ -199,10 +199,10 @@
   (should be = 6
           (sum '1+ (range 0 3)))
   (should be = 1
-          (sum '1+ (range 0 3) '(1))))
+          (sum '+ (range 0 3) '(1))))
 
 (deftest product ()
   (should be = 120
-          (product '+ (range 0 5)))
+          (product '1+ (range 0 5)))
   (should be = 6
           (product '+ (range 0 3) '(1 1 1))))

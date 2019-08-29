@@ -5,6 +5,8 @@
 (declaim #.+default-opts+)
 
 
+(defvar *generator-sym* "gen")
+
 (define-condition generated ()
   ((item :initarg :item :reader generated-item)))
 
@@ -44,3 +46,45 @@
                                      (invoke-restart (find-restart 'resume))))))
          ,generator-form)
        ,result)))
+
+
+(defun izip (&rest iterators)
+  (yield (mapcar 'funcall iterators)))
+
+
+(defmacro doing2 (((item1 generator-form1)
+                   (item2 generator-form2))
+                  &body body)
+  (with-gensyms (e s s1 s2 items r restarts)
+    `(block nil
+       (let (,restarts
+             ,items)
+         (handler-bind
+             ((generated
+                (lambda (,e)
+                  (push (generated-item ,e) ,items)
+                  (print (pair :items ,items))
+                  (when (= (length ,items) 2)
+                    (rutilsx.bind::with (((,item1 ,item2) (reverse ,items)))
+                      (void ,items)
+                      ,@body))
+                  (handler-bind
+                      ((generated
+                         (lambda (,e)
+                           (push (generated-item ,e) ,items)
+                           (print (pair :items ,items))
+                           (when (= (length ,items) 2)
+                             (rutilsx.bind::with (((,item1 ,item2) (reverse ,items)))
+                               (void ,items)
+                               ,@body))
+                           (push (find-restart 'resume) ,restarts)
+                           (let ((,r (last1 ,restarts)))
+                             (:= ,restarts (butlast ,restarts))
+                             (invoke-restart ,r)))))
+                    (push (find-restart 'resume) ,restarts)
+                    (if (> (length ,restarts) 1)
+                        (let ((,r (last1 ,restarts)))
+                          (:= ,restarts (butlast ,restarts))
+                          (invoke-restart ,r))
+                        ,generator-form2)))))
+           ,generator-form1)))))

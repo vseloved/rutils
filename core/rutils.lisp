@@ -4,21 +4,25 @@
 
 (in-package #:rutils)
 
-(rutils.core:eval-always
-(defparameter *all-packages*
-  '(#:rutils.readtable #:rutils.core #:rutils.misc #:rutils.anaphora
-    #:rutils.list #:rutils.string #:rutils.sequence
-    #:rutils.hash-table #:rutils.tree #:rutils.pair #:rutils.array))
+(rutils.symbol:eval-always
 
-(dolist (p *all-packages*)
-  (rutils.core:re-export-symbols p '#:rutils))
+  (defparameter *all-packages*
+    '(#:rutils.readtable #:rutils.symbol #:rutils.misc
+      #:rutils.generic #:rutils.bind #:rutils.anaphora #:rutils.iter
+      #:rutils.pair #:rutils.list #:rutils.tree
+      #:rutils.hash-table #:rutils.hash-set #:rutils.kv
+      #:rutils.sequence #:rutils.array #:rutils.string))
+
+  (dolist (p *all-packages*)
+    (rutils.symbol:re-export-symbols p '#:rutils))
 )
 
 
-(in-package #:rutil)
+(in-package #:rtl)
 
 
-(rutils.core:eval-always
-(dolist (p '(#:rutils.abbr #:rutils))
-  (rutils.core:re-export-symbols p '#:rutil))
+(rutils.symbol:eval-always
+
+  (dolist (p '(#:rutils.abbr #:rutils))
+    (rutils.symbol:re-export-symbols p '#:rtl))
 )

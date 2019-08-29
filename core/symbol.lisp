@@ -1,6 +1,6 @@
 ;; For license see LICENSE
 
-(cl:in-package #:rutils.core)
+(in-package #:rutils.symbol)
 (named-readtables:in-readtable rutils-readtable)
 (eval-when (:compile-toplevel)
   (declaim #.+default-opts+))
@@ -78,6 +78,7 @@
 ) ; end of eval-when
 
 (abbr with-unique-names with-gensyms)
+(abbr w/uniqs with-gensyms)
 
 (defun ensure-symbol (obj &key (format "~a") package)
   "Make a symbol in either PACKAGE or *PACKAGE* from OBJ according to FORMAT."

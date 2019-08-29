@@ -60,6 +60,19 @@ a shallow copy is returned by default."
         rez)
       ht))
 
+(defun merge-hash-tables-with (fn ht &rest hts)
+  "From 1 or more HTS create a single one with TEST of HT
+   and values created by calling FN (a two-argument function that should
+   be prepared to accept nil values when some keys are not present in all
+   hash-tables)  with all the values from HT & HTS for a particular key."
+  (if hts
+      (let ((rez (copy-hash-table ht)))
+        (dolist (ht2 hts)
+          (dotable (k v ht2)
+            (setf (gethash k rez) (funcall fn v (gethash k rez)))))
+        rez)
+      ht))
+
 (defun hash-table-keys (ht)
   "Return a list of keys of hash-table HT."
   (loop :for k :being :the :hash-keys :of ht
@@ -153,7 +166,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
         `(block nil
            (etypecase ,table
              (hash-table (maphash (lambda (,k ,v)
-                                    ,(when _ `(declare (ignore ,_)))
+                                    ,(when _ `(declare (ignore _)))
                                     ,@body)
                                   ,table))
 
@@ -184,3 +197,9 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
                  (unless (null default-method)
                    (add-method #'print-object default-method))
                  (setf toggled nil))))))
+
+
+(declaim (inline in#))
+(defun in# (key hash-table)
+  "Check if KEY is present in HASH-TABLE."
+  (2nd (get# key hash-table)))

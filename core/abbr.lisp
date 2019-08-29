@@ -2,55 +2,28 @@
 
 (in-package #:rutils.abbr)
 
-(declaim (inline in#))
+(abbr call funcall)
+(abbr make make-instance)
+(abbr just identity)
 
+(defmacro flet* (&rest body)
+  "An abbreviation for LABELS."
+  `(labels ,@body))
 
 (abbr defpar defparameter)
+(abbr m1 macroexpand-1)
 
 (abbr ds-bind destructuring-bind)
 (abbr mv-bind multiple-value-bind)
 
-(abbr p# print-hash-table)
-(abbr get# gethash (key hashtable &optional default))
-(abbr set# sethash)
-(abbr getset# getsethash)
-(abbr rem# remhash)
-(abbr take# takehash)
-(defun in# (key hash-table)
-  "Check if KEY is present in HASH-TABLE."
-  (2nd (get# key hash-table)))
-
-(abbr ht-count hash-table-count)
-(abbr ht-keys hash-table-keys)
-(abbr ht-vals hash-table-vals)
-(abbr ht->alist hash-table-to-alist)
-(abbr ht->plist hash-table-to-plist)
-(abbr alist->ht hash-table-from-alist)
-(abbr plist->ht hash-table-from-plist)
-(abbr merge-hts merge-hash-tables)
-(abbr print-ht print-hash-table)
-
-(abbr mkeyw  ensure-keyword)
-(abbr mklist ensure-list)
-(abbr mksym  ensure-symbol)
-
 (abbr w/instr with-input-from-string)
 (abbr w/outstr with-output-to-string)
-(abbr w/uniqs with-gensyms)
-
-(abbr fn named-lambda)
-
-(abbr m1 macroexpand-1)
-
-(abbr make make-instance)
 
 (abbr sub subseq)
 
-(abbr split split-sequence)
-(abbr split-if split-sequence-if)
-(abbr split-if-not split-sequence-if-not)
-
 (abbr pushx vector-push-extend)
+
+;;; emoji-setters
 
 (handler-bind ((error (lambda (e)
                         (let ((r (find-restart 'continue e)))
@@ -76,22 +49,44 @@
     "Divide in-lace PLACE by N."
     `(setf ,place (/ ,place ,n))))
 
+
+;;; package-specific aliases
+
+(in-package #:rutils.symbol)
+
+(abbr mkeyw  ensure-keyword)
+(abbr mksym  ensure-symbol)
+
+(in-package #:rutils.misc)
+
+(abbr fn named-lambda)
+
+(in-package #:rutils.pair)
+
+(abbr lt pair-left)
+(abbr rt pair-right)
+
+(in-package #:rutils.list)
+
+(abbr mklist ensure-list)
 (abbr flat-map mappend)
 (abbr mapcat mappend)
 
-(abbr call funcall)
+(in-package #:rutils.string)
+
+(abbr slurp read-file)
+
+(in-package #:rutils.sequence)
+
+(abbr split split-sequence)
+(abbr split-if split-sequence-if)
+(abbr split-if-not split-sequence-if-not)
 
 (abbr keep-if remove-if-not)
 (abbr keep-if-not remove-if)
 
-(defmacro flet* (&rest body)
-  "An abbreviation for LABELS."
-  `(labels ,@body))
 
-(abbr just identity)
-
-
-(cl:in-package #:rutils.anaphora)
+(in-package #:rutils.anaphora)
 
 (abbr aand and-it)
 (abbr acond cond-it)
@@ -104,3 +99,32 @@
 (abbr dowhile-bind dowhile-let)
 (abbr if-bind if-let)
 (abbr when-bind when-let)
+
+(in-package #:rutils.hash-table)
+
+(abbr p# print-hash-table)
+(abbr get# gethash (key hashtable &optional default))
+(abbr set# sethash)
+(abbr getset# getsethash)
+(abbr rem# remhash)
+(abbr take# takehash)
+
+(abbr ht-count hash-table-count)
+(abbr ht-keys hash-table-keys)
+(abbr ht-vals hash-table-vals)
+(abbr ht->alist hash-table-to-alist)
+(abbr ht->plist hash-table-to-plist)
+(abbr alist->ht hash-table-from-alist)
+(abbr plist->ht hash-table-from-plist)
+(abbr merge-hts merge-hash-tables)
+(abbr merge-hts-with merge-hash-tables-with)
+(abbr print-ht print-hash-table)
+
+(in-package #:rutils.generic)
+
+(abbr ? generic-elt)
+(defsetf ? generic-setf)
+
+(in-package #:rutils.bind)
+
+(abbr with bind)

@@ -6,8 +6,7 @@
 
 (defpackage #:rutils.test
   (:documentation "Test package for RUTILS.")
-  (:use :common-lisp #:rutil #:should-test
-        #:rutilsx.threading)
+  (:use :common-lisp #:rtl #:should-test)
   (:export #:run-tests))
 
 (cl:in-package #:rutils.test)

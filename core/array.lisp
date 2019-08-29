@@ -1,9 +1,10 @@
 ;;; see LICENSE file for permissions
 
-(cl:in-package #:rutils.array)
+(in-package #:rutils.array)
 (named-readtables:in-readtable rutils-readtable)
 (eval-when (:compile-toplevel)
   (declaim #.+default-opts+))
+
 
 (deftype array-index (&optional (length array-dimension-limit))
   "Type designator for an index into array of LENGTH: an integer between
