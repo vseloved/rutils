@@ -7,6 +7,8 @@ RUTILS stands for RADICAL-UTILITIES :)
 
 See the [announcement](docs/ann-rutils.md).
 
+Read the [tutorial](docs/tutorial.md) for usage details or the [quickdocs](http://quickdocs.org/rutils).
+
 
 ## Short history
 
@@ -25,34 +27,30 @@ in the small (with a special accent on simplifying REPL-driven development).
 
 See the [original rationale](docs/reasonable-utilities.md) for `REASONABLE-UTILITIES`.
 
+The current version is 5.0.0.
 
-## Brief description
 
-### Included in core
+## Major Features
 
 - "Modern" readtable with support for literal syntax for hash-tables,
   lambdas and heredoc-strings
-
-Basic common control utilities, like
-
-- Common macros like `WITH-GENSYMS`, `ONCE-ONLY`, `EVAL-ALWAYS` etc.
+- Common macros like `WITH-GENSYMS`, `ONCE-ONLY`, `EVAL-ALWAYS` etc. and other symbol manipulation utilities
 - Basic anaphoric macros
-- Symbol manipulation utilities
+- A simple pair data structure and accompanying utilities
 - List manipulation utilities
-- Sequence manipulation utilities (including `SPLIT-SEQUENCE`, or rather, simply `SPLIT`)
 - Hash-table manipulation utilities
+- Hash-set manipulation utilities
+- Sequence manipulation utilities (including `SPLIT-SEQUENCE`, or rather, simply `SPLIT`)
+- Array manipulation utilities
 - String manipulation utilities
 - Tree manipulation utilities
-- A simple pair data structure and accompanying utilities
-
-### Included in contrib (RUTILSX)
-
 - generic access to elements of any data structure: `GENERIC-ELT`/`?`
 - `ITER` macro with keywords support
 - generic `BIND`
 - Clojure-style threading macros `->` and `->>`
 
-### Explicitly not supported
+
+## Explicitly not supported
 
 The following broad topics are not supported by design:
 
@@ -84,6 +82,7 @@ The following broad topics are not supported by design:
 ### Dependencies
 
 - [NAMED-READTABLES](http://common-lisp.net/project/named-readtables/)
+- [CLOSER-MOP](https://github.com/pcostanza/closer-mop)
 
 ### Exported features
 
@@ -95,7 +94,7 @@ The following symbols are added to `*FEATURES*`:
 
 ## Organizational notes
 
-(c) 2009-2014, Vsevolod Dyomkin <vseloved@gmail.com>
+(c) 2009-2019, Vsevolod Dyomkin <vseloved@gmail.com>
 
 See LICENSE for usage permissions.
 See AUTHORS for credits.
