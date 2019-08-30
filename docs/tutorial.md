@@ -21,7 +21,7 @@ CL-USER> (in-package :rtl-user)
 CL-USER> (named-readtables:in-readtable rutils-readtable)
 ```
 
-If you want to work with the most current version (for instance, the latest 5.0 release isn't in Quicklisp yet) you can grad it from github. The recommended way is to put it in your `~/common-lisp/` folder. Afterwards, it will be automatically found by `ql:quickload`. Yet, if you want to be sure (or if you put it into a different folder) you may precede the `quickload` call with the following:
+If you want to work with the most current version (for instance, the latest 5.0 release isn't in Quicklisp yet) you can grab it from github. The recommended way is to put it in your `~/common-lisp/` folder. Afterwards, it will be automatically found by `ql:quickload`. Yet, if you want to be sure (or if you put it into a different folder) you may precede the `quickload` call with the following:
 
 ```
 CL-USER> (push "~/common-lisp/rutils/" asdf:*central-registry*)  ; or use the path where you've put rutils
@@ -65,7 +65,7 @@ RTL-USER> #{:a 1 :b 2}
 #<HASH-TABLE :TEST EQL :COUNT 2>
 ;; holding 2 key/value pairs: ((:a . 1) (:b . 2))
 RTL-USER> #{equal "a" 1 "b" 2}
-#<HASH-TABLE :TEST EQUALP :COUNT 2>
+#<HASH-TABLE :TEST EQUAL :COUNT 2>
 ;; holding 2 key/value pairs: (("a" . 1) ...)
 ```
 
@@ -131,7 +131,7 @@ First of all, it has the classic:
 If you don't know how these are used you can read more in PCL or On Lisp.
 
 - `eval-always` is `eval-when` with all 3 modes on
-- `ensure-symbol`/`mksym` and `ensure-kyword`/`mkeyw` turn a string into a symbol or keyword (first upcasing it). It has a keyword `:format` argument that allows specifying a format-string for the symbol transformation
+- `ensure-symbol`/`mksym` and `ensure-keyword`/`mkeyw` turn a string into a symbol or keyword (first upcasing it). It has a keyword `:format` argument that allows specifying a format-string for the symbol transformation
 
 Finally, it provides `abbr` that allows to easily define aliases for any functions and macros.
 
@@ -280,7 +280,7 @@ Using keywords not only makes the iteration keys more visible, in the code, but 
 
 Here, you will find some short aliases for common long/antiquetely-named Lisp operations.
 
-These are the most impactful (and so conroversial) ones:
+These are the most impactful (and so controversial) ones:
 
 - `:=` for `setf` (yes, it's using the syymbol from the keyword package, and the sky doesn't fall because of that)
 - `:+`/`:-`/`:*`/`:/` are the emoji aliases of `incf`/`decf` and similar operations if they had been defined for multiplication and division
@@ -363,7 +363,7 @@ Plist- and alist-related stuff:
 - there's also `remove-from-plist` and `delete-from-plist`
 - finally, there's `doplist` which iterates the plist by one key-value pair, at once
 
-`appendf`/`nconcf`/`unionf`/`nunionf`/`reveresef`/`nreveresef` assign the result of the appropriate operation to the variable passed as their argument
+`appendf`/`nconcf`/`unionf`/`nunionf`/`reversef`/`nreversef` assign the result of the appropriate operation to the variable passed as their argument
 
 `set-equal` compares 2 sets represented as lists for equality
 
@@ -425,7 +425,7 @@ String utilities:
 
 - `blankp` tests whether the string is empty (i.e. `(zerop (length string))`
 - `strcat` concatenates strings, as well as characters and, actually, anything else that prints to string, including nil (yep, the name is taken from C)
-- `strjoin` is a shortcut for `(format nil "~{~A~^<deliiter>~}" ...)`
+- `strjoin` is a shortcut for `(format nil "~{~A~^<delimiter>~}" ...)`
 - `substr` is an efficient substring implementation (based on `slice`, i.e. using displaced arrays) that also allows using negative indices, like in Python, which signify index from the end of the string
 - `white-char-p` tests whether the character is one of the 5 basic whitespace-characters (`#\Space`, `#\Tab`, `#\Newline`, `#\Return`, `#\Linefeed`)
 - `starts-with` and `ends-with` are more intuitive wrappers around `mismatch`
@@ -458,7 +458,7 @@ RTL-USER> (partition-with '(1 5 10) (range 0 20) :test '<=)
 
 While `group` just splits it into groups of the supplied length.
 
-`removef`/`deletef` are, baiscally, aliases for `(setf x (remove x ...` and the same with `delete`.
+`removef`/`deletef` are, basically, aliases for `(setf x (remove x ...` and the same with `delete`.
 
 `doindex` iterates the sequence keeping track of the index of the current element (it coerces the argument to a vector). Compare it with `mapindex` from `rutils.list`.
 
