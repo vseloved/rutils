@@ -65,7 +65,7 @@
                   (push (generated-item ,e) ,items)
                   (print (pair :items ,items))
                   (when (= (length ,items) 2)
-                    (rutilsx.bind::with (((,item1 ,item2) (reverse ,items)))
+                    (with (((,item1 ,item2) (reverse ,items)))
                       (void ,items)
                       ,@body))
                   (handler-bind
@@ -74,7 +74,7 @@
                            (push (generated-item ,e) ,items)
                            (print (pair :items ,items))
                            (when (= (length ,items) 2)
-                             (rutilsx.bind::with (((,item1 ,item2) (reverse ,items)))
+                             (with (((,item1 ,item2) (reverse ,items)))
                                (void ,items)
                                ,@body))
                            (push (find-restart 'resume) ,restarts)

@@ -4,10 +4,10 @@
 
 (in-package #:rutilsx)
 
-(rutils.core:eval-always
+(rutils:eval-always
 (defparameter *all-packages*
-  '(#:rutilsx.iter #:rutilsx.generators #:rutilsx.readtable))
+  '(#:rutilsx.generators #:rutilsx.readtable))
 
 (dolist (p (cons '#:rtl *all-packages*))
-  (rutils.core:re-export-symbols p '#:rutilsx))
+  (rutils:re-export-symbols p '#:rutilsx))
 )
