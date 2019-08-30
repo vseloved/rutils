@@ -90,8 +90,8 @@ The following broad topics are not supported by design:
 
 The following symbols are added to `*FEATURES*`:
 
-- `:split-sequence` (by `RUTILS.SEQUENCE`, `RUTILS`, and `RUTIL`)
-- `:iter` (by `RUTILSX.ITER` and `RUTILSX`)
+- `:split-sequence`
+- `:iter`
 
 
 ## Organizational notes
