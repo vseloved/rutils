@@ -631,7 +631,7 @@ RTL-USER> (dotree (subtree '(1 (2 3) (4 (5 6))))
 6 
 NIL
 
-RTL-USER> (dotleaves (node '(1 (2 3) (4 (5 6))))
+RTL-USER> (doleaves (node '(1 (2 3) (4 (5 6))))
             (print node))
 3
 6

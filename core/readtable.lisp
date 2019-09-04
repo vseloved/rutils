@@ -161,7 +161,7 @@
             (push (cons sep (subseq whole prev next))
                   acc)
             (setf sep (char whole next))))
-        (reversef acc)
+        (setf acc (reverse acc))
         (let ((rez (intern (cdar acc))))
           (dolist (pair (rest acc))
             (ecase (car pair)
