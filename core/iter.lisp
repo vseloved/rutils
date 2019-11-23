@@ -34,9 +34,10 @@
   `(eval-always
      (setf (get ',symbol 'synonym) ',synonym)))
 
-(defmacro augment (var stuff)
-  "Add STUFF to the end of VAR list."
-  `(setf ,var (nconc ,var ,stuff)))
+(eval-always ; On Allegro, this is required for compiling `define-clause', which is in `eval-always' also.
+  (defmacro augment (var stuff)
+    "Add STUFF to the end of VAR list."
+    `(setf ,var (nconc ,var ,stuff))))
 
 (defmacro prepend (stuff var)
   "Add STUFF to the beginning of VAR list."
