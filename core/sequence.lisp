@@ -8,7 +8,7 @@
 
 
 (defun split-sequence (delimiter seq
-                       &key (count nil) (remove-empty-subseqs nil)
+                       &key (count nil) (remove-empty-subseqs t)
                             (from-end nil) (start 0) (end nil)
                             (key nil key-supplied)
                             (test nil test-supplied)
@@ -69,7 +69,7 @@
              :finally (return (values subseqs right)))))))
 
 (defun split-sequence-if (predicate seq
-                          &key (count nil) (remove-empty-subseqs nil)
+                          &key (count nil) (remove-empty-subseqs t)
                                (from-end nil) (start 0) (end nil)
                                (key nil key-supplied))
   "Return a list of subsequences in SEQ delimited by items, satisfying PREDICATE.
@@ -122,7 +122,7 @@
              :finally (return (values subseqs right)))))))
 
 (defun split-sequence-if-not (predicate seq
-                              &key (count nil) (remove-empty-subseqs nil)
+                              &key (count nil) (remove-empty-subseqs t)
                                    (from-end nil) (start 0) (end nil)
                                    (key nil key-supplied))
   "Return a list of subsequences in SEQ delimited by items, satisfying
