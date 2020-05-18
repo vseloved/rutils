@@ -1247,7 +1247,7 @@ as generators."
 (eval-always
   (defparameter +sequence-keyword-list+
     '(:from from :upfrom upfrom :downfrom downfrom :to to :downto downto
-      :above above :below below (:by 1) (by 1) :with-index with-index)
+      :above above :below below :by (by 1) :with-index with-index)
     "Keywords, used in sequence iteration clauses.")
 
   (defun define-clause (define-form clause-template body generator?)
