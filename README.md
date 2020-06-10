@@ -58,7 +58,7 @@ The following broad topics are not supported by design:
 
 * Concurrency.
 
-  The reason is not, that I consider this not useful or general-purpose enough,
+  The reason is not that I consider this not useful or general-purpose enough,
   but rather, that it's a whole new paradigm, and the scope of `RUTILS`
   is too small to comfortably accommodate it.
 
