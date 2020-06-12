@@ -166,7 +166,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
         `(block nil
            (etypecase ,table
              (hash-table (maphash (lambda (,k ,v)
-                                    ,(when _ `(declare (ignore _)))
+                                    ,(when _ `(declare (ignore rutils.bind:_)))
                                     ,@body)
                                   ,table))
 

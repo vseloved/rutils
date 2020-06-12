@@ -850,7 +850,7 @@ it will not be seen."
   "Walk COND, because the Allegro compiler insists on treating it as a special
    form, and because some version MACROEXPAND (COND #) into (COND #)!"
   (declare (ignore cond))
-  (unless stuff
+  (when stuff
     (let* ((first-clause (first stuff))
            (test (if (consp first-clause) (car first-clause)
                      (error "cond clause ~a is not a list" first-clause)))
@@ -1247,7 +1247,7 @@ as generators."
 (eval-always
   (defparameter +sequence-keyword-list+
     '(:from from :upfrom upfrom :downfrom downfrom :to to :downto downto
-      :above above :below below (:by 1) (by 1) :with-index with-index)
+      :above above :below below :by by (:by 1) (by 1) :with-index with-index)
     "Keywords, used in sequence iteration clauses.")
 
   (defun define-clause (define-form clause-template body generator?)
@@ -2193,7 +2193,7 @@ if not already present."
   "Process FORMS in an ITER block with BLOCK-NAME."
   (if (eq block-name *block-name*)
       (walk-list forms)
-      `((in ,block-name ,.(copy-list forms)))))
+      `((:in ,block-name ,.(copy-list forms)))))
 
 (defsynonym in :in)
 

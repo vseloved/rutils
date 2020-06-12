@@ -23,32 +23,6 @@
 
 (abbr pushx vector-push-extend)
 
-;;; emoji-setters
-
-(handler-bind ((error (lambda (e)
-                        (let ((r (find-restart 'continue e)))
-                          (when r
-                            (invoke-restart r))))))
-  (defmacro := (&rest places-vals &environment env)
-    "Like PSETF but returns the set value of the last expression."
-    (declare (ignore env))
-    (with-gensyms (rez)
-      `(let (,rez)
-         (psetf ,@(butlast places-vals 2)
-                ,(first (last places-vals 2)) (setf ,rez ,(last1 places-vals)))
-         ,rez)))
-
-  (abbr :+ incf)
-  (abbr :- decf)
-
-  (defmacro :* (place n)
-    "Multiply in-lace PLACE by N."
-    `(setf ,place (* ,place ,n)))
-
-  (defmacro :/ (place n)
-    "Divide in-lace PLACE by N."
-    `(setf ,place (/ ,place ,n))))
-
 
 ;;; package-specific aliases
 
