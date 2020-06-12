@@ -84,12 +84,12 @@
 
 (defmethod generic-elt ((obj list) key &rest keys)
   (declare (ignore keys))
-  (when (minusp key) (setf key (- (length obj) key)))
+  (when (minusp key) (setf key (+ (length obj) key)))
   (nth key obj))
 
 (defmethod generic-elt ((obj vector) key &rest keys)
   (declare (ignore keys))
-  (when (minusp key) (setf key (- (length obj) key)))
+  (when (minusp key) (setf key (+ (length obj) key)))
   (aref obj key))
 
 (defmethod generic-elt ((obj array) (key list) &rest keys)
@@ -98,7 +98,7 @@
 
 (defmethod generic-elt ((obj sequence) key &rest keys)
   (declare (ignore keys))
-  (when (minusp key) (setf key (- (length obj) key)))
+  (when (minusp key) (setf key (+ (length obj) key)))
   (elt obj key))
 
 (defmethod generic-elt ((obj hash-table) key &rest keys)
