@@ -557,7 +557,7 @@ Finally, is also sometimes needed `merge-hash-tables`/`merge-hts`, `merge-hash-t
 
 ### rutils.hash-set
 
-From the efficiency standpoint, hash-sets should be the goto set implementations, but, in Lisp, it seems like sets where introduced prior to hash-table so the simpler list-based variants are supported in the standard. Here, we provide a hash-based alternative based on the hash-table with all `t` values:
+From the efficiency standpoint, hash-sets should be the goto set implementations, but, in Lisp, it seems like sets were introduced prior to hash-table so the simpler list-based variants are supported in the standard. Here, we provide a hash-based alternative based on the hash-table with all `t` values:
 
 `hash-set` will create a set from a list of items (hash-table-test may be specified).
 
