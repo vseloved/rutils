@@ -310,7 +310,7 @@
 
 (defpackage #:rutils.generic
   (:use :common-lisp #:rutils.readtable #:rutils.symbol #:rutils.misc
-        #:rutils.pair #:rutils.list #:rutils.hash-table)
+        #:rutils.pair #:rutils.list #:rutils.hash-table #:rutils.sequence)
   (:documentation "Generic access, copy, tally.")
   (:export #:copy
            #:tally

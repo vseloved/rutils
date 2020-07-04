@@ -164,23 +164,31 @@
      or indexed elements of a sequence).")
   (:method ((obj list) &rest kvs)
     (let ((rez (copy-list obj)))
-      (loop :for (k v) :on kvs :by #'cddr :do
-        (:= (? rez k) v))
+      (when kvs
+        (do ((tail rez (rest tail))
+             (i 0 (1+ i))
+             (kv-tail (sort (group 2 kvs) '< :key 'lt)
+                      (rest kv-tail)))
+            ((or (null tail)
+                 (null kv-tail)))
+          (destructuring-bind (k v) (first kv-tail)
+            (when (= i k)
+              (:= (car tail) v)))))
       rez))
   (:method ((obj sequence) &rest kvs)
     (let ((rez (copy-seq obj)))
       (loop :for (k v) :on kvs :by #'cddr :do
-        (:= (? rez k) v))
+        (:= (aref rez k) v))
       rez))
   (:method ((obj hash-table) &rest kvs)
     (let ((rez (copy-hash-table obj)))
       (loop :for (k v) :on kvs :by #'cddr :do
-        (:= (? rez k) v))
+        (set# k rez v))
       rez))
   (:method ((obj structure-object) &rest kvs)
     (let ((rez (copy-structure obj)))
       (loop :for (k v) :on kvs :by #'cddr :do
-        (:= (? rez (mksym k)) v))
+        (:= (smart-slot-value rez (mksym k)) v))
       rez)))
 
 
