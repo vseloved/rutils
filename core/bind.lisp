@@ -23,7 +23,7 @@ depending on the type of the first argument."
           form))
 
 (defun subst-ignore (arg)
-  (if (eql '_ arg)
+  (if (string= "_" (symbol-name arg))
       (let ((arg (gensym "IGNORED")))
         (push arg *bind-ignores*)
         arg)

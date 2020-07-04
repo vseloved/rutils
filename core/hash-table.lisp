@@ -173,7 +173,7 @@ Hash table is initialized using the HASH-TABLE-INITARGS."
              (list (if (rutils.list:alistp ,table)
                        (dolist (,pair ,table)
                          (destructuring-bind (,k . ,v) ,pair
-                           ,(when _ `(declare (ignore ,_)))
+                           ,@(when _ `((declare (ignore ,_))))
                            ,@body))
                        (error 'simple-type-error
                               :format-control "Can't iterate over proper list ~
