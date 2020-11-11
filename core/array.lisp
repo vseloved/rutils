@@ -20,7 +20,16 @@
 
 
 (defun slice (vec beg &optional end)
-  "Return an array-slice into VEC from BEG to END."
+  "Return an array-slice into VEC from BEG to END.
+   If VEC is already a displaced array, recursively ascend to the original
+   non-displaced array and create a slice into it
+   (to avoid multiple levels of indirection)."
+  (loop (multiple-value-bind (disp-to disp-index) (array-displacement vec)
+          (if disp-to
+              (setf vec disp-to
+                    beg (+ beg disp-index)
+                    end (when end (+ end disp-index)))
+              (return))))
   (let ((size (max 0 (- (or end (length vec)) beg))))
     (apply #'make-array size :element-type (array-element-type vec)
            (unless (zerop size)

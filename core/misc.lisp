@@ -384,9 +384,14 @@
   (abbr :- decf)
 
   (defmacro :* (place n)
-    "Multiply in-lace PLACE by N."
+    "Multiply in-place PLACE by N."
     `(setf ,place (* ,place ,n)))
 
   (defmacro :/ (place n)
-    "Divide in-lace PLACE by N."
-    `(setf ,place (/ ,place ,n))))
+    "Divide in-place PLACE by N."
+    `(setf ,place (/ ,place ,n)))
+
+  (defmacro <- (place fn)
+    "Apply FN in-place to PLACE."
+    `(setf ,place (call ,fn ,place))))
+

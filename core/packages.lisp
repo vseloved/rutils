@@ -46,7 +46,8 @@
 (defpackage #:rutils.misc
   (:documentation "Assorted small utilities.")
   (:use :common-lisp #:rutils.readtable #:rutils.symbol)
-  (:export #:2nd
+  (:export #:<-
+           #:2nd
            #:and2
            #:case-failure
            #:coercef

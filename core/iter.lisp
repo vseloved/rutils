@@ -2295,7 +2295,7 @@ CODE, and not a copy, appears in it."
          (step-var (unless (constantp by)
                      (make-var-and-default-binding 'step
                                                    :using-type-of by)))
-         (step-thing (or step-var by))
+         (step-thing (or step-var by 1))
          (limit-code (or limit-var limit))
          (init-val (eval-const-expr
                     (list (if (eq step-func '+) '- '+) initial step-thing)))

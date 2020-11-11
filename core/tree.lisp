@@ -13,7 +13,7 @@
     `(labels ((,rec (,subtree)
                 ,@body
                 (unless (atom ,subtree)
-                  (dolist (,child (cdr ,subtree))
+                  (dolist (,child ,subtree)
                     (,rec ,child)))))
        (when-it ,tree
          (,rec it))
