@@ -12,7 +12,7 @@
   :licence "3-clause MIT licence"
   :description
   "A collection of basic utilities for syntactic
-   extension and basic data structure hadling,
+   extension and basic data structure handling,
    developed over the years of CL history by efforts of different individuals,
    and gathered under the unbrella of a hierarchy of packages
    which can be used on-demand."
