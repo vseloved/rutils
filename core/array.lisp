@@ -19,7 +19,7 @@
   `(integer 0 ,length))
 
 
-(defun slice (vec beg &optional end)
+(defun slice (vec beg &optional (end (length vec)))
   "Return an array-slice into VEC from BEG to END.
    If VEC is already a displaced array, recursively ascend to the original
    non-displaced array and create a slice into it

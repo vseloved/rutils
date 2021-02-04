@@ -55,6 +55,6 @@ depending on the type of the first argument."
   (:method ((arg1 list) arg2 &rest args)
     (declare (ignore args))
     (let (*bind-ignores*)
-      `(destructuring-bind ,(mapcar 'subst-ignore arg1) ,arg2
+      `(destructuring-bind ,(rutils.tree:mapleaves 'subst-ignore arg1) ,arg2
          ,@(when *bind-ignores*
              `((declare (ignore ,@*bind-ignores*))))))))

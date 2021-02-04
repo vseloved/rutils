@@ -10,32 +10,34 @@
   "Iterate over each SUBTREE of the TREE in depth-first order.
    Optionally return RESULT."
   (with-gensyms (rec child)
-    `(labels ((,rec (,subtree)
-                ,@body
-                (unless (atom ,subtree)
-                  (dolist (,child ,subtree)
-                    (,rec ,child)))))
-       (when-it ,tree
-         (,rec it))
-       ,result)))
+    `(block nil
+       (labels ((,rec (,subtree)
+                  ,@body
+                  (unless (atom ,subtree)
+                    (dolist (,child ,subtree)
+                      (,rec ,child)))))
+         (when-it ,tree
+           (,rec it))
+         ,result))))
 
 (defmacro doleaves ((node tree &optional result) &body body)
   "Iterate over each leaf NODE of the TREE in depth-first order.
    Optionally return RESULT."
   (with-gensyms (rec child)
-    `(labels ((,rec (,node)
-                (unless (atom ,node)
-                  (dolist (,child (cdr ,node))
-                    (if (atom ,child)
-                        (let ((,node ,child))
-                          ,@body)
-                        (,rec ,child))))))
-       (when-it ,tree
-         (,rec it))
-       ,result)))
+    `(block nil
+       (labels ((,rec (,node)
+                  (unless (atom ,node)
+                    (dolist (,child (cdr ,node))
+                      (if (atom ,child)
+                          (let ((,node ,child))
+                            ,@body)
+                          (,rec ,child))))))
+         (when-it ,tree
+           (,rec it))
+         ,result))))
 
 (defun maptree (fn tree)
-  "Map a one-argument function FN over subtree of the TREE
+  "Map a one-argument function FN over each subtree of the TREE
    in depth-first order, returning a new tree with the same structure."
   (labels ((rec (node)
              (if (atom node)
@@ -49,10 +51,9 @@
   "Map a one-argument function FN over each leaf node of the TREE
    in depth-first order, returning a new tree with the same structure."
   (labels ((rec (node)
-             (if (atom node)
-                 (funcall fn node)
-                 (cons (car node)
-                       (mapcar #'rec (cdr node))))))
+             (etypecase node
+               (atom (funcall fn node))
+               (list (mapcar #'rec node)))))
     (when-it tree
       (rec it))))
 
