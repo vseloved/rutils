@@ -57,7 +57,7 @@
                (if (= (length is) dim-count)
                    (setf (apply #'aref rez is)
                          (apply #'aref arr is))
-                   (dotimes (i (array-dimension arr (- dim-count (length is))))
+                   (dotimes (i (array-dimension arr (- dim-count (length is) 1)))
                      (drill-down (cons i is))))))
       (dotimes (i (array-dimension arr (1- dim-count)))
         (drill-down (list i))))
