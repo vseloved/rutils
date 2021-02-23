@@ -43,8 +43,7 @@
 
 (defun split-string (string)
   "Split STRING by WHITE-CHAR-P."
-  (rutils.sequence:split-sequence-if #'white-char-p string
-                                     :remove-empty-subseqs t))
+  (rutils.sequence:split-sequence-if #'white-char-p string))
 
 (defun substr (string start &optional end)
   "Efficient substring of STRING from START to END (optional),
