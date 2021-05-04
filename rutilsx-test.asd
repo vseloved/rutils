@@ -15,4 +15,4 @@
   :depends-on (#:rutilsx #:should-test)
   :components
   ((:module #:test
-            :components ((:file "packagex"))))))
+            :components ((:file "packagex")))))
