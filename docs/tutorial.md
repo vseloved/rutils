@@ -15,7 +15,7 @@ RUTILS is mainly intended to be `use`d: either the package `rutils`/`rtl` or a p
 
 The library is available from Quicklisp. The simplest sequence to get started, from the REPL, is:
 
-```
+```lisp
 CL-USER> (ql:quickload :rutils)
 CL-USER> (in-package :rtl-user)
 CL-USER> (named-readtables:in-readtable rutils-readtable)
@@ -23,7 +23,7 @@ CL-USER> (named-readtables:in-readtable rutils-readtable)
 
 If you want to work with the most current version (for instance, the latest 5.0 release isn't in Quicklisp yet) you can grab it from github. The recommended way is to put it in your `~/common-lisp/` folder. Afterwards, it will be automatically found by `ql:quickload`. Yet, if you want to be sure (or if you put it into a different folder) you may precede the `quickload` call with the following:
 
-```
+```lisp
 CL-USER> (push "~/common-lisp/rutils/" asdf:*central-registry*)  ; or use the path where you've put rutils
 ```
 
@@ -38,14 +38,14 @@ RUTILS defined the following syntactic extensions available from `rutils-readtab
 
 Clojure has introduced the idea of shorthand syntax for anonymous functions with predefined argument names. RUTILS provides 2 interchangeable versions of such syntax:
 
-```
+```lisp
 RTL-USER> ^(+ % %%)
 #<FUNCTION (LAMBDA (&OPTIONAL % %%)) {1022395A6B}>
 ```
 
 and
 
-```
+```lisp
 RTL-USER> #`(+ % %%)
 #<FUNCTION (LAMBDA (&OPTIONAL % %%)) {1022395BAB}>
 ```
@@ -60,7 +60,7 @@ The ability to initialize the hash-table with values is essential to maintaining
 
 Originally, I came up with the `#{}` notation that should be very familiar to users of other languages:
 
-```
+```lisp
 RTL-USER> #{:a 1 :b 2}
 #<HASH-TABLE :TEST EQL :COUNT 2>
 ;; holding 2 key/value pairs: ((:a . 1) (:b . 2))
@@ -71,7 +71,7 @@ RTL-USER> #{equal "a" 1 "b" 2}
 
 However, it doesn't play very well with Lisp code formatting, in particular, in Emacs, so an alternative paren-based syntax was also added: `#h().
 
-```
+```lisp
 RTL-USER> #h(:a 1 :b 2)
 #<HASH-TABLE :TEST EQL :COUNT 2>
 RTL-USER> #h(equal "a" 1 "b" 2)
@@ -82,7 +82,7 @@ RTL-USER> #h(equal "a" 1 "b" 2)
 
 Lisp provides literal syntax for vectors: `#()`. Unfortunately, it creates only constant vectors, but vectors with variable contents are much more widely used. For this purpose, we introduce `#v()` — similar to `#h()` for hash-tables. It creates a non-adjustable normal vector. If you want the vector to also be adjustable use `vec` (from `rutils.array`). So, now there are 3 ways to easily create and initialize a vector in a declarative manner:
 
-```
+```lisp
 RTL-USER> #(1 2 3)
 #(1 2 3)
 RTL-USER> #v(1 2 3)
@@ -105,7 +105,7 @@ Compare `(elt (nth 1 (foo-slot2 (bar-slot1 obj)) 0)` (sometimes you have to writ
 
 Heredoc is a concept from the Shell and Perl that allows representing strings without the need for escaping. The variant RUTILS provides uses the open-close syntax: `#/ ... /#`.
 
-```
+```lisp
 RTL-USER> #/This is a string
 which allows using the quote (") without escaping/#
 "This is a string
@@ -148,7 +148,7 @@ It includes some logic shorthands:
 
 Clojure-style threading macros (`->` and `->>`):
 
-```
+```lisp
 RTL-USER> (-> 2
               1+
               (expt % 2))
@@ -177,14 +177,14 @@ Finally,
 
 There's a separate Lisp library called [ANAPHORA](https://common-lisp.net/project/anaphora/) that provides such control-flow constructs that allow performing simultaneous assignment and logical tests. RUTILS copies the basic and most widely-used ones. `when-it` and `if-it` are among the most used extensions for me. Here's an example:
 
-```
+```lisp
 (when-it (foo)
   (bar it))
 ```
 
 is the same as:
 
-```
+```lisp
 (let ((it (foo)))
   (when it
     (bar it)))
@@ -192,7 +192,7 @@ is the same as:
 
 This is the implicit anaphora, in which `it` variable is created behind-the-scenes. Such an approach is not unseen in Lisp, as there's `call-next-method` that follows the same principle. Yet, RUTILS supports an explicit style, as well:
 
-```
+```lisp
 (if-let (x (foo))
         (bar x)
         (baz))
@@ -200,7 +200,7 @@ This is the implicit anaphora, in which `it` variable is created behind-the-scen
 
 is the same as:
 
-```
+```lisp
 (let ((x (foo)))
   (if x
       (bar x)
@@ -220,7 +220,7 @@ This library provides an extensible unification of all Lisp binding operations (
 
 Here's an example:
 
-```
+```lisp
 RTL-USER> (with ((a 1)  ; => plain let
                  (b c (values 2 3))  ; more than 2 variables => multiple-value-bind
                  ((d _ e &rest f) '(4 0 5 12 13 14 15))  ; a list => destructuring-bind
@@ -235,7 +235,7 @@ It also supports ignoring some of the bindings by putting `_` instead of the var
 
 It is extensible as it allows to add more variants that support custom clauses. This is defined in `bind-dispatch` that uses the first 2 arguments to decide, which operation to emit. Let's define a binding clause for `with-open-file` that triggers when the second argument is a pathname:
 
-```
+```lisp
 (defmethod bind-dispatch ((arg1 list) (arg2 pathname) &rest args)
   `(with-open-file (,arg1 ,arg2 ,@args)))
 
@@ -249,7 +249,7 @@ error opening #P"/tmp/foo.txt": File exists
 
 This package provides the generic accessor `generic-elt` with a shorter alias `?` and setter `generic-setf` (also `(setf (? ...`). Also, generic `copy` function is defined and generic items count (or length, or size) — `tally`.
 
-```
+```lisp
 RTL-USER> (defstruct foo bar)
 (? (make-foo :bar #h(:baz '(0 1 42)))
    'bar :baz 2)
@@ -262,14 +262,14 @@ Access to struct/object slots is performed using `smart-slot-value`, also define
 
 Alongside SPLIT-SEQUENCE, this is another external library originally called [ITERATE](https://common-lisp.net/project/iterate/) that is incorporated by RUTILS. With an important modification of defining the clause keys in the keyword package. You can refer to the official documentation for the extensive examples of its usage. Just mind that instead of:
 
-```
+```lisp
 (iterate (for item in list)
          (finding elt maximizing (length elt)))
 ```
 
 you'll have to write:
 
-```
+```lisp
 (iter (:for item :in list)
       (:finding elt :maximizing (length elt)))
 ```
@@ -317,7 +317,7 @@ The accessor functions are `pair-left`/`lt` and `pair-right`/`rt`. And the pair 
 
 `pair` is a list-based struct, which allows it to be used in destructuring similar to cons. At the drawback of somewhat worse performance (another dereference is needed to access the right part). So, if you need to squeeze the last bit of performance, in someplace, you might still need to use cons-pairs. There's also `with-pair` to destructure a single pair:
 
-```
+```lisp
 RTL-USER> (with-pair (l r) (pair :foo 42)
             (cons l r))
 (:FOO . 42)
@@ -338,7 +338,7 @@ This package accumulates many list-manipulation utilities from On Lisp, other bo
 - `ensure-list`/`mklist` turns atom arguments into lists while preserving list arguments as is; `atomize` is the opposite operation
 - `flatten` turns the list into absolutely flat (removing all nesting) or removes just the number of levels supplied as the optional second argument
 
-```
+```lisp
 RTL-USER> (flatten '((1 (2 3)) 4) 1)
 (1 (2 3) 4)
 RTL-USER> (flatten '((1 (2 3)) 4))  ; here, same as 2 levels
@@ -348,7 +348,7 @@ RTL-USER> (flatten '((1 (2 3)) 4))  ; here, same as 2 levels
 - `interleave` turns a number of lists into 1 by interleaving their elements
 - `interpose` adds a separator argument after each list's element
 
-```
+```lisp
 RTL-USER> (interleave '(1 2 3) '(4 5 6) '(:foo :bar :baz))
 (1 4 :FOO 2 5 :BAR 3 6 :BAZ)
 RTL-USER> (interpose :foo '(1 2 3))
@@ -369,7 +369,7 @@ Plist- and alist-related stuff:
 
 `zip`/`zip-with` and `zip*`/`zip*-with` are like `mapcar` by `list` or an arbitrary function. Where `zip` finishes when at least one of the input lists ends, while `zip*` waits until the last one ends substituting the missing elements with nils.
 
-```
+```lisp
 RTL-USER> (zip '(1 2 3) '(4 5 6))
 ((1 4) (2 5) (3 6))
 RTL-USER> (zip-with '+ '(1 2 3) '(4 5 6))
@@ -382,14 +382,14 @@ RTL-USER> (zip*-with '+ '(1 2 3) '(4 5))
 
 `maptimes` is the mapping version of `dotimes`:
 
-```
+```lisp
 RTL-USER> (maptimes 10 '1+)
 (1 2 3 4 5 6 7 8 9 10)
 ```
 
 `mapindex` iterates the list and keeps track of the current position in it (there's also `mapcanindex`):
 
-```
+```lisp
 RTL-USER> (mapindex (lambda (i x)
                       (print (pair i x)))
                     '(:foo :bar :baz))
@@ -432,7 +432,7 @@ String utilities:
 - `last-char` returns the last character of the given string
 - `fmt` is the shortcut for `format nil`
 
-```
+```lisp
 RTL-USER> (strcat "foo" nil "bar" #\4 #\2)
 "foobar42"
 RTL-USER> (strjoin #\Space '("foo" nil :bar 42))
@@ -450,7 +450,7 @@ This package contains the very popular `split-sequence` family of utilities (it'
 
 Also provided is the `partition-with` function that splits the sequence into groups by a list of delimiters:
 
-```
+```lisp
 RTL-USER> (partition-with '(1 5 10) (range 0 20) :test '<=)
 ((0 1) (2 3 4 5) (6 7 8 9 10))
 (1 5 10)
@@ -462,7 +462,7 @@ While `group` just splits it into groups of the supplied length.
 
 `doindex` iterates the sequence keeping track of the index of the current element (it coerces the argument to a vector). Compare it with `mapindex` from `rutils.list`.
 
-```
+```lisp
 RTL-USER> (doindex (i item '(:foo :bar :baz))
             (print (pair i item)))
 (0 :FOO)
@@ -474,7 +474,7 @@ RTL-USER> (doindex (i item '(:foo :bar :baz))
 
 `rotate` returns a copy with elements shifted by n:
 
-```
+```lisp
 RTL-USER> (rotate '(:foo :bar :baz) 2)
 (:BAZ :FOO :BAR)
 ```
@@ -501,7 +501,7 @@ Hash-tables have, sadly, very rudimentary API, in the standard, despite their cu
 
 Alongside the reader support, provided by the readtable, literal syntax is also supported by the printer with `print-hash-table`/`print-ht`. Besides, there's also a way to plug into normal printing, with `toggle-print-hash-table`:
 
-```
+```lisp
 RTL-USER> #h(:foo 42)
 #<HASH-TABLE :TEST EQL :COUNT 1 {10251850A3}>
 RTL-USER> (toggle-print-hash-table)
@@ -527,7 +527,7 @@ Some additional operations were added:
 
 Iterating a hash-table with `maphash` or `loop :for keys :beign :the ...` is not the most natural way. A do-style macro is missing, so it was introduced as `dotable`:
 
-```
+```lisp
 RTL-USER> (let ((rez ()))
             (dotable (k v #h(1 :foo 2 :bar) rez)
               (when (oddp k)
@@ -568,7 +568,7 @@ All the operations end in `#` similar to the hash-table aliases:
 
 Example usage of a hash-set:
 
-```
+```lisp
 RTL-USER> (let ((h1 (hash-set 'eql :foo))
                 (h2 (hash-set 'eql :bar)))
             (format t "~&Original hash-set:~%")
@@ -604,7 +604,7 @@ Key-values are more than just hash-tables and alists (although, these are the mo
 
 Besides, there's a generic `mapkv`, which iterates a single key-value structure and returns a similar structure with the calculated values assigned to the same keys, and `dokv`, which uses `mapkv` for do-style iteration. However, using `dotable` will be more efficient for hash-tables and alists (although not extensible).
 
-```
+```lisp
 RTL-USER> (mapkv ^(1+ %%) #h(:foo 0 :bar 1))
 #{
   :FOO 1
@@ -620,7 +620,7 @@ The tree utilities, mostly, automate list-based trees iteration.
 
 `dotree`/`maptree` and `doleaves`/`mapleaves` allow iterating the tree by subtrees or just the leaves in do- and map-styles: i.e. map will also produce an altered copy of the iterated list.
 
-```
+```lisp
 RTL-USER> (dotree (subtree '(1 (2 3) (4 (5 6))))
             (print subtree))
 (1 (2 3) (4 (5 6))) 
