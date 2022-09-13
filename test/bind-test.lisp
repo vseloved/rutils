@@ -18,5 +18,5 @@
                  (((g :g) (h :h)) ? #h(:g 6 :h 7))
                  ((i rutils.bind::j) @ (make-dummy-struct-for-bind :i 8 :j 9))
                  (((k k) (l l)) @ (make 'dummy-obj-for-bind :k 10 :l 11))
-                 (#(_ m) #(0 12)))
+                 (#(_ m) (funcall (lambda () #(0 12)))))
             (list* a b c d e g h i rutils.bind::j k l m f))))
