@@ -57,4 +57,15 @@ depending on the type of the first argument."
     (let (*bind-ignores*)
       `(destructuring-bind ,(rutils.tree:mapleaves 'subst-ignore arg1) ,arg2
          ,@(when *bind-ignores*
-             `((declare (ignore ,@*bind-ignores*))))))))
+             `((declare (ignore ,@*bind-ignores*)))))))
+  (:method ((arg1 vector) arg2 &rest args)
+    (declare (ignore args))
+    (let ((*bind-ignores*))
+      (with-gensyms (value-vector)
+        `(let* ((,value-vector ,arg2)
+                ,@(loop
+                    :for sym :across arg1
+                    :for i :upfrom 0
+                    :collect `(,(subst-ignore sym) (aref ,value-vector ,i))))
+           ,@(when *bind-ignores*
+               `((declare (ignore ,@*bind-ignores*)))))))))
