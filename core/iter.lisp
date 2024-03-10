@@ -2000,7 +2000,7 @@ the body of the loop, so it must not contain anything that depends on the body."
          (seq-code (or seq-var sequence))
          (step-var (unless (constant? by)
                      (make-var-and-default-binding 'step :type 'fixnum)))
-         (step (or step-var by))
+         (step (or step-var by 1))
          (step-func (if (or downto downfrom above) '- '+))
          (test-func (cond (to '>)
                           ((or downto downfrom) '<)
